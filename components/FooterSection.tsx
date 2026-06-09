@@ -33,8 +33,6 @@ export default function FooterSection() {
       <div className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between border-t border-white/5 pt-8 font-mono text-[10px] text-zinc-600 gap-4">
         <div className="flex items-center gap-6">
           <span>APEX VENTURES STUDIO</span>
-          <span className="hidden sm:inline">•</span>
-          <span>"I LIKE TO BUILD"</span>
         </div>
         <div>
           <span>©2026 APEX VENTURES. ALL RIGHTS RESERVED.</span>

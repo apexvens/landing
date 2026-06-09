@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Apex Ventures | I like to build.",
+  title: "Apex Ventures",
   description: "Apex Ventures is an AI-first venture studio building products that solve real-world problems through thoughtful design, intelligent automation, and relentless execution.",
 };
 

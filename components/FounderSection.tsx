@@ -19,9 +19,6 @@ export default function FounderSection() {
                 Founder, Apex Ventures
               </p>
             </div>
-            <div className="text-xs font-mono text-zinc-400 border border-white/10 px-3 py-1 rounded bg-white/5 uppercase">
-              "I like to build."
-            </div>
           </div>
 
           <div className="relative space-y-4">
