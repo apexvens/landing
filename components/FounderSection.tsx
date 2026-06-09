@@ -1,35 +1,64 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
+import Image from "next/image";
+import { motion, Transition } from "framer-motion";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+};
+const t: Transition = { duration: 0.65, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
 
 export default function FounderSection() {
   return (
-    <section className="relative py-28 md:py-36 bg-black border-t border-white/5 overflow-hidden flex items-center justify-center">
-      <div className="relative z-10 max-w-4xl w-full px-6 md:px-12">
-        <div className="border border-white/10 bg-zinc-950/20 rounded-2xl p-8 sm:p-12 space-y-8 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b border-white/5">
+    <section id="founder" className="relative border-t border-white/5 bg-black py-24 md:py-36">
+      <div className="max-w-5xl mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16 items-center">
+          {/* Photo */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={t}
+            className="md:col-span-4"
+          >
+            <div className="relative w-56 h-56 md:w-72 md:h-72 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+              <Image
+                src="/founder/neil.jpg"
+                alt="Neil Surjiani"
+                fill
+                className="object-cover"
+                quality={95}
+              />
+            </div>
+          </motion.div>
+
+          {/* Text */}
+          <motion.div
+            variants={fadeUp}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true }}
+            transition={{ ...t, delay: 0.15 }}
+            className="md:col-span-8 space-y-6"
+          >
             <div>
-              <h4 className="text-2xl font-bold text-white font-sans">
-                Neil Surjiani
-              </h4>
-              <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest mt-0.5">
-                Founder, Apex Ventures
+              <h3 className="text-2xl sm:text-3xl font-bold text-white">Neil Surjiani</h3>
+              <p className="text-sm font-mono text-zinc-500 mt-1 uppercase tracking-widest">Founder, Apex Ventures</p>
+            </div>
+
+            <div className="space-y-4 text-zinc-400 text-base leading-relaxed">
+              <p>
+                I enjoy building things.
+              </p>
+              <p>
+                Apex Ventures is my platform for turning ideas into products that people can use every day. I'm not interested in perfect planning — I'm interested in shipping, learning, and improving.
+              </p>
+              <p>
+                These three products represent the first chapter. There's a lot more being worked on.
               </p>
             </div>
-          </div>
-
-          <div className="relative space-y-4">
-            <Quote className="absolute -top-4 -left-4 h-8 w-8 text-white/[0.03] pointer-events-none" />
-            <p className="text-base sm:text-lg text-zinc-300 font-light leading-relaxed">
-              Apex Ventures was born out of a simple passion: turning ideas into tangible, real-world products. I believe the best solutions are built when we focus on clarity, strip away unnecessary visual and operational noise, and construct software that resolves actual, everyday bottlenecks. 
-            </p>
-            <p className="text-sm text-zinc-400 font-light leading-relaxed">
-              Whether optimizing EV journeys or streamlining travel workflows, our building block remains identical: write clean code, design clean interfaces, and deploy platforms that deliver immediate value from day one.
-            </p>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Apex Ventures",
-  description: "Apex Ventures is an AI-first venture studio building products that solve real-world problems through thoughtful design, intelligent automation, and relentless execution.",
+  title: "Apex Ventures — I like to build.",
+  description: "Apex Ventures is where ideas become products. TripWise AI, Folio AI, and EVMate — built by Neil Surjiani.",
 };
 
 export default function RootLayout({
