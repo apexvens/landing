@@ -1,183 +1,123 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
-const LINES = [
-  {
-    text: "We don't chase trends.",
-    sub: "Most tools are built because everyone else is building one.",
-  },
-  {
-    text: "We find friction.",
-    sub: "Friction is the gap between what exists and what should.",
-  },
-  {
-    text: "We ship fast.",
-    sub: "The best feedback is a real user hitting a real problem.",
-  },
-  {
-    text: "We build to last.",
-    sub: "Then we make it so good, people can't imagine life before it.",
-  },
+const STATEMENTS = [
+  { bold: "No niche.", rest: " We go where the problem is." },
+  { bold: "No trends.", rest: " We build what should exist." },
+  { bold: "No fluff.", rest: " We ship, measure, improve." },
+  { bold: "No ceiling.", rest: " Three products. Thousands more ideas." },
 ];
 
+const MARQUEE_ITEMS = [
+  "Build fast", "·", "Ship real", "·", "Solve hard", "·",
+  "Think different", "·", "Stay lean", "·", "Build fast", "·",
+  "Ship real", "·", "Solve hard", "·", "Think different", "·", "Stay lean", "·",
+];
+
+function MarqueeRow({ reverse = false, speed = 28 }: { reverse?: boolean; speed?: number }) {
+  const items = [...MARQUEE_ITEMS, ...MARQUEE_ITEMS];
+  return (
+    <div style={{ overflow: "hidden", width: "100%" }}>
+      <motion.div
+        animate={{ x: reverse ? ["0%", "50%"] : ["0%", "-50%"] }}
+        transition={{ duration: speed, ease: "linear", repeat: Infinity }}
+        style={{ display: "flex", gap: 40, width: "max-content", willChange: "transform" }}
+      >
+        {items.map((item, i) => (
+          <span
+            key={i}
+            style={{
+              fontFamily: item === "·" ? "var(--font-body)" : "var(--font-display)",
+              fontSize: item === "·" ? 20 : "clamp(40px, 5vw, 72px)",
+              fontWeight: item === "·" ? 400 : 700,
+              letterSpacing: item === "·" ? 0 : "-0.03em",
+              color: item === "·" ? "rgba(248,248,245,0.1)" : "rgba(248,248,245,0.07)",
+              whiteSpace: "nowrap",
+              lineHeight: 1,
+            }}
+          >
+            {item}
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 export default function ManifestoSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  // Each line occupies 0.25 of the scroll range
-  const getOpacity = (i: number) => {
-    const start = i * 0.25;
-    const peak = start + 0.1;
-    const end = start + 0.25;
-    const exit = start + 0.3;
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useTransform(
-      scrollYProgress,
-      i < 3
-        ? [start, peak, end, exit]
-        : [start, peak, 1.0],
-      i < 3 ? [0, 1, 1, 0] : [0, 1, 1]
-    );
-  };
-
-  const getY = (i: number) => {
-    const start = i * 0.25;
-    const peak = start + 0.1;
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    return useTransform(scrollYProgress, [start, peak], [30, 0]);
-  };
-
   return (
     <section
       id="manifesto"
-      ref={containerRef}
       style={{
-        height: "500vh",
         background: "#000",
+        borderTop: "1px solid rgba(248,248,245,0.1)",
+        paddingTop: 80,
+        paddingBottom: 80,
+        overflow: "hidden",
         position: "relative",
-        borderTop: "1px solid rgba(248,248,245,0.06)",
       }}
     >
+      {/* Stacked marquee rows — pure atmosphere, no scroll lock */}
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: 8, pointerEvents: "none" }}>
+        <MarqueeRow speed={35} />
+        <MarqueeRow reverse speed={28} />
+        <MarqueeRow speed={40} />
+      </div>
+
+      {/* Foreground statements grid — sits on top of the marquee */}
       <div
         style={{
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          position: "relative",
+          zIndex: 2,
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: "0 24px",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "1px",
+          background: "rgba(248,248,245,0.1)",
+          border: "1px solid rgba(248,248,245,0.1)",
+          borderRadius: 14,
           overflow: "hidden",
         }}
+        className="manifesto-grid"
       >
-        {/* Label */}
-        <div
-          style={{
-            position: "absolute",
-            top: 32,
-            left: "50%",
-            transform: "translateX(-50%)",
-            fontFamily: "var(--font-mono)",
-            fontSize: 9,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "rgba(248,248,245,0.15)",
-          }}
-        >
-          Our Approach
-        </div>
-
-        {/* Scroll progress bar */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 40,
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "rgba(248,248,245,0.15)",
-            }}
-          >
-            Scroll
-          </span>
-          <div
-            style={{
-              width: 48,
-              height: 1,
-              background: "rgba(248,248,245,0.08)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <motion.div
-              style={{
-                scaleX: scrollYProgress,
-                transformOrigin: "left",
-                position: "absolute",
-                inset: 0,
-                background: "#F8F8F5",
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Lines */}
-        {LINES.map((line, i) => (
+        {STATEMENTS.map((s, i) => (
           <motion.div
-            key={line.text}
+            key={s.bold}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
             style={{
-              opacity: getOpacity(i),
-              y: getY(i),
-              position: "absolute",
-              textAlign: "center",
-              padding: "0 24px",
-              maxWidth: 800,
-              width: "100%",
+              background: "#000",
+              padding: "36px 32px",
+              backdropFilter: "blur(8px)",
             }}
           >
-            <h2
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(40px, 8vw, 100px)",
-                fontWeight: 700,
-                letterSpacing: "-0.04em",
-                color: "#F8F8F5",
-                lineHeight: 1.0,
-                marginBottom: 20,
-              }}
-            >
-              {line.text}
-            </h2>
             <p
               style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "clamp(14px, 2vw, 16px)",
-                color: "rgba(248,248,245,0.3)",
-                fontWeight: 300,
-                lineHeight: 1.6,
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(18px, 2.5vw, 26px)",
+                fontWeight: 600,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.3,
+                color: "#F8F8F5",
               }}
             >
-              {line.sub}
+              {s.bold}
+              <span style={{ color: "rgba(248,248,245,0.32)", fontWeight: 300 }}>{s.rest}</span>
             </p>
           </motion.div>
         ))}
       </div>
+
+      <style>{`
+        @media (max-width: 600px) {
+          .manifesto-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

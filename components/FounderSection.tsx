@@ -8,7 +8,7 @@ export default function FounderSection() {
       id="founder"
       style={{
         background: "#000",
-        borderTop: "1px solid rgba(248,248,245,0.06)",
+        borderTop: "1px solid rgba(248,248,245,0.1)",
         padding: "100px 24px",
       }}
     >
@@ -48,8 +48,8 @@ export default function FounderSection() {
                 width: 72,
                 height: 72,
                 borderRadius: 16,
-                background: "rgba(248,248,245,0.06)",
-                border: "1px solid rgba(248,248,245,0.08)",
+                background: "rgba(248,248,245,0.1)",
+                border: "1px solid rgba(248,248,245,0.12)",
                 marginBottom: 20,
                 display: "flex",
                 alignItems: "center",

@@ -19,7 +19,7 @@ export default function FooterSection() {
     <footer
       style={{
         background: "#000",
-        borderTop: "1px solid rgba(248,248,245,0.06)",
+        borderTop: "1px solid rgba(248,248,245,0.1)",
         padding: "80px 24px 48px",
       }}
     >
@@ -32,7 +32,7 @@ export default function FooterSection() {
             gridTemplateColumns: "2fr 1fr 1fr",
             gap: 60,
             paddingBottom: 60,
-            borderBottom: "1px solid rgba(248,248,245,0.06)",
+            borderBottom: "1px solid rgba(248,248,245,0.1)",
             marginBottom: 40,
           }}
           className="footer-grid"

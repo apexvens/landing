@@ -81,7 +81,7 @@ export default function ProductShowcase() {
   const product = products[active];
 
   return (
-    <section id="products" style={{ background: "#000", borderTop: "1px solid rgba(248,248,245,0.06)" }}>
+    <section id="products" style={{ background: "#000", borderTop: "1px solid rgba(248,248,245,0.1)" }}>
 
       {/* Section header */}
       <div
@@ -146,7 +146,7 @@ export default function ProductShowcase() {
           maxWidth: 1200,
           margin: "0 auto",
           padding: "0 24px",
-          borderBottom: "1px solid rgba(248,248,245,0.06)",
+          borderBottom: "1px solid rgba(248,248,245,0.1)",
           display: "flex",
           gap: 0,
         }}
@@ -435,7 +435,7 @@ export default function ProductShowcase() {
             style={{
               width: "100%",
               borderRadius: 12,
-              border: "1px solid rgba(248,248,245,0.06)",
+              border: "1px solid rgba(248,248,245,0.1)",
               overflow: "hidden",
               aspectRatio: "16/6",
               background: `linear-gradient(135deg, rgba(${
@@ -479,7 +479,7 @@ export default function ProductShowcase() {
                 style={{
                   fontFamily: "var(--font-body)",
                   fontSize: 12,
-                  color: "rgba(248,248,245,0.08)",
+                  color: "rgba(248,248,245,0.12)",
                   marginTop: 4,
                 }}
               >

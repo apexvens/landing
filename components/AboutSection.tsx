@@ -23,7 +23,7 @@ export default function AboutSection() {
       id="about"
       style={{
         background: "#000",
-        borderTop: "1px solid rgba(248,248,245,0.06)",
+        borderTop: "1px solid rgba(248,248,245,0.1)",
         padding: "100px 24px",
       }}
     >
@@ -74,8 +74,8 @@ export default function AboutSection() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "1px",
-            background: "rgba(248,248,245,0.06)",
-            border: "1px solid rgba(248,248,245,0.06)",
+            background: "rgba(248,248,245,0.1)",
+            border: "1px solid rgba(248,248,245,0.1)",
             borderRadius: 12,
             overflow: "hidden",
           }}
@@ -135,8 +135,8 @@ export default function AboutSection() {
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
             gap: "1px",
-            background: "rgba(248,248,245,0.06)",
-            border: "1px solid rgba(248,248,245,0.06)",
+            background: "rgba(248,248,245,0.1)",
+            border: "1px solid rgba(248,248,245,0.1)",
             borderRadius: 12,
             overflow: "hidden",
           }}
