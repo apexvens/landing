@@ -28,10 +28,13 @@ export default function Nav() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
         style={{
           backdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(248,248,245,0.1)" : "1px solid transparent",
+          borderBottom: scrolled
+            ? "1px solid rgba(248,248,245,0.1)"
+            : "1px solid transparent",
           background: scrolled ? "rgba(0,0,0,0.7)" : "transparent",
+          paddingLeft: "clamp(24px, 6vw, 80px)",
+          paddingRight: "clamp(24px, 6vw, 80px)",
         }}
-        style={{ paddingLeft: "clamp(24px, 6vw, 80px)", paddingRight: "clamp(24px, 6vw, 80px)" }}
         className="fixed top-0 left-0 right-0 z-[1000] h-[60px] flex items-center justify-between transition-all duration-500"
       >
         {/* Logo wordmark */}
