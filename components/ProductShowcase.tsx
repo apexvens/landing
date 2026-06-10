@@ -1,414 +1,502 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import Link from "next/link";
-import { motion, Transition } from "framer-motion";
-import { ArrowUpRight, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  whileInView: { opacity: 1, y: 0 },
-};
+const products = [
+  {
+    id: "tripwise",
+    index: "01",
+    name: "TripWise AI",
+    tagline: "Travel planning, reimagined.",
+    description:
+      "From \"I want to go somewhere\" to a complete day-by-day itinerary in under two minutes. Flights, hotels, visa requirements, budgets, packing lists — one platform, zero tab-switching.",
+    href: "https://tripwiseai.vercel.app/",
+    color: "#4A90E2",
+    colorLabel: "accent-blue",
+    tag: "Travel",
+    features: [
+      "AI-generated day-by-day itineraries",
+      "Flight & hotel recommendations",
+      "Visa guidance & requirements",
+      "Budget estimation & breakdown",
+      "Smart packing list builder",
+      "Local transit planning",
+      "Destination insights & alerts",
+      "Group trip co-planning",
+    ],
+    stat: { value: "< 2 min", label: "To full itinerary" },
+    imagePath: "/tripwise/hero.png",
+  },
+  {
+    id: "folioai",
+    index: "02",
+    name: "FolioAI",
+    tagline: "Your portfolio in seconds.",
+    description:
+      "Paste your resume. Get a live, beautiful portfolio site. Built for students, developers, and professionals who want to look great online without spending hours on design.",
+    href: "https://tryfolioai.vercel.app/",
+    color: "#9B6FE8",
+    colorLabel: "accent-violet",
+    tag: "Developer Tools",
+    features: [
+      "Resume-to-portfolio in one step",
+      "Professional design templates",
+      "Showcases projects & work history",
+      "Clean skill organization",
+      "Personal branding controls",
+      "Instant live deployment",
+    ],
+    stat: { value: "60s", label: "From resume to live site" },
+    imagePath: "/folioai/hero.png",
+  },
+  {
+    id: "evmate",
+    index: "03",
+    name: "EVMate",
+    tagline: "EV ownership, made easy.",
+    description:
+      "Stop worrying about range. EVMate finds nearby chargers, plans routes around your battery, and makes long-distance EV trips as simple as any other drive.",
+    href: "https://evmate-8ce3d.web.app/",
+    color: "#3ECF8E",
+    colorLabel: "accent-emerald",
+    tag: "Mobility",
+    features: [
+      "Real-time nearby charger discovery",
+      "Range-aware route optimization",
+      "Battery monitoring & alerts",
+      "Charging stop recommendations",
+      "Long-distance trip planning",
+      "Multi-stop journey support",
+    ],
+    stat: { value: "0", label: "Range anxiety" },
+    imagePath: "/evmate/hero.png",
+  },
+];
 
-const imgScale = {
-  initial: { opacity: 0, scale: 0.97 },
-  whileInView: { opacity: 1, scale: 1 },
-};
-
-const transition: Transition = { duration: 0.65, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
-
-/* ── TripWise ─────────────────────────────────────────────── */
-function TripWise() {
-  const features = [
-    "AI-generated itineraries",
-    "Flight recommendations",
-    "Hotel suggestions",
-    "Visa guidance",
-    "Budget estimation",
-    "Day-by-day plans",
-    "Packing list builder",
-    "Local transit planning",
-    "Destination insights",
-  ];
-
-  return (
-    <div id="tripwise" className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
-      {/* Header */}
-      <motion.div
-        variants={fadeUp}
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true, margin: "-60px" }}
-        transition={transition}
-        className="mb-16"
-      >
-        <span className="text-xs font-mono tracking-widest text-blue-400 uppercase">Product 01</span>
-        <h2 className="mt-3 text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none">
-          Travel Planning<br />Reimagined
-        </h2>
-      </motion.div>
-
-      {/* Hero screenshot */}
-      <motion.div
-        variants={imgScale}
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true, margin: "-40px" }}
-        transition={transition}
-        className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-16"
-      >
-        <Image
-          src="/tripwise/hero.png"
-          alt="TripWise AI hero"
-          width={1600}
-          height={900}
-          className="w-full h-auto object-cover"
-          quality={95}
-        />
-      </motion.div>
-
-      {/* Info + features grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={{ ...transition, delay: 0.1 }}
-          className="lg:col-span-5 space-y-6"
-        >
-          <p className="text-lg text-zinc-300 leading-relaxed">
-            TripWise helps travelers generate complete travel plans including flights, hotels, visas, transportation, budgets, packing lists and personalized itineraries — in minutes.
-          </p>
-          <Link
-            href="https://tripwiseai.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-white border-b border-white/20 pb-0.5 hover:border-white transition-all"
-          >
-            Open TripWise AI
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        </motion.div>
-
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={{ ...transition, delay: 0.2 }}
-          className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-3"
-        >
-          {features.map((f) => (
-            <div key={f} className="flex items-start gap-2 text-zinc-400 text-sm">
-              <Check className="h-4 w-4 text-blue-400 flex-shrink-0 mt-0.5" />
-              {f}
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Screenshots row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { src: "/tripwise/dashboard.png", label: "Dashboard" },
-          { src: "/tripwise/itinerary.png", label: "Itinerary" },
-          { src: "/tripwise/budget.png", label: "Budget" },
-        ].map(({ src, label }, i) => (
-          <motion.div
-            key={label}
-            variants={imgScale}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ ...transition, delay: i * 0.1 }}
-            className="relative rounded-xl overflow-hidden border border-white/8 shadow-xl"
-          >
-            <Image
-              src={src}
-              alt={`TripWise ${label}`}
-              width={800}
-              height={520}
-              className="w-full h-auto object-cover"
-              quality={90}
-            />
-            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/80 to-transparent">
-              <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest">{label}</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Folio AI ─────────────────────────────────────────────── */
-function FolioAI() {
-  const features = [
-    "Portfolio generation",
-    "Professional templates",
-    "Project showcases",
-    "Skill organization",
-    "Resume integration",
-    "Personal branding",
-  ];
-
-  return (
-    <div id="folioai" className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
-      {/* Header */}
-      <motion.div
-        variants={fadeUp}
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true, margin: "-60px" }}
-        transition={transition}
-        className="mb-16"
-      >
-        <span className="text-xs font-mono tracking-widest text-violet-400 uppercase">Product 02</span>
-        <h2 className="mt-3 text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none">
-          Build Your Portfolio<br />in Minutes
-        </h2>
-      </motion.div>
-
-      {/* Hero screenshot */}
-      <motion.div
-        variants={imgScale}
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true, margin: "-40px" }}
-        transition={transition}
-        className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-16"
-      >
-        <Image
-          src="/folioai/hero.png"
-          alt="Folio AI hero"
-          width={1600}
-          height={900}
-          className="w-full h-auto object-cover"
-          quality={95}
-        />
-      </motion.div>
-
-      {/* Info + features grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={{ ...transition, delay: 0.1 }}
-          className="lg:col-span-5 space-y-6"
-        >
-          <p className="text-lg text-zinc-300 leading-relaxed">
-            Folio AI helps students, developers and professionals create beautiful portfolios quickly so they can focus on building skills rather than websites.
-          </p>
-          <Link
-            href="https://tryfolioai.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-white border-b border-white/20 pb-0.5 hover:border-white transition-all"
-          >
-            Open Folio AI
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        </motion.div>
-
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={{ ...transition, delay: 0.2 }}
-          className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-3"
-        >
-          {features.map((f) => (
-            <div key={f} className="flex items-start gap-2 text-zinc-400 text-sm">
-              <Check className="h-4 w-4 text-violet-400 flex-shrink-0 mt-0.5" />
-              {f}
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Screenshots row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { src: "/folioai/portfolio1.png", label: "Example Portfolio 1" },
-          { src: "/folioai/portfolio2.png", label: "Example Portfolio 2" },
-          { src: "/folioai/editor.png", label: "Editor" },
-        ].map(({ src, label }, i) => (
-          <motion.div
-            key={label}
-            variants={imgScale}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ ...transition, delay: i * 0.1 }}
-            className="relative rounded-xl overflow-hidden border border-white/8 shadow-xl"
-          >
-            <Image
-              src={src}
-              alt={`Folio AI ${label}`}
-              width={800}
-              height={520}
-              className="w-full h-auto object-cover"
-              quality={90}
-            />
-            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/80 to-transparent">
-              <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest">{label}</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── EVMate ───────────────────────────────────────────────── */
-function EVMate() {
-  const features = [
-    "Nearby charger discovery",
-    "Route optimization",
-    "Range-aware planning",
-    "Battery monitoring",
-    "Charging stop recommendations",
-    "Long-distance trip planning",
-  ];
-
-  return (
-    <div id="evmate" className="max-w-7xl mx-auto px-6 md:px-12 py-24 md:py-36">
-      {/* Header */}
-      <motion.div
-        variants={fadeUp}
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true, margin: "-60px" }}
-        transition={transition}
-        className="mb-16"
-      >
-        <span className="text-xs font-mono tracking-widest text-emerald-400 uppercase">Product 03</span>
-        <h2 className="mt-3 text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-none">
-          Making EV Ownership<br />Hassle-Free
-        </h2>
-      </motion.div>
-
-      {/* Hero screenshot */}
-      <motion.div
-        variants={imgScale}
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true, margin: "-40px" }}
-        transition={transition}
-        className="relative w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl mb-16"
-      >
-        <Image
-          src="/evmate/hero.png"
-          alt="EVMate hero"
-          width={1600}
-          height={900}
-          className="w-full h-auto object-cover"
-          quality={95}
-        />
-      </motion.div>
-
-      {/* Info + features grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={{ ...transition, delay: 0.1 }}
-          className="lg:col-span-5 space-y-6"
-        >
-          <p className="text-lg text-zinc-300 leading-relaxed">
-            EVMate helps EV owners discover chargers, optimize routes and plan trips based on battery range and charging requirements.
-          </p>
-          <Link
-            href="https://evmate-8ce3d.web.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 text-sm font-semibold text-white border-b border-white/20 pb-0.5 hover:border-white transition-all"
-          >
-            Open EVMate
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        </motion.div>
-
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={{ ...transition, delay: 0.2 }}
-          className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-3"
-        >
-          {features.map((f) => (
-            <div key={f} className="flex items-start gap-2 text-zinc-400 text-sm">
-              <Check className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              {f}
-            </div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* Screenshots row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {[
-          { src: "/evmate/chargers.png", label: "Charger Map" },
-          { src: "/evmate/route-planner.png", label: "Route Planner" },
-          { src: "/evmate/battery.png", label: "Battery Dashboard" },
-        ].map(({ src, label }, i) => (
-          <motion.div
-            key={label}
-            variants={imgScale}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ ...transition, delay: i * 0.1 }}
-            className="relative rounded-xl overflow-hidden border border-white/8 shadow-xl"
-          >
-            <Image
-              src={src}
-              alt={`EVMate ${label}`}
-              width={800}
-              height={520}
-              className="w-full h-auto object-cover"
-              quality={90}
-            />
-            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/80 to-transparent">
-              <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest">{label}</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Export ───────────────────────────────────────────────── */
 export default function ProductShowcase() {
+  const [active, setActive] = useState(0);
+  const product = products[active];
+
   return (
-    <section id="products" className="relative bg-black border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-20 pb-4">
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ once: true }}
-          transition={transition}
-        >
-          <span className="text-xs font-mono tracking-widest text-zinc-500 uppercase">What I've Built</span>
-          <p className="mt-2 text-zinc-600 text-sm max-w-xl">
-            Three products across travel, professional branding, and electric mobility.
+    <section id="products" style={{ background: "#000", borderTop: "1px solid rgba(248,248,245,0.06)" }}>
+
+      {/* Section header */}
+      <div
+        style={{
+          padding: "80px 24px 40px",
+          maxWidth: 1200,
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 16,
+        }}
+      >
+        <div>
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(248,248,245,0.25)",
+              marginBottom: 12,
+            }}
+          >
+            What we've built
           </p>
+          <h2
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(32px, 5vw, 52px)",
+              fontWeight: 700,
+              letterSpacing: "-0.03em",
+              color: "#F8F8F5",
+              lineHeight: 1.05,
+            }}
+          >
+            Three products.
+            <br />
+            <span style={{ color: "rgba(248,248,245,0.3)" }}>
+              Three real problems solved.
+            </span>
+          </h2>
+        </div>
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: 14,
+            color: "rgba(248,248,245,0.25)",
+            maxWidth: 280,
+            lineHeight: 1.6,
+            fontWeight: 300,
+          }}
+        >
+          No niche, no category. We find friction and remove it.
+        </p>
+      </div>
+
+      {/* Product selector tabs */}
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: "0 24px",
+          borderBottom: "1px solid rgba(248,248,245,0.06)",
+          display: "flex",
+          gap: 0,
+        }}
+      >
+        {products.map((p, i) => (
+          <button
+            key={p.id}
+            onClick={() => setActive(i)}
+            style={{
+              background: "none",
+              border: "none",
+              borderBottom: active === i ? `2px solid ${p.color}` : "2px solid transparent",
+              padding: "16px 28px 14px",
+              cursor: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              transition: "all 0.2s",
+              marginBottom: -1,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 9,
+                letterSpacing: "0.15em",
+                color: active === i ? p.color : "rgba(248,248,245,0.2)",
+                transition: "color 0.2s",
+              }}
+            >
+              {p.index}
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "-0.01em",
+                color: active === i ? "#F8F8F5" : "rgba(248,248,245,0.3)",
+                transition: "color 0.2s",
+              }}
+            >
+              {p.name}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Active product panel */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={product.id}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 24px 80px" }}
+        >
+          {/* Top row: name + tag + link */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 24,
+              marginBottom: 48,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  marginBottom: 12,
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 9,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: product.color,
+                  }}
+                >
+                  {product.tag}
+                </span>
+                <span
+                  style={{
+                    width: 1,
+                    height: 10,
+                    background: "rgba(248,248,245,0.12)",
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 9,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: "rgba(248,248,245,0.2)",
+                  }}
+                >
+                  Product {product.index}
+                </span>
+              </div>
+              <h3
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(36px, 5vw, 64px)",
+                  fontWeight: 700,
+                  letterSpacing: "-0.04em",
+                  color: "#F8F8F5",
+                  lineHeight: 1.0,
+                  marginBottom: 8,
+                }}
+              >
+                {product.name}
+              </h3>
+              <p
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(18px, 2.5vw, 24px)",
+                  fontWeight: 400,
+                  color: "rgba(248,248,245,0.3)",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {product.tagline}
+              </p>
+            </div>
+
+            <Link
+              href={product.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "#F8F8F5",
+                color: "#000",
+                fontFamily: "var(--font-display)",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "-0.01em",
+                padding: "10px 20px",
+                borderRadius: 6,
+                textDecoration: "none",
+                flexShrink: 0,
+                transition: "background 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "#E8E8E4";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "#F8F8F5";
+              }}
+            >
+              Open {product.name}
+              <ArrowUpRight size={14} />
+            </Link>
+          </div>
+
+          {/* Main grid: description + stat | features */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 48,
+              marginBottom: 56,
+            }}
+            className="product-grid"
+          >
+            {/* Left: description + stat */}
+            <div>
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: 16,
+                  lineHeight: 1.75,
+                  color: "rgba(248,248,245,0.5)",
+                  fontWeight: 300,
+                  marginBottom: 40,
+                }}
+              >
+                {product.description}
+              </p>
+
+              {/* Stat callout */}
+              <div
+                style={{
+                  borderLeft: `2px solid ${product.color}`,
+                  paddingLeft: 20,
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: 44,
+                    fontWeight: 700,
+                    letterSpacing: "-0.04em",
+                    color: product.color,
+                    lineHeight: 1,
+                    marginBottom: 4,
+                  }}
+                >
+                  {product.stat.value}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 10,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: "rgba(248,248,245,0.3)",
+                  }}
+                >
+                  {product.stat.label}
+                </div>
+              </div>
+            </div>
+
+            {/* Right: features grid */}
+            <div>
+              <p
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 9,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "rgba(248,248,245,0.2)",
+                  marginBottom: 20,
+                }}
+              >
+                Features
+              </p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "12px 16px",
+                }}
+              >
+                {product.features.map((f) => (
+                  <div
+                    key={f}
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 10,
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        background: product.color,
+                        marginTop: 6,
+                        flexShrink: 0,
+                        opacity: 0.7,
+                      }}
+                    />
+                    <span
+                      style={{
+                        fontFamily: "var(--font-body)",
+                        fontSize: 13,
+                        color: "rgba(248,248,245,0.45)",
+                        lineHeight: 1.5,
+                        fontWeight: 300,
+                      }}
+                    >
+                      {f}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Screenshot placeholder — gracefully handles missing images */}
+          <div
+            style={{
+              width: "100%",
+              borderRadius: 12,
+              border: "1px solid rgba(248,248,245,0.06)",
+              overflow: "hidden",
+              aspectRatio: "16/6",
+              background: `linear-gradient(135deg, rgba(${
+                product.color === "#4A90E2"
+                  ? "74,144,226"
+                  : product.color === "#9B6FE8"
+                  ? "155,111,232"
+                  : "62,207,142"
+              }, 0.05) 0%, transparent 60%), #0A0A0A`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            {/* Grid lines inside the mock-browser */}
+            <div className="grid-overlay absolute inset-0 opacity-40" />
+            <div style={{ textAlign: "center", position: "relative" }}>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
+                  background: product.color,
+                  opacity: 0.15,
+                  margin: "0 auto 12px",
+                }}
+              />
+              <p
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 10,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: "rgba(248,248,245,0.15)",
+                }}
+              >
+                {product.name} — Screenshot Preview
+              </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: 12,
+                  color: "rgba(248,248,245,0.08)",
+                  marginTop: 4,
+                }}
+              >
+                Add /public/{product.id}/hero.png to display
+              </p>
+            </div>
+          </div>
         </motion.div>
-      </div>
-      <div className="divide-y divide-white/5">
-        <TripWise />
-        <FolioAI />
-        <EVMate />
-      </div>
+      </AnimatePresence>
+
+      <style>{`
+        @media (max-width: 680px) {
+          .product-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

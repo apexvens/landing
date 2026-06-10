@@ -1,34 +1,225 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+
+const products = [
+  { name: "TripWise AI", href: "https://tripwiseai.vercel.app/" },
+  { name: "FolioAI", href: "https://tryfolioai.vercel.app/" },
+  { name: "EVMate", href: "https://evmate-8ce3d.web.app/" },
+];
+
+const social = [
+  { name: "GitHub", href: "https://github.com/neil-surjiani" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/neil-surjiani" },
+  { name: "YouTube", href: "https://youtube.com/@NeilSurjiani" },
+];
 
 export default function FooterSection() {
   return (
-    <footer className="relative border-t border-white/5 bg-black px-6 md:px-12 py-16">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
-        {/* CTA block */}
-        <div className="space-y-2">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Building products that matter.
-          </h2>
-          <p className="text-zinc-500 text-sm">And we're just getting started.</p>
+    <footer
+      style={{
+        background: "#000",
+        borderTop: "1px solid rgba(248,248,245,0.06)",
+        padding: "80px 24px 48px",
+      }}
+    >
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+
+        {/* Top: big CTA + nav columns */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr",
+            gap: 60,
+            paddingBottom: 60,
+            borderBottom: "1px solid rgba(248,248,245,0.06)",
+            marginBottom: 40,
+          }}
+          className="footer-grid"
+        >
+          {/* Left: CTA */}
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(28px, 4vw, 48px)",
+                fontWeight: 700,
+                letterSpacing: "-0.04em",
+                color: "#F8F8F5",
+                lineHeight: 1.1,
+                marginBottom: 20,
+              }}
+            >
+              Building products
+              <br />
+              <span style={{ color: "rgba(248,248,245,0.25)" }}>
+                that matter.
+              </span>
+            </h2>
+            <a
+              href="mailto:hello@apexventures.studio"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                fontFamily: "var(--font-mono)",
+                fontSize: 10,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "rgba(248,248,245,0.4)",
+                textDecoration: "none",
+                borderBottom: "1px solid rgba(248,248,245,0.12)",
+                paddingBottom: 4,
+                transition: "color 0.2s, border-color 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "#F8F8F5";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "rgba(248,248,245,0.5)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.color =
+                  "rgba(248,248,245,0.4)";
+                (e.currentTarget as HTMLElement).style.borderColor =
+                  "rgba(248,248,245,0.12)";
+              }}
+            >
+              hello@apexventures.studio ↗
+            </a>
+          </div>
+
+          {/* Products col */}
+          <div>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 9,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(248,248,245,0.15)",
+                marginBottom: 20,
+              }}
+            >
+              Products
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {products.map((p) => (
+                <Link
+                  key={p.name}
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 13,
+                    color: "rgba(248,248,245,0.3)",
+                    textDecoration: "none",
+                    fontWeight: 300,
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color = "#F8F8F5")
+                  }
+                  onMouseLeave={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color =
+                      "rgba(248,248,245,0.3)")
+                  }
+                >
+                  {p.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Social col */}
+          <div>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 9,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(248,248,245,0.15)",
+                marginBottom: 20,
+              }}
+            >
+              Follow
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {social.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 13,
+                    color: "rgba(248,248,245,0.3)",
+                    textDecoration: "none",
+                    fontWeight: 300,
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color = "#F8F8F5")
+                  }
+                  onMouseLeave={(e) =>
+                    ((e.currentTarget as HTMLElement).style.color =
+                      "rgba(248,248,245,0.3)")
+                  }
+                >
+                  {s.name} ↗
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <Link
-          href="mailto:hello@apexventures.studio"
-          className="inline-flex items-center gap-2 rounded-lg bg-white text-black px-6 py-3.5 text-sm font-semibold hover:bg-zinc-100 transition-colors"
+        {/* Bottom bar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 12,
+          }}
         >
-          Connect With Us
-          <ArrowUpRight className="h-4 w-4" />
-        </Link>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9,
+              letterSpacing: "0.15em",
+              textTransform: "uppercase",
+              color: "rgba(248,248,245,0.12)",
+            }}
+          >
+            Apex Ventures Studio
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "rgba(248,248,245,0.12)",
+            }}
+          >
+            © 2026 — All Rights Reserved
+          </span>
+        </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="max-w-7xl mx-auto mt-16 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-zinc-700">
-        <span>APEX VENTURES STUDIO</span>
-        <span>©2026 APEX VENTURES. ALL RIGHTS RESERVED.</span>
-      </div>
+      <style>{`
+        @media (max-width: 680px) {
+          .footer-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .footer-grid > div:first-child {
+            grid-column: 1 / -1;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

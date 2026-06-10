@@ -1,137 +1,261 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { motion, Transition } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
-const products = [
-  {
-    name: "TripWise AI",
-    desc: "AI travel planning",
-    href: "https://tripwiseai.vercel.app/",
-    color: "text-blue-400",
-  },
-  {
-    name: "Folio AI",
-    desc: "Portfolio generation",
-    href: "https://tryfolioai.vercel.app/",
-    color: "text-violet-400",
-  },
-  {
-    name: "EVMate",
-    desc: "EV route planning",
-    href: "https://evmate-8ce3d.web.app/",
-    color: "text-emerald-400",
-  },
+const TICKER_ITEMS = [
+  "TripWise AI",
+  "·",
+  "FolioAI",
+  "·",
+  "EVMate",
+  "·",
+  "TripWise AI",
+  "·",
+  "FolioAI",
+  "·",
+  "EVMate",
+  "·",
+  "TripWise AI",
+  "·",
+  "FolioAI",
+  "·",
+  "EVMate",
+  "·",
 ];
 
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-};
-
 export default function HeroSection() {
+  const tickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ticker = tickerRef.current;
+    if (!ticker) return;
+    let x = 0;
+    let frame: number;
+    const speed = 0.4;
+
+    const animate = () => {
+      x -= speed;
+      const half = ticker.scrollWidth / 2;
+      if (Math.abs(x) >= half) x = 0;
+      ticker.style.transform = `translateX(${x}px)`;
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-24 py-24 bg-black overflow-hidden">
+    <section
+      className="relative min-h-screen flex flex-col overflow-hidden"
+      style={{ background: "#000" }}
+    >
       {/* Subtle grid */}
-      <div className="absolute inset-0 bg-grid-pattern" />
-      {/* Radial vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(255,255,255,0.05),transparent)]" />
+      <div className="absolute inset-0 grid-overlay opacity-100 pointer-events-none" />
 
-      <div className="relative z-10 max-w-5xl">
-        {/* Logo */}
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          animate="animate"
-          transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
-          <Image
-            src="/apex/logo-white.png"
-            alt="Apex Ventures"
-            width={120}
-            height={36}
-            className="object-contain"
-            priority
-          />
-        </motion.div>
+      {/* Top-left corner label */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        style={{
+          position: "absolute",
+          top: 80,
+          left: 24,
+          fontFamily: "var(--font-mono)",
+          fontSize: 9,
+          letterSpacing: "0.2em",
+          color: "rgba(248,248,245,0.2)",
+          textTransform: "uppercase",
+        }}
+        className="hidden lg:block"
+      >
+        Est. 2025 — Pune, India
+      </motion.div>
 
-        {/* Main headline */}
-        <motion.h1
-          variants={fadeUp}
-          initial="initial"
-          animate="animate"
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl sm:text-6xl md:text-8xl font-extrabold tracking-tight text-white leading-[1.05] mb-6"
-        >
-          I like to build.
-        </motion.h1>
+      {/* Top-right corner label */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        style={{
+          position: "absolute",
+          top: 80,
+          right: 24,
+          fontFamily: "var(--font-mono)",
+          fontSize: 9,
+          letterSpacing: "0.2em",
+          color: "rgba(248,248,245,0.2)",
+          textTransform: "uppercase",
+          textAlign: "right",
+        }}
+        className="hidden lg:block"
+      >
+        3 Products Shipped
+      </motion.div>
 
-        {/* Subheading */}
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          animate="animate"
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-2xl space-y-3 mb-14"
-        >
-          <p className="text-xl sm:text-2xl text-zinc-300 font-light leading-relaxed">
-            Apex Ventures is where ideas become products.
-          </p>
-          <p className="text-base sm:text-lg text-zinc-500 leading-relaxed">
-            From AI travel planning to EV mobility and portfolio generation, we build software that solves real problems.
-          </p>
-        </motion.div>
+      {/* Main content — centered vertically */}
+      <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-20 pt-20">
+        <div className="max-w-[1100px]">
 
-        {/* Product pills */}
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          animate="animate"
-          transition={{ duration: 0.6, delay: 0.35 }}
-          className="flex flex-wrap gap-3 mb-14"
-        >
-          {products.map((p) => (
-            <Link
-              key={p.name}
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 hover:border-white/25 hover:bg-white/[0.06] transition-all duration-200"
-            >
-              <span className={`text-xs font-semibold ${p.color}`}>{p.name}</span>
-              <span className="text-xs text-zinc-600">{p.desc}</span>
-              <ArrowRight className="h-3 w-3 text-zinc-600 group-hover:text-zinc-400 transition-colors" />
-            </Link>
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 10,
+              letterSpacing: "0.2em",
+              color: "rgba(248,248,245,0.3)",
+              textTransform: "uppercase",
+              marginBottom: 32,
+            }}
+          >
+            Apex Ventures — Product Studio
+          </motion.div>
+
+          {/* Headline lines */}
+          {[
+            { text: "We build", delay: 0.2 },
+            { text: "tools that", delay: 0.3 },
+            { text: "actually work.", delay: 0.4, accent: true },
+          ].map(({ text, delay, accent }) => (
+            <div key={text} style={{ overflow: "hidden", lineHeight: 1 }}>
+              <motion.h1
+                initial={{ y: "105%" }}
+                animate={{ y: "0%" }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay }}
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(52px, 10vw, 120px)",
+                  fontWeight: 700,
+                  letterSpacing: "-0.04em",
+                  color: accent ? "rgba(248,248,245,0.92)" : "rgba(248,248,245,0.45)",
+                  lineHeight: 1.02,
+                  marginBottom: 4,
+                }}
+              >
+                {text}
+              </motion.h1>
+            </div>
           ))}
-        </motion.div>
 
-        {/* Scroll cue */}
-        <motion.div
-          variants={fadeUp}
-          initial="initial"
-          animate="animate"
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex items-center gap-3"
-        >
-          <a
-            href="#products"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+          {/* Subtext + CTA row */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+            style={{
+              marginTop: 56,
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              gap: 32,
+            }}
           >
-            See what I've built
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <span className="text-zinc-700">•</span>
-          <a
-            href="#founder"
-            className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
-          >
-            About
-          </a>
-        </motion.div>
+            <p
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "clamp(15px, 2vw, 18px)",
+                color: "rgba(248,248,245,0.35)",
+                fontWeight: 300,
+                lineHeight: 1.6,
+                maxWidth: 420,
+              }}
+            >
+              An independent studio building AI-powered software.
+              No niche. No category. Just real problems — solved fast.
+            </p>
+
+            <a
+              href="#products"
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#F8F8F5",
+                textDecoration: "none",
+                borderBottom: "1px solid rgba(248,248,245,0.25)",
+                paddingBottom: 4,
+                transition: "border-color 0.2s",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) =>
+                ((e.currentTarget.style.borderColor = "rgba(248,248,245,0.8)"))
+              }
+              onMouseLeave={(e) =>
+                ((e.currentTarget.style.borderColor = "rgba(248,248,245,0.25)"))
+              }
+            >
+              See the products ↓
+            </a>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Bottom ticker */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.0 }}
+        style={{
+          borderTop: "1px solid rgba(248,248,245,0.06)",
+          overflow: "hidden",
+          padding: "14px 0",
+          position: "relative",
+        }}
+      >
+        {/* Left fade */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 80,
+            background: "linear-gradient(to right, #000, transparent)",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        />
+        {/* Right fade */}
+        <div
+          style={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 80,
+            background: "linear-gradient(to left, #000, transparent)",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        />
+        <div ref={tickerRef} style={{ display: "flex", gap: 32, width: "max-content" }}>
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span
+              key={i}
+              style={{
+                fontFamily:
+                  item === "·" ? "var(--font-body)" : "var(--font-mono)",
+                fontSize: item === "·" ? 14 : 10,
+                letterSpacing: item === "·" ? 0 : "0.15em",
+                textTransform: "uppercase",
+                color:
+                  item === "·"
+                    ? "rgba(248,248,245,0.12)"
+                    : "rgba(248,248,245,0.22)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </motion.div>
     </section>
   );
 }

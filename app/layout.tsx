@@ -1,36 +1,25 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Apex Ventures",
-  description: "Apex Ventures is where ideas become products. TripWise AI, Folio AI, and EVMate — built by Neil Surjiani.",
+  title: "Apex Ventures — Building Products That Matter",
+  description:
+    "Apex Ventures is an independent product studio. We build AI-powered tools that solve real problems — TripWise, FolioAI, EVMate.",
+  openGraph: {
+    title: "Apex Ventures",
+    description: "AI products built to solve real problems.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
-      style={{ colorScheme: "dark" }}
-    >
-      <body className="min-h-full flex flex-col bg-black text-white selection:bg-white/20 selection:text-white">
-        {children}
-      </body>
+    <html lang="en">
+      <body className="noise">{children}</body>
     </html>
   );
 }

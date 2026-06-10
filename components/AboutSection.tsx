@@ -1,52 +1,195 @@
 "use client";
 
-import { motion, Transition } from "framer-motion";
+import { motion } from "framer-motion";
 
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-};
-const t: Transition = { duration: 0.65, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] };
+const pillars = [
+  {
+    label: "Philosophy",
+    text: "Build for utility, not trends. Every product starts with a real problem — not a market gap report.",
+  },
+  {
+    label: "Process",
+    text: "Ship fast, iterate faster. The best version of any product is shaped by real-world use, not internal debate.",
+  },
+  {
+    label: "Ambition",
+    text: "These three products are the first chapter. The pipeline is full. We're just getting started.",
+  },
+];
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative border-t border-white/5 bg-black py-24 md:py-36">
-      <div className="max-w-5xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-          <motion.div
-            variants={fadeUp}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            transition={t}
-            className="lg:col-span-4 space-y-3"
+    <section
+      id="about"
+      style={{
+        background: "#000",
+        borderTop: "1px solid rgba(248,248,245,0.06)",
+        padding: "100px 24px",
+      }}
+    >
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        {/* Top: large editorial quote */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={{ marginBottom: 80 }}
+        >
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "rgba(248,248,245,0.2)",
+              marginBottom: 24,
+            }}
           >
-            <span className="text-xs font-mono tracking-widest text-zinc-500 uppercase">Studio</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Why Apex Ventures?
-            </h2>
-          </motion.div>
+            Studio — Why Apex Ventures
+          </p>
 
-          <motion.div
-            variants={fadeUp}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            transition={{ ...t, delay: 0.15 }}
-            className="lg:col-span-8 space-y-6 text-zinc-400 text-base leading-relaxed"
+          <blockquote
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(24px, 4vw, 44px)",
+              fontWeight: 500,
+              letterSpacing: "-0.03em",
+              lineHeight: 1.25,
+              color: "rgba(248,248,245,0.7)",
+              maxWidth: 800,
+              borderLeft: "none",
+            }}
           >
-            <p>
-              Apex Ventures started with a simple idea: instead of leaving ideas in notebooks, build them.
-            </p>
-            <p>
-              Every product begins with a real problem. Every launch is an opportunity to learn. Every iteration makes the product better.
-            </p>
-            <p>
-              I don't build for trends. I build for utility — software that saves time, reduces friction, and works the way people actually expect it to.
-            </p>
-          </motion.div>
+            "The best software is invisible.{" "}
+            <span style={{ color: "rgba(248,248,245,0.25)" }}>
+              It just gets things done."
+            </span>
+          </blockquote>
+        </motion.div>
+
+        {/* Pillars */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "1px",
+            background: "rgba(248,248,245,0.06)",
+            border: "1px solid rgba(248,248,245,0.06)",
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+          className="about-grid"
+        >
+          {pillars.map((p, i) => (
+            <motion.div
+              key={p.label}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.65,
+                ease: [0.22, 1, 0.36, 1],
+                delay: i * 0.1,
+              }}
+              style={{
+                background: "#000",
+                padding: "36px 32px",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 9,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "rgba(248,248,245,0.2)",
+                  marginBottom: 16,
+                }}
+              >
+                {String(i + 1).padStart(2, "0")} — {p.label}
+              </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: 14,
+                  lineHeight: 1.7,
+                  color: "rgba(248,248,245,0.45)",
+                  fontWeight: 300,
+                }}
+              >
+                {p.text}
+              </p>
+            </motion.div>
+          ))}
         </div>
+
+        {/* Stats row */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          style={{
+            marginTop: 48,
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "1px",
+            background: "rgba(248,248,245,0.06)",
+            border: "1px solid rgba(248,248,245,0.06)",
+            borderRadius: 12,
+            overflow: "hidden",
+          }}
+          className="stats-grid"
+        >
+          {[
+            { value: "3", label: "Products Shipped" },
+            { value: "1,000+", label: "Dev Hours" },
+            { value: "2025", label: "Founded" },
+            { value: "∞", label: "Ideas Ahead" },
+          ].map((s) => (
+            <div
+              key={s.label}
+              style={{
+                background: "#000",
+                padding: "32px 28px",
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(28px, 4vw, 44px)",
+                  fontWeight: 700,
+                  letterSpacing: "-0.04em",
+                  color: "#F8F8F5",
+                  marginBottom: 6,
+                }}
+              >
+                {s.value}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 9,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  color: "rgba(248,248,245,0.2)",
+                }}
+              >
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 680px) {
+          .about-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

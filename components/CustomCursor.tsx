@@ -1,74 +1,99 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 export default function CustomCursor() {
-  const [isVisible, setIsVisible] = useState(false);
-  const cursorRef = useRef<HTMLDivElement>(null);
-
-  // Position of the actual mouse
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  // Springs for smooth movement lag (inertia)
-  const springConfig = { damping: 40, stiffness: 300, mass: 0.5 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  const dotSpringConfig = { damping: 25, stiffness: 400, mass: 0.2 };
-  const dotX = useSpring(mouseX, dotSpringConfig);
-  const dotY = useSpring(mouseY, dotSpringConfig);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const ring = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
+    const move = (e: MouseEvent) => {
+      pos.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", move);
+
+    let frame: number;
+    const animate = () => {
+      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
+
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${pos.current.x - 3}px, ${pos.current.y - 3}px)`;
+      }
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${ring.current.x - 18}px, ${ring.current.y - 18}px)`;
+      }
+      frame = requestAnimationFrame(animate);
+    };
+    frame = requestAnimationFrame(animate);
+
+    const enterLink = () => {
+      dotRef.current?.classList.add("cursor-hover");
+      ringRef.current?.classList.add("ring-hover");
+    };
+    const leaveLink = () => {
+      dotRef.current?.classList.remove("cursor-hover");
+      ringRef.current?.classList.remove("ring-hover");
     };
 
-    const handleMouseLeave = () => {
-      setIsVisible(false);
+    const bindLinks = () => {
+      document.querySelectorAll("a, button, [data-cursor]").forEach((el) => {
+        el.addEventListener("mouseenter", enterLink);
+        el.addEventListener("mouseleave", leaveLink);
+      });
     };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseleave", handleMouseLeave);
+    bindLinks();
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(frame);
     };
-  }, [mouseX, mouseY, isVisible]);
-
-  if (!isVisible) return null;
+  }, []);
 
   return (
     <>
-      {/* Large Spotlight Glow Behind Page Content (using pointer-events-none) */}
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-30 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.03] blur-[120px] mix-blend-screen"
-        style={{
-          x: smoothX,
-          y: smoothY,
-        }}
-      />
-      {/* Core cursor interactive dot */}
-      <motion.div
-        ref={cursorRef}
-        className="pointer-events-none fixed left-0 top-0 z-50 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white mix-blend-difference hidden md:block"
-        style={{
-          x: dotX,
-          y: dotY,
-        }}
-      />
-      {/* Subtle outer ring */}
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-50 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 hidden md:block"
-        style={{
-          x: smoothX,
-          y: smoothY,
-        }}
-      />
+      <style>{`
+        .cursor-dot {
+          position: fixed;
+          top: 0; left: 0;
+          width: 6px; height: 6px;
+          background: #F8F8F5;
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 99999;
+          mix-blend-mode: difference;
+          transition: width 0.2s, height 0.2s, background 0.2s;
+          will-change: transform;
+        }
+        .cursor-dot.cursor-hover {
+          width: 10px; height: 10px;
+        }
+        .cursor-ring {
+          position: fixed;
+          top: 0; left: 0;
+          width: 36px; height: 36px;
+          border: 1px solid rgba(248,248,245,0.3);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 99998;
+          mix-blend-mode: difference;
+          transition: width 0.3s, height 0.3s, border-color 0.3s, opacity 0.3s;
+          will-change: transform;
+        }
+        .cursor-ring.ring-hover {
+          width: 56px; height: 56px;
+          border-color: rgba(248,248,245,0.6);
+          margin-top: -10px; margin-left: -10px;
+        }
+        @media (pointer: coarse) {
+          .cursor-dot, .cursor-ring { display: none; }
+          body { cursor: auto; }
+        }
+      `}</style>
+      <div ref={dotRef} className="cursor-dot" />
+      <div ref={ringRef} className="cursor-ring" />
     </>
   );
 }
