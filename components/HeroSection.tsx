@@ -162,7 +162,7 @@ export default function HeroSection() {
                 lineHeight: 1.0,
                 visibility: line2Done ? "visible" : "hidden",
               }}>
-                {line2Done && <Typewriter text="actually work." delay={0} />}
+                {line2Done && <Typewriter text="actually matter." delay={0} />}
               </h1>
             </div>
           </motion.div>
