@@ -86,7 +86,7 @@ export default function ProductShowcase() {
       {/* Section header */}
       <div
         style={{
-          padding: "80px 24px 40px",
+          padding: "80px clamp(24px, 6vw, 80px) 40px",
           maxWidth: 1200,
           margin: "0 auto",
           display: "flex",
@@ -145,7 +145,7 @@ export default function ProductShowcase() {
         style={{
           maxWidth: 1200,
           margin: "0 auto",
-          padding: "0 24px",
+          padding: "0 clamp(24px, 6vw, 80px)",
           borderBottom: "1px solid rgba(248,248,245,0.1)",
           display: "flex",
           gap: 0,
@@ -203,7 +203,7 @@ export default function ProductShowcase() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 24px 80px" }}
+          style={{ maxWidth: 1200, margin: "0 auto", padding: "60px clamp(24px, 6vw, 80px) 80px" }}
         >
           {/* Top row: name + tag + link */}
           <div

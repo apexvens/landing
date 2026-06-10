@@ -11,38 +11,53 @@ const PRODUCTS = [
   { name: "EVMate",      tag: "Mobility",  color: "#3ECF8E", href: "https://evmate-8ce3d.web.app/",  desc: "Zero range anxiety, forever" },
 ];
 
-// Typewriter that reveals text char-by-char with a blinking cursor
+// Smooth typewriter — uses a single interval with a ref-based index
+// No stutter: the interval never gets rebuilt on each character state change
 function Typewriter({ text, delay = 0, onDone }: { text: string; delay?: number; onDone?: () => void }) {
-  const [displayed, setDisplayed] = useState("");
-  const [started, setStarted] = useState(false);
+  const [count, setCount] = useState(0);
   const [done, setDone] = useState(false);
+  const indexRef = useRef(0);
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
 
   useEffect(() => {
-    const t = setTimeout(() => setStarted(true), delay * 1000);
-    return () => clearTimeout(t);
-  }, [delay]);
+    indexRef.current = 0;
+    setCount(0);
+    setDone(false);
 
-  useEffect(() => {
-    if (!started) return;
-    if (displayed.length === text.length) {
-      setDone(true);
-      onDone?.();
-      return;
-    }
-    const t = setTimeout(() => {
-      setDisplayed(text.slice(0, displayed.length + 1));
-    }, 38 + Math.random() * 24); // slight jitter = feels human
-    return () => clearTimeout(t);
-  }, [started, displayed, text, onDone]);
+    const startDelay = setTimeout(() => {
+      const interval = setInterval(() => {
+        indexRef.current += 1;
+        setCount(indexRef.current);
+        if (indexRef.current >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+          onDoneRef.current?.();
+        }
+      }, 52); // consistent 52ms per char — fast but readable
+      return () => clearInterval(interval);
+    }, delay * 1000);
+
+    return () => clearTimeout(startDelay);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [text, delay]);
 
   return (
     <span>
-      {displayed}
+      {text.slice(0, count)}
       {!done && (
         <motion.span
-          animate={{ opacity: [1, 0, 1] }}
-          transition={{ duration: 0.7, repeat: Infinity, ease: "linear" }}
-          style={{ display: "inline-block", width: "0.5em", background: "#F8F8F5", height: "0.85em", marginLeft: 3, verticalAlign: "middle", borderRadius: 2 }}
+          animate={{ opacity: [1, 0] }}
+          transition={{ duration: 0.5, repeat: Infinity, ease: "steps(1)" }}
+          style={{
+            display: "inline-block",
+            width: "3px",
+            background: "#F8F8F5",
+            height: "0.8em",
+            marginLeft: 4,
+            verticalAlign: "middle",
+            borderRadius: 1,
+          }}
         />
       )}
     </span>
@@ -88,7 +103,7 @@ export default function HeroSection() {
       </motion.div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-20 pt-20">
+      <div className="flex-1 flex flex-col justify-center pt-20" style={{ padding: "80px clamp(24px, 6vw, 80px) 0" }}>
         <div style={{ maxWidth: 1100 }}>
 
           {/* Eyebrow */}
@@ -217,7 +232,7 @@ export default function HeroSection() {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              padding: "20px 24px",
+              padding: "22px clamp(24px, 6vw, 80px)",
               borderRight: i < 2 ? "1px solid rgba(248,248,245,0.1)" : "none",
               textDecoration: "none",
               display: "flex",

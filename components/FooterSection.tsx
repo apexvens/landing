@@ -20,7 +20,7 @@ export default function FooterSection() {
       style={{
         background: "#000",
         borderTop: "1px solid rgba(248,248,245,0.1)",
-        padding: "80px 24px 48px",
+        padding: "80px clamp(24px, 6vw, 80px) 48px",
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>

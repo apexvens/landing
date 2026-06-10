@@ -24,7 +24,7 @@ export default function AboutSection() {
       style={{
         background: "#000",
         borderTop: "1px solid rgba(248,248,245,0.1)",
-        padding: "100px 24px",
+        padding: "100px clamp(24px, 6vw, 80px)",
       }}
     >
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>

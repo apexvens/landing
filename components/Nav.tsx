@@ -31,7 +31,8 @@ export default function Nav() {
           borderBottom: scrolled ? "1px solid rgba(248,248,245,0.1)" : "1px solid transparent",
           background: scrolled ? "rgba(0,0,0,0.7)" : "transparent",
         }}
-        className="fixed top-0 left-0 right-0 z-[1000] px-6 md:px-12 lg:px-16 h-[60px] flex items-center justify-between transition-all duration-500"
+        style={{ paddingLeft: "clamp(24px, 6vw, 80px)", paddingRight: "clamp(24px, 6vw, 80px)" }}
+        className="fixed top-0 left-0 right-0 z-[1000] h-[60px] flex items-center justify-between transition-all duration-500"
       >
         {/* Logo wordmark */}
         <a
