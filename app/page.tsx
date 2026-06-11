@@ -7,20 +7,23 @@ import ManifestoSection from "@/components/ManifestoSection";
 import AboutSection from "@/components/AboutSection";
 import FounderSection from "@/components/FounderSection";
 import FooterSection from "@/components/FooterSection";
+import PageWrapper from "@/components/PageWrapper";
 
 export default function Home() {
   return (
     <SmoothScroll>
       <CustomCursor />
-      <Nav />
-      <main className="relative bg-black text-white min-h-screen w-full overflow-x-hidden">
-        <HeroSection />
-        <ProductShowcase />
-        <ManifestoSection />
-        <AboutSection />
-        <FounderSection />
-        <FooterSection />
-      </main>
+      <PageWrapper>
+        <Nav />
+        <main style={{ width: "100%", overflowX: "hidden" }}>
+          <HeroSection />
+          <ProductShowcase />
+          <ManifestoSection />
+          <AboutSection />
+          <FounderSection />
+          <FooterSection />
+        </main>
+      </PageWrapper>
     </SmoothScroll>
   );
 }
