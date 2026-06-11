@@ -71,17 +71,13 @@ export default function Nav() {
       >
         {/* Logo */}
         <a href="#" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 26, height: 26, borderRadius: 7,
-            background: "var(--text-primary)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0,
-          }}>
-            <span style={{
-              fontFamily: "var(--font-hero)", fontSize: 14, fontWeight: 700,
-              color: "var(--bg)", lineHeight: 1,
-            }}>A</span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Apex Ventures logo"
+            width={32}
+            height={32}
+            style={{ display: "block", objectFit: "contain", flexShrink: 0 }}
+          />
           <span style={{
             fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 600,
             color: "var(--text-primary)", letterSpacing: "-0.02em",

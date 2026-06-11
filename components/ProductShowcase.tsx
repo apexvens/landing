@@ -430,62 +430,24 @@ export default function ProductShowcase() {
             </div>
           </div>
 
-          {/* Screenshot placeholder — gracefully handles missing images */}
-          <div
-            style={{
-              width: "100%",
-              borderRadius: 12,
-              border: "1px solid var(--border)",
-              overflow: "hidden",
-              aspectRatio: "16/6",
-              background: `linear-gradient(135deg, rgba(${
-                product.color === "#4A90E2"
-                  ? "74,144,226"
-                  : product.color === "#9B6FE8"
-                  ? "155,111,232"
-                  : "62,207,142"
-              }, 0.05) 0%, transparent 60%), #0A0A0A`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-            }}
-          >
-            {/* Grid lines inside the mock-browser */}
-            <div className="grid-overlay absolute inset-0 opacity-40" />
-            <div style={{ textAlign: "center", position: "relative" }}>
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  background: product.color,
-                  opacity: 0.15,
-                  margin: "0 auto 12px",
-                }}
-              />
-              <p
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 10,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: "var(--text-ghost)",
-                }}
-              >
-                {product.name} — Screenshot Preview
-              </p>
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: 12,
-                  color: "var(--text-ghost)",
-                  marginTop: 4,
-                }}
-              >
-                Add /public/{product.id}/hero.png to display
-              </p>
-            </div>
+          {/* Product screenshot */}
+          <div style={{
+            width: "100%",
+            borderRadius: 12,
+            border: "1px solid var(--border)",
+            overflow: "hidden",
+            lineHeight: 0,
+          }}>
+            <img
+              src={product.imagePath}
+              alt={`${product.name} screenshot`}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+                objectFit: "cover",
+              }}
+            />
           </div>
         </motion.div>
       </AnimatePresence>

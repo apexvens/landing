@@ -158,6 +158,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   color: var(--text-tertiary);
 }
 
+/* Typewriter cursor hard blink */
+@keyframes tw-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 /* ── Utilities ───────────────────────────────────────────────────────────── */
 .grid-overlay {
   background-image:

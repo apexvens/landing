@@ -58,16 +58,11 @@ export default function FounderSection() {
               }}
             >
               {/* If /founder/neil.jpg exists, use it; otherwise initials */}
-              <span
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: "var(--text-tertiary)",
-                }}
-              >
-                N
-              </span>
+              <img
+                src="/founder/photo.png"
+                alt="Neil Surjiani"
+                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 16 }}
+              />
             </div>
 
             <h3
@@ -168,10 +163,10 @@ export default function FounderSection() {
                     transition: "color 0.2s",
                   }}
                   onMouseEnter={(e) =>
-                    ((e.currentTarget.style.color = "#F8F8F5")
+                  ((e.currentTarget.style.color = "#F8F8F5")
                   )}
                   onMouseLeave={(e) =>
-                    ((e.currentTarget.style.color = "rgba(248,248,245,0.3)")
+                  ((e.currentTarget.style.color = "rgba(248,248,245,0.3)")
                   )}
                 >
                   {link.label} ↗

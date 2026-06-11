@@ -42,16 +42,13 @@ function Typewriter({ text, delay = 0, onDone }: { text: string; delay?: number;
     <span>
       {text.slice(0, count)}
       {!done && (
-        <motion.span
-          animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
-          style={{
-            display: "inline-block", width: 3,
-            background: "var(--text-primary)",
-            height: "0.78em", marginLeft: 5,
-            verticalAlign: "middle", borderRadius: 1,
-          }}
-        />
+        <span style={{
+          display: "inline-block", width: 3,
+          background: "var(--text-primary)",
+          height: "0.78em", marginLeft: 5,
+          verticalAlign: "middle", borderRadius: 1,
+          animation: "tw-blink 0.9s step-start infinite",
+        }} />
       )}
     </span>
   );
@@ -115,7 +112,7 @@ export default function HeroSection() {
           </h1>
           {/* Line 3 — full brightness */}
           <h1 className="hero-headline" style={{ color: "var(--text-primary)", visibility: line2Done ? "visible" : "hidden" }}>
-            {line2Done && <Typewriter text="actually work." delay={0} />}
+            {line2Done && <Typewriter text="actually matter." delay={0} />}
           </h1>
         </motion.div>
 
