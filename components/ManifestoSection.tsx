@@ -50,8 +50,8 @@ export default function ManifestoSection() {
     <section
       id="manifesto"
       style={{
-        background: "#000",
-        borderTop: "1px solid rgba(248,248,245,0.1)",
+        background: "var(--bg)",
+        borderTop: "1px solid var(--border)",
         paddingTop: 80,
         paddingBottom: 80,
         overflow: "hidden",
@@ -76,8 +76,8 @@ export default function ManifestoSection() {
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gap: "1px",
-          background: "rgba(248,248,245,0.1)",
-          border: "1px solid rgba(248,248,245,0.1)",
+          background: "var(--border)",
+          border: "1px solid var(--border)",
           borderRadius: 14,
           overflow: "hidden",
         }}
@@ -91,7 +91,7 @@ export default function ManifestoSection() {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
             style={{
-              background: "#000",
+              background: "var(--bg)",
               padding: "36px 32px",
               backdropFilter: "blur(8px)",
             }}
@@ -103,11 +103,11 @@ export default function ManifestoSection() {
                 fontWeight: 600,
                 letterSpacing: "-0.02em",
                 lineHeight: 1.3,
-                color: "#F8F8F5",
+                color: "var(--text-primary)",
               }}
             >
               {s.bold}
-              <span style={{ color: "rgba(248,248,245,0.32)", fontWeight: 300 }}>{s.rest}</span>
+              <span style={{ color: "var(--text-secondary)", fontWeight: 300 }}>{s.rest}</span>
             </p>
           </motion.div>
         ))}

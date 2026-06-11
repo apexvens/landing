@@ -7,8 +7,8 @@ export default function FounderSection() {
     <section
       id="founder"
       style={{
-        background: "#000",
-        borderTop: "1px solid rgba(248,248,245,0.1)",
+        background: "var(--bg)",
+        borderTop: "1px solid var(--border)",
         padding: "100px clamp(24px, 6vw, 80px)",
       }}
     >
@@ -35,7 +35,7 @@ export default function FounderSection() {
                 fontSize: 9,
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: "rgba(248,248,245,0.2)",
+                color: "var(--text-tertiary)",
                 marginBottom: 20,
               }}
             >
@@ -48,8 +48,8 @@ export default function FounderSection() {
                 width: 72,
                 height: 72,
                 borderRadius: 16,
-                background: "rgba(248,248,245,0.1)",
-                border: "1px solid rgba(248,248,245,0.12)",
+                background: "var(--border)",
+                border: "1px solid var(--border)",
                 marginBottom: 20,
                 display: "flex",
                 alignItems: "center",
@@ -63,7 +63,7 @@ export default function FounderSection() {
                   fontFamily: "var(--font-display)",
                   fontSize: 24,
                   fontWeight: 700,
-                  color: "rgba(248,248,245,0.3)",
+                  color: "var(--text-tertiary)",
                 }}
               >
                 N
@@ -76,7 +76,7 @@ export default function FounderSection() {
                 fontSize: 28,
                 fontWeight: 700,
                 letterSpacing: "-0.03em",
-                color: "#F8F8F5",
+                color: "var(--text-primary)",
                 marginBottom: 6,
               }}
             >
@@ -88,7 +88,7 @@ export default function FounderSection() {
                 fontSize: 9,
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "rgba(248,248,245,0.2)",
+                color: "var(--text-tertiary)",
               }}
             >
               Founder — Apex Ventures
@@ -121,7 +121,7 @@ export default function FounderSection() {
                     fontFamily: "var(--font-body)",
                     fontSize: 15,
                     lineHeight: 1.75,
-                    color: "rgba(248,248,245,0.45)",
+                    color: "var(--text-secondary)",
                     fontWeight: 300,
                   }}
                 >
@@ -163,7 +163,7 @@ export default function FounderSection() {
                     fontSize: 10,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: "rgba(248,248,245,0.3)",
+                    color: "var(--text-tertiary)",
                     textDecoration: "none",
                     transition: "color 0.2s",
                   }}

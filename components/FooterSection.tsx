@@ -18,8 +18,8 @@ export default function FooterSection() {
   return (
     <footer
       style={{
-        background: "#000",
-        borderTop: "1px solid rgba(248,248,245,0.1)",
+        background: "var(--bg)",
+        borderTop: "1px solid var(--border)",
         padding: "80px clamp(24px, 6vw, 80px) 48px",
       }}
     >
@@ -32,7 +32,7 @@ export default function FooterSection() {
             gridTemplateColumns: "2fr 1fr 1fr",
             gap: 60,
             paddingBottom: 60,
-            borderBottom: "1px solid rgba(248,248,245,0.1)",
+            borderBottom: "1px solid var(--border)",
             marginBottom: 40,
           }}
           className="footer-grid"
@@ -45,14 +45,14 @@ export default function FooterSection() {
                 fontSize: "clamp(28px, 4vw, 48px)",
                 fontWeight: 700,
                 letterSpacing: "-0.04em",
-                color: "#F8F8F5",
+                color: "var(--text-primary)",
                 lineHeight: 1.1,
                 marginBottom: 20,
               }}
             >
               Building products
               <br />
-              <span style={{ color: "rgba(248,248,245,0.25)" }}>
+              <span style={{ color: "var(--text-tertiary)" }}>
                 that matter.
               </span>
             </h2>
@@ -66,7 +66,7 @@ export default function FooterSection() {
                 fontSize: 10,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "rgba(248,248,245,0.4)",
+                color: "var(--text-secondary)",
                 textDecoration: "none",
                 borderBottom: "1px solid rgba(248,248,245,0.12)",
                 paddingBottom: 4,
@@ -96,7 +96,7 @@ export default function FooterSection() {
                 fontSize: 9,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "rgba(248,248,245,0.15)",
+                color: "var(--text-ghost)",
                 marginBottom: 20,
               }}
             >
@@ -112,7 +112,7 @@ export default function FooterSection() {
                   style={{
                     fontFamily: "var(--font-body)",
                     fontSize: 13,
-                    color: "rgba(248,248,245,0.3)",
+                    color: "var(--text-tertiary)",
                     textDecoration: "none",
                     fontWeight: 300,
                     transition: "color 0.2s",
@@ -139,7 +139,7 @@ export default function FooterSection() {
                 fontSize: 9,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
-                color: "rgba(248,248,245,0.15)",
+                color: "var(--text-ghost)",
                 marginBottom: 20,
               }}
             >
@@ -155,7 +155,7 @@ export default function FooterSection() {
                   style={{
                     fontFamily: "var(--font-body)",
                     fontSize: 13,
-                    color: "rgba(248,248,245,0.3)",
+                    color: "var(--text-tertiary)",
                     textDecoration: "none",
                     fontWeight: 300,
                     transition: "color 0.2s",
@@ -191,7 +191,7 @@ export default function FooterSection() {
               fontSize: 9,
               letterSpacing: "0.15em",
               textTransform: "uppercase",
-              color: "rgba(248,248,245,0.12)",
+              color: "var(--text-ghost)",
             }}
           >
             Apex Ventures Studio
@@ -202,7 +202,7 @@ export default function FooterSection() {
               fontSize: 9,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "rgba(248,248,245,0.12)",
+              color: "var(--text-ghost)",
             }}
           >
             © 2026 — All Rights Reserved

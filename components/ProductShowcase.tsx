@@ -81,7 +81,7 @@ export default function ProductShowcase() {
   const product = products[active];
 
   return (
-    <section id="products" style={{ background: "#000", borderTop: "1px solid rgba(248,248,245,0.1)" }}>
+    <section id="products" style={{ background: "var(--bg)", borderTop: "1px solid var(--border)" }}>
 
       {/* Section header */}
       <div
@@ -103,7 +103,7 @@ export default function ProductShowcase() {
               fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "rgba(248,248,245,0.25)",
+              color: "var(--text-tertiary)",
               marginBottom: 12,
             }}
           >
@@ -115,13 +115,13 @@ export default function ProductShowcase() {
               fontSize: "clamp(32px, 5vw, 52px)",
               fontWeight: 700,
               letterSpacing: "-0.03em",
-              color: "#F8F8F5",
+              color: "var(--text-primary)",
               lineHeight: 1.05,
             }}
           >
             Three products.
             <br />
-            <span style={{ color: "rgba(248,248,245,0.3)" }}>
+            <span style={{ color: "var(--text-tertiary)" }}>
               Three real problems solved.
             </span>
           </h2>
@@ -130,7 +130,7 @@ export default function ProductShowcase() {
           style={{
             fontFamily: "var(--font-body)",
             fontSize: 14,
-            color: "rgba(248,248,245,0.25)",
+            color: "var(--text-tertiary)",
             maxWidth: 280,
             lineHeight: 1.6,
             fontWeight: 300,
@@ -146,7 +146,7 @@ export default function ProductShowcase() {
           maxWidth: 1200,
           margin: "0 auto",
           padding: "0 clamp(24px, 6vw, 80px)",
-          borderBottom: "1px solid rgba(248,248,245,0.1)",
+          borderBottom: "1px solid var(--border)",
           display: "flex",
           gap: 0,
         }}
@@ -249,7 +249,7 @@ export default function ProductShowcase() {
                     fontSize: 9,
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
-                    color: "rgba(248,248,245,0.2)",
+                    color: "var(--text-tertiary)",
                   }}
                 >
                   Product {product.index}
@@ -261,7 +261,7 @@ export default function ProductShowcase() {
                   fontSize: "clamp(36px, 5vw, 64px)",
                   fontWeight: 700,
                   letterSpacing: "-0.04em",
-                  color: "#F8F8F5",
+                  color: "var(--text-primary)",
                   lineHeight: 1.0,
                   marginBottom: 8,
                 }}
@@ -273,7 +273,7 @@ export default function ProductShowcase() {
                   fontFamily: "var(--font-display)",
                   fontSize: "clamp(18px, 2.5vw, 24px)",
                   fontWeight: 400,
-                  color: "rgba(248,248,245,0.3)",
+                  color: "var(--text-tertiary)",
                   letterSpacing: "-0.02em",
                 }}
               >
@@ -289,7 +289,7 @@ export default function ProductShowcase() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                background: "#F8F8F5",
+                background: "var(--text-primary)",
                 color: "#000",
                 fontFamily: "var(--font-display)",
                 fontSize: 13,
@@ -330,7 +330,7 @@ export default function ProductShowcase() {
                   fontFamily: "var(--font-body)",
                   fontSize: 16,
                   lineHeight: 1.75,
-                  color: "rgba(248,248,245,0.5)",
+                  color: "var(--text-secondary)",
                   fontWeight: 300,
                   marginBottom: 40,
                 }}
@@ -364,7 +364,7 @@ export default function ProductShowcase() {
                     fontSize: 10,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: "rgba(248,248,245,0.3)",
+                    color: "var(--text-tertiary)",
                   }}
                 >
                   {product.stat.label}
@@ -380,7 +380,7 @@ export default function ProductShowcase() {
                   fontSize: 9,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
-                  color: "rgba(248,248,245,0.2)",
+                  color: "var(--text-tertiary)",
                   marginBottom: 20,
                 }}
               >
@@ -417,7 +417,7 @@ export default function ProductShowcase() {
                       style={{
                         fontFamily: "var(--font-body)",
                         fontSize: 13,
-                        color: "rgba(248,248,245,0.45)",
+                        color: "var(--text-secondary)",
                         lineHeight: 1.5,
                         fontWeight: 300,
                       }}
@@ -435,7 +435,7 @@ export default function ProductShowcase() {
             style={{
               width: "100%",
               borderRadius: 12,
-              border: "1px solid rgba(248,248,245,0.1)",
+              border: "1px solid var(--border)",
               overflow: "hidden",
               aspectRatio: "16/6",
               background: `linear-gradient(135deg, rgba(${
@@ -470,7 +470,7 @@ export default function ProductShowcase() {
                   fontSize: 10,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
-                  color: "rgba(248,248,245,0.15)",
+                  color: "var(--text-ghost)",
                 }}
               >
                 {product.name} — Screenshot Preview
@@ -479,7 +479,7 @@ export default function ProductShowcase() {
                 style={{
                   fontFamily: "var(--font-body)",
                   fontSize: 12,
-                  color: "rgba(248,248,245,0.12)",
+                  color: "var(--text-ghost)",
                   marginTop: 4,
                 }}
               >

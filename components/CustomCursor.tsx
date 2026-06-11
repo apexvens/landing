@@ -3,97 +3,76 @@
 import { useEffect, useRef } from "react";
 
 export default function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
+  const dotRef  = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const pos = useRef({ x: 0, y: 0 });
+  const pos  = useRef({ x: 0, y: 0 });
   const ring = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    const move = (e: MouseEvent) => {
-      pos.current = { x: e.clientX, y: e.clientY };
-    };
+    const move = (e: MouseEvent) => { pos.current = { x: e.clientX, y: e.clientY }; };
     window.addEventListener("mousemove", move);
 
     let frame: number;
     const animate = () => {
-      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
-      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
-
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate(${pos.current.x - 3}px, ${pos.current.y - 3}px)`;
-      }
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${ring.current.x - 18}px, ${ring.current.y - 18}px)`;
-      }
+      ring.current.x += (pos.current.x - ring.current.x) * 0.11;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.11;
+      if (dotRef.current)  dotRef.current.style.transform  = `translate(${pos.current.x - 3}px, ${pos.current.y - 3}px)`;
+      if (ringRef.current) ringRef.current.style.transform = `translate(${ring.current.x - 18}px, ${ring.current.y - 18}px)`;
       frame = requestAnimationFrame(animate);
     };
     frame = requestAnimationFrame(animate);
 
-    const enterLink = () => {
-      dotRef.current?.classList.add("cursor-hover");
+    const enter = () => {
+      dotRef.current?.classList.add("cur-hover");
       ringRef.current?.classList.add("ring-hover");
     };
-    const leaveLink = () => {
-      dotRef.current?.classList.remove("cursor-hover");
+    const leave = () => {
+      dotRef.current?.classList.remove("cur-hover");
       ringRef.current?.classList.remove("ring-hover");
     };
 
-    const bindLinks = () => {
-      document.querySelectorAll("a, button, [data-cursor]").forEach((el) => {
-        el.addEventListener("mouseenter", enterLink);
-        el.addEventListener("mouseleave", leaveLink);
-      });
-    };
-    bindLinks();
+    const bind = () => document.querySelectorAll("a,button,[data-cursor]").forEach(el => {
+      el.addEventListener("mouseenter", enter);
+      el.addEventListener("mouseleave", leave);
+    });
+    bind();
+    const obs = new MutationObserver(bind);
+    obs.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       window.removeEventListener("mousemove", move);
       cancelAnimationFrame(frame);
+      obs.disconnect();
     };
   }, []);
 
   return (
     <>
       <style>{`
-        .cursor-dot {
-          position: fixed;
-          top: 0; left: 0;
+        .cur-dot {
+          position: fixed; top: 0; left: 0;
           width: 6px; height: 6px;
-          background: #F8F8F5;
+          background: var(--text-primary);
           border-radius: 50%;
-          pointer-events: none;
-          z-index: 99999;
-          mix-blend-mode: difference;
-          transition: width 0.2s, height 0.2s, background 0.2s;
+          pointer-events: none; z-index: 99999;
           will-change: transform;
+          transition: width .18s, height .18s;
         }
-        .cursor-dot.cursor-hover {
-          width: 10px; height: 10px;
-        }
-        .cursor-ring {
-          position: fixed;
-          top: 0; left: 0;
+        .cur-dot.cur-hover { width: 10px; height: 10px; }
+        .cur-ring {
+          position: fixed; top: 0; left: 0;
           width: 36px; height: 36px;
-          border: 1px solid rgba(248,248,245,0.3);
+          border: 1px solid var(--text-tertiary);
           border-radius: 50%;
-          pointer-events: none;
-          z-index: 99998;
-          mix-blend-mode: difference;
-          transition: width 0.3s, height 0.3s, border-color 0.3s, opacity 0.3s;
+          pointer-events: none; z-index: 99998;
           will-change: transform;
+          transition: width .28s, height .28s, border-color .28s;
         }
-        .cursor-ring.ring-hover {
-          width: 56px; height: 56px;
-          border-color: rgba(248,248,245,0.6);
-          margin-top: -10px; margin-left: -10px;
-        }
-        @media (pointer: coarse) {
-          .cursor-dot, .cursor-ring { display: none; }
-          body { cursor: auto; }
-        }
+        .cur-ring.ring-hover { width: 54px; height: 54px; margin: -9px 0 0 -9px; border-color: var(--text-secondary); }
+        @media (pointer: coarse) { .cur-dot,.cur-ring { display:none; } body { cursor:auto; } }
       `}</style>
-      <div ref={dotRef} className="cursor-dot" />
-      <div ref={ringRef} className="cursor-ring" />
+      <div ref={dotRef}  className="cur-dot"  />
+      <div ref={ringRef} className="cur-ring" />
     </>
   );
 }

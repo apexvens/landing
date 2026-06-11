@@ -1,18 +1,43 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "./ThemeProvider";
 
 const links = [
   { label: "Products", href: "#products" },
-  { label: "About", href: "#about" },
-  { label: "Founder", href: "#founder" },
+  { label: "About",    href: "#about"    },
+  { label: "Founder",  href: "#founder"  },
 ];
+
+function SunIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2" x2="12" y2="6"/>
+      <line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="4.22" y1="4.22" x2="7.05" y2="7.05"/>
+      <line x1="16.95" y1="16.95" x2="19.78" y2="19.78"/>
+      <line x1="2" y1="12" x2="6" y2="12"/>
+      <line x1="18" y1="12" x2="22" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="7.05" y2="16.95"/>
+      <line x1="16.95" y1="7.05" x2="19.78" y2="4.22"/>
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  );
+}
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -20,132 +45,133 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const PAD = "clamp(24px, 6vw, 80px)";
+
   return (
     <>
       <motion.header
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
         style={{
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled
-            ? "1px solid rgba(248,248,245,0.1)"
-            : "1px solid transparent",
-          background: scrolled ? "rgba(0,0,0,0.7)" : "transparent",
-          paddingLeft: "clamp(24px, 6vw, 80px)",
-          paddingRight: "clamp(24px, 6vw, 80px)",
+          paddingLeft: PAD,
+          paddingRight: PAD,
+          backdropFilter: scrolled ? "blur(20px) saturate(1.4)" : "none",
+          borderBottom: scrolled ? "1px solid var(--nav-border)" : "1px solid transparent",
+          background: scrolled ? "var(--nav-bg-scrolled)" : "transparent",
+          position: "fixed",
+          top: 0, left: 0, right: 0,
+          zIndex: 1000,
+          height: 60,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          transition: "background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease",
         }}
-        className="fixed top-0 left-0 right-0 z-[1000] h-[60px] flex items-center justify-between transition-all duration-500"
       >
-        {/* Logo wordmark */}
-        <a
-          href="#"
-          className="flex items-center gap-3 group"
-          style={{ textDecoration: "none" }}
-        >
-          <div
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: 6,
-              background: "#F8F8F5",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#000",
-                lineHeight: 1,
-              }}
-            >
-              A
-            </span>
+        {/* Logo */}
+        <a href="#" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 26, height: 26, borderRadius: 7,
+            background: "var(--text-primary)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <span style={{
+              fontFamily: "var(--font-hero)", fontSize: 14, fontWeight: 700,
+              color: "var(--bg)", lineHeight: 1,
+            }}>A</span>
           </div>
-          <span
-            style={{
-              fontFamily: "var(--font-display)",
-              fontSize: 14,
-              fontWeight: 600,
-              color: "#F8F8F5",
-              letterSpacing: "-0.01em",
-            }}
-          >
+          <span style={{
+            fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 600,
+            color: "var(--text-primary)", letterSpacing: "-0.02em",
+          }}>
             Apex Ventures
           </span>
         </a>
 
-        {/* Desktop nav links */}
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.href}
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 10,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "rgba(248,248,245,0.4)",
-                textDecoration: "none",
-                transition: "color 0.2s",
+        {/* Right cluster */}
+        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          {/* Desktop nav links */}
+          <nav style={{ display: "flex", alignItems: "center", gap: 28 }} className="desktop-nav">
+            {links.map((l) => (
+              <a key={l.label} href={l.href} style={{
+                fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em",
+                textTransform: "uppercase", color: "var(--text-tertiary)",
+                textDecoration: "none", transition: "color 0.18s",
               }}
-              onMouseEnter={(e) =>
-                ((e.target as HTMLElement).style.color = "#F8F8F5")
-              }
-              onMouseLeave={(e) =>
-                ((e.target as HTMLElement).style.color = "rgba(248,248,245,0.4)")
-              }
-            >
-              {l.label}
-            </a>
-          ))}
-        </nav>
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-tertiary)")}>
+                {l.label}
+              </a>
+            ))}
+          </nav>
 
-        {/* Mobile menu toggle */}
-        <button
-          className="md:hidden flex flex-col gap-[5px] p-1"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span
+          {/* Theme toggle */}
+          <motion.button
+            onClick={toggle}
+            whileTap={{ scale: 0.88 }}
+            aria-label="Toggle theme"
             style={{
-              width: 18,
-              height: 1,
-              background: "#F8F8F5",
-              display: "block",
-              transition: "transform 0.2s, opacity 0.2s",
-              transform: menuOpen ? "rotate(45deg) translate(4px, 4px)" : "none",
+              background: "var(--bg-raised)",
+              border: "1px solid var(--border)",
+              borderRadius: 8,
+              width: 34, height: 34,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "none",
+              color: "var(--text-secondary)",
+              transition: "background 0.2s, border-color 0.2s, color 0.2s",
+              flexShrink: 0,
             }}
-          />
-          <span
-            style={{
-              width: 18,
-              height: 1,
-              background: "#F8F8F5",
-              display: "block",
-              opacity: menuOpen ? 0 : 1,
-              transition: "opacity 0.2s",
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--text-tertiary)";
             }}
-          />
-          <span
-            style={{
-              width: 18,
-              height: 1,
-              background: "#F8F8F5",
-              display: "block",
-              transition: "transform 0.2s, opacity 0.2s",
-              transform: menuOpen ? "rotate(-45deg) translate(4px, -4px)" : "none",
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
             }}
-          />
-        </button>
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={theme}
+                initial={{ opacity: 0, rotate: -30, scale: 0.7 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 30, scale: 0.7 }}
+                transition={{ duration: 0.2 }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+            style={{ background: "none", border: "none", padding: 4, cursor: "none", display: "none" }}
+            className="mobile-hamburger"
+          >
+            {[0, 1, 2].map((i) => (
+              <span key={i} style={{
+                width: 18, height: 1,
+                background: "var(--text-primary)",
+                display: "block",
+                marginBottom: i < 2 ? 5 : 0,
+                transition: "transform 0.22s, opacity 0.22s",
+                transform: menuOpen
+                  ? i === 0 ? "rotate(45deg) translate(4px, 4px)"
+                  : i === 2 ? "rotate(-45deg) translate(4px, -4px)" : "none"
+                  : "none",
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }} />
+            ))}
+          </button>
+        </div>
       </motion.header>
 
-      {/* Mobile menu */}
+      {/* Mobile overlay menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -154,15 +180,11 @@ export default function Nav() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.97)",
+              position: "fixed", inset: 0,
+              background: "var(--mobile-menu-bg)",
               zIndex: 999,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 40,
+              display: "flex", flexDirection: "column",
+              alignItems: "center", justifyContent: "center", gap: 40,
             }}
           >
             {links.map((l, i) => (
@@ -171,15 +193,11 @@ export default function Nav() {
                 href={l.href}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 + 0.1 }}
+                transition={{ delay: i * 0.08 + 0.08 }}
                 onClick={() => setMenuOpen(false)}
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: 40,
-                  fontWeight: 700,
-                  color: "#F8F8F5",
-                  textDecoration: "none",
-                  letterSpacing: "-0.02em",
+                  fontFamily: "var(--font-hero)", fontSize: 44, fontWeight: 600,
+                  color: "var(--text-primary)", textDecoration: "none", letterSpacing: "-0.03em",
                 }}
               >
                 {l.label}
@@ -188,6 +206,13 @@ export default function Nav() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style>{`
+        @media (max-width: 720px) {
+          .desktop-nav { display: none !important; }
+          .mobile-hamburger { display: flex !important; flex-direction: column; }
+        }
+      `}</style>
     </>
   );
 }
