@@ -44,7 +44,7 @@ function Typewriter({ text, delay = 0, onDone }: { text: string; delay?: number;
       {!done && (
         <motion.span
           animate={{ opacity: [1, 0] }}
-          transition={{ duration: 0.5, repeat: Infinity, ease: "steps(1)" }}
+          transition={{ duration: 0.5, repeat: Infinity, ease: "linear" }}
           style={{
             display: "inline-block", width: 3,
             background: "var(--text-primary)",
