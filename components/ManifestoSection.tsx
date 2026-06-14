@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const PRINCIPLES = [
@@ -30,27 +30,18 @@ const PRINCIPLES = [
   },
 ];
 
-function PrincipleRow({
-  principle,
-  index: rowIndex,
-}: {
-  principle: (typeof PRINCIPLES)[0];
-  index: number;
-}) {
+function PrincipleRow({ principle, index: rowIndex }: { principle: typeof PRINCIPLES[0]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-10%" });
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.92", "start 0.3"],
+    offset: ["start 0.95", "start 0.25"],
   });
-  const x = useTransform(scrollYProgress, [0, 1], [40, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
+  const x = useTransform(scrollYProgress, [0, 1], [60, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.45], [0, 1]);
 
   return (
-    <motion.div
-      ref={ref}
-      style={{ opacity, x }}
-      transition={{ ease: [0.22, 1, 0.36, 1] }}
-    >
+    <motion.div ref={ref} style={{ opacity, x }}>
       <div
         style={{
           display: "grid",
@@ -60,43 +51,49 @@ function PrincipleRow({
           padding: "clamp(28px, 3.5vw, 44px) 0",
           borderBottom: "1px solid var(--border)",
           position: "relative",
+          cursor: "default",
         }}
         className="principle-row"
       >
-        {/* Accent line that animates in */}
+        {/* Accent scan line */}
         <motion.div
           style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: 1,
+            position: "absolute", left: 0, top: 0,
+            width: "100%", height: 1,
             background: principle.accent,
             scaleX: scrollYProgress,
             transformOrigin: "left",
-            opacity: 0.5,
+            opacity: 0.45,
+          }}
+        />
+
+        {/* Hover glow underlay */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          style={{
+            position: "absolute", inset: 0,
+            background: `radial-gradient(ellipse at left center, ${principle.accent}08 0%, transparent 70%)`,
+            pointerEvents: "none",
+            transition: "opacity 0.3s",
           }}
         />
 
         {/* Index */}
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 11,
-            letterSpacing: "0.12em",
-            color: principle.accent,
-            opacity: 0.8,
-            flexShrink: 0,
-          }}
-        >
+        <span style={{
+          fontFamily: "var(--font-mono)", fontSize: 11,
+          letterSpacing: "0.12em", color: principle.accent, opacity: 0.8, flexShrink: 0,
+        }}>
           {principle.index}
         </span>
 
         {/* Bold statement */}
-        <h3
+        <motion.h3
+          whileHover={{ x: 8 }}
+          transition={{ type: "spring", stiffness: 300, damping: 24 }}
           style={{
             fontFamily: "var(--font-hero)",
-            fontSize: "clamp(28px, 4.5vw, 64px)",
+            fontSize: "clamp(28px, 4.5vw, 72px)",
             fontWeight: 600,
             letterSpacing: "-0.04em",
             lineHeight: 1.0,
@@ -104,18 +101,14 @@ function PrincipleRow({
           }}
         >
           {principle.bold}
-        </h3>
+        </motion.h3>
 
-        {/* Right: body text */}
+        {/* Body text — right aligned */}
         <p
           style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "clamp(13px, 1.2vw, 15px)",
-            lineHeight: 1.65,
-            color: "var(--text-tertiary)",
-            fontWeight: 300,
-            maxWidth: 280,
-            textAlign: "right",
+            fontFamily: "var(--font-body)", fontSize: "clamp(13px, 1.2vw, 15px)",
+            lineHeight: 1.65, color: "var(--text-tertiary)", fontWeight: 300,
+            maxWidth: 280, textAlign: "right",
           }}
           className="principle-body"
         >
@@ -127,61 +120,68 @@ function PrincipleRow({
 }
 
 export default function ManifestoSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
+
   return (
     <section
+      ref={sectionRef}
       id="manifesto"
       style={{
         background: "var(--bg)",
         borderTop: "1px solid var(--border)",
         padding: "80px clamp(24px, 6vw, 80px) 80px",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      {/* Parallax ambient blob */}
+      <motion.div
+        style={{
+          position: "absolute",
+          right: "-10%",
+          top: "10%",
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(74,144,226,0.06) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+          y: bgY,
+        }}
+      />
+
+      <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 16,
-            paddingBottom: 48,
-            borderBottom: "1px solid var(--border)",
-            marginBottom: 0,
+            display: "flex", alignItems: "flex-end",
+            justifyContent: "space-between", flexWrap: "wrap",
+            gap: 16, paddingBottom: 48,
+            borderBottom: "1px solid var(--border)", marginBottom: 0,
           }}
         >
-          <p
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 10,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--text-tertiary)",
-            }}
-          >
+          <p style={{
+            fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.18em",
+            textTransform: "uppercase", color: "var(--text-tertiary)",
+          }}>
             How we think
           </p>
-          <p
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: 13,
-              color: "var(--text-ghost)",
-              fontWeight: 300,
-              maxWidth: 300,
-              textAlign: "right",
-              lineHeight: 1.6,
-            }}
-            className="manifesto-subtext"
-          >
+          <p style={{
+            fontFamily: "var(--font-body)", fontSize: 13,
+            color: "var(--text-ghost)", fontWeight: 300,
+            maxWidth: 300, textAlign: "right", lineHeight: 1.6,
+          }} className="manifesto-subtext">
             Four principles that shape every product decision we make.
           </p>
         </motion.div>
 
-        {/* Principles — scroll-linked rows */}
+        {/* Principle rows */}
         <div>
           {PRINCIPLES.map((p, i) => (
             <PrincipleRow key={p.index} principle={p} index={i} />
@@ -191,9 +191,7 @@ export default function ManifestoSection() {
 
       <style>{`
         @media (max-width: 640px) {
-          .principle-row {
-            grid-template-columns: 40px 1fr !important;
-          }
+          .principle-row { grid-template-columns: 40px 1fr !important; }
           .principle-body { display: none !important; }
           .manifesto-subtext { display: none !important; }
         }

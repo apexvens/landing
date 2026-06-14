@@ -9,26 +9,35 @@ const ThemeContext = createContext<{ theme: Theme; toggle: () => void }>({
   toggle: () => {},
 });
 
-// Read the value the blocking script already set — avoids a React/DOM mismatch
 function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "dark"; // SSR guard
+  if (typeof window === "undefined") return "dark";
   const attr = document.documentElement.getAttribute("data-theme");
   if (attr === "light" || attr === "dark") return attr;
-  // Fallback: localStorage, then system
   const saved = localStorage.getItem("apex-theme");
   if (saved === "light" || saved === "dark") return saved;
   return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Lazy initializer runs once on client, reads the DOM directly
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [mounted, setMounted] = useState(false);
 
-  // Keep DOM in sync whenever theme changes (covers the initial mount too)
   useEffect(() => {
+    // Apply theme to DOM immediately and synchronously
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("apex-theme", theme);
-  }, [theme]);
+
+    if (!mounted) {
+      setMounted(true);
+      // Allow transitions only AFTER first paint — prevents FOUC flash
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.documentElement.classList.add("theme-ready");
+          document.body.classList.add("theme-ready");
+        });
+      });
+    }
+  }, [theme, mounted]);
 
   const toggle = () => setTheme(prev => (prev === "dark" ? "light" : "dark"));
 

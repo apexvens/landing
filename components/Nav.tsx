@@ -34,8 +34,16 @@ function MoonIcon() {
   );
 }
 
+function smoothScrollTo(id: string) {
+  const el = document.querySelector(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 64;
+  window.scrollTo({ top, behavior: "smooth" });
+}
+
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggle } = useTheme();
 
@@ -45,18 +53,37 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Highlight active nav link on scroll
+  useEffect(() => {
+    const ids = ["products", "about", "founder"];
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActiveSection(`#${e.target.id}`);
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px" }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
+  }, []);
+
   const PAD = "clamp(24px, 6vw, 80px)";
 
   return (
     <>
       <motion.header
-        initial={{ opacity: 0, y: -8 }}
+        initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
         style={{
           paddingLeft: PAD,
           paddingRight: PAD,
-          backdropFilter: scrolled ? "blur(20px) saturate(1.4)" : "none",
+          backdropFilter: scrolled ? "blur(24px) saturate(1.6)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(24px) saturate(1.6)" : "none",
           borderBottom: scrolled ? "1px solid var(--nav-border)" : "1px solid transparent",
           background: scrolled ? "var(--nav-bg-scrolled)" : "transparent",
           position: "fixed",
@@ -66,18 +93,16 @@ export default function Nav() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          transition: "background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease",
+          transition: "background 0.4s ease, border-color 0.4s ease",
         }}
       >
         {/* Logo */}
-        <a href="#" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <img
-            src="/logo.png"
-            alt="Apex Ventures logo"
-            width={32}
-            height={32}
-            style={{ display: "block", objectFit: "contain", flexShrink: 0 }}
-          />
+        <a
+          href="#"
+          onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+          style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}
+        >
+          <img src="/logo.png" alt="Apex Ventures" width={30} height={30} style={{ display: "block", objectFit: "contain" }} />
           <span style={{
             fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 600,
             color: "var(--text-primary)", letterSpacing: "-0.02em",
@@ -88,19 +113,37 @@ export default function Nav() {
 
         {/* Right cluster */}
         <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          {/* Desktop nav links */}
           <nav style={{ display: "flex", alignItems: "center", gap: 28 }} className="desktop-nav">
-            {links.map((l) => (
-              <a key={l.label} href={l.href} style={{
-                fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em",
-                textTransform: "uppercase", color: "var(--text-tertiary)",
-                textDecoration: "none", transition: "color 0.18s",
-              }}
-              onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "var(--text-tertiary)")}>
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) => {
+              const isActive = activeSection === l.href;
+              return (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  onClick={(e) => { e.preventDefault(); smoothScrollTo(l.href); setMenuOpen(false); }}
+                  style={{
+                    fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: isActive ? "var(--text-primary)" : "var(--text-tertiary)",
+                    textDecoration: "none", transition: "color 0.2s",
+                    position: "relative",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "var(--text-primary)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = isActive ? "var(--text-primary)" : "var(--text-tertiary)")}
+                >
+                  {l.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-dot"
+                      style={{
+                        position: "absolute", bottom: -4, left: "50%", transform: "translateX(-50%)",
+                        width: 3, height: 3, borderRadius: "50%", background: "var(--text-primary)",
+                      }}
+                    />
+                  )}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Theme toggle */}
@@ -134,7 +177,7 @@ export default function Nav() {
                 initial={{ opacity: 0, rotate: -30, scale: 0.7 }}
                 animate={{ opacity: 1, rotate: 0, scale: 1 }}
                 exit={{ opacity: 0, rotate: 30, scale: 0.7 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.22 }}
                 style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
               >
                 {theme === "dark" ? <SunIcon /> : <MoonIcon />}
@@ -167,14 +210,14 @@ export default function Nav() {
         </div>
       </motion.header>
 
-      {/* Mobile overlay menu */}
+      {/* Mobile overlay */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+            exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
             style={{
               position: "fixed", inset: 0,
               background: "var(--mobile-menu-bg)",
@@ -189,8 +232,8 @@ export default function Nav() {
                 href={l.href}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 + 0.08 }}
-                onClick={() => setMenuOpen(false)}
+                transition={{ delay: i * 0.08 + 0.1 }}
+                onClick={(e) => { e.preventDefault(); smoothScrollTo(l.href); setMenuOpen(false); }}
                 style={{
                   fontFamily: "var(--font-hero)", fontSize: 44, fontWeight: 600,
                   color: "var(--text-primary)", textDecoration: "none", letterSpacing: "-0.03em",

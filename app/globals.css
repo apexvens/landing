@@ -1,12 +1,10 @@
 /* ── Fonts ──────────────────────────────────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;1,14..32,300&display=swap');
-/* Clash Display via CDN (has optical weight that Space Grotesk lacks at 120px) */
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 @import "tailwindcss";
 
 /* ── Design tokens ───────────────────────────────────────────────────────── */
 :root {
-  /* Semantic surface tokens — components use ONLY these */
   --bg:           #000000;
   --bg-raised:    #0A0A09;
   --bg-hover:     rgba(248,248,245,0.03);
@@ -28,12 +26,10 @@
   --grid-line:       rgba(248,248,245,0.025);
   --noise-opacity:   0.3;
 
-  /* Product accents — stay the same in both modes */
   --blue:    #4A90E2;
   --violet:  #9B6FE8;
   --emerald: #3ECF8E;
 
-  /* Typography */
   --font-hero:    'Clash Display', 'Space Grotesk', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Inter', sans-serif;
@@ -56,7 +52,7 @@
   --scrollbar-thumb: #C8C6BE;
   --selection-bg:    rgba(0,0,0,0.1);
 
-  --nav-bg-scrolled: rgba(245,244,239,0.82);
+  --nav-bg-scrolled: rgba(245,244,239,0.85);
   --nav-border:      rgba(0,0,0,0.1);
   --mobile-menu-bg:  rgba(245,244,239,0.99);
   --grid-line:       rgba(0,0,0,0.04);
@@ -72,7 +68,10 @@ html {
   scroll-behavior: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevents theme flash */
+}
+
+/* Prevent FOUC — transition only AFTER first paint */
+html.theme-ready {
   transition: background 0.35s ease, color 0.35s ease;
 }
 
@@ -81,6 +80,9 @@ body {
   font-family: var(--font-body);
   overflow-x: hidden;
   cursor: none;
+}
+
+body.theme-ready {
   transition: background 0.35s ease;
 }
 
@@ -102,7 +104,6 @@ html.lenis { height: auto; }
 /* ── Typography scale ────────────────────────────────────────────────────── */
 h1, h2, h3, h4 { font-family: var(--font-display); }
 
-/* Hero headline uses Clash Display for heavier optical weight */
 .hero-headline {
   font-family: var(--font-hero);
   font-size: clamp(56px, 10.5vw, 128px);
@@ -111,7 +112,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   line-height: 0.96;
 }
 
-/* Section heading */
 .section-heading {
   font-family: var(--font-display);
   font-size: clamp(32px, 4.5vw, 56px);
@@ -121,7 +121,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   color: var(--text-primary);
 }
 
-/* Card title */
 .card-title {
   font-family: var(--font-display);
   font-size: clamp(16px, 1.6vw, 20px);
@@ -131,7 +130,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   color: var(--text-primary);
 }
 
-/* Body copy */
 .body-lg {
   font-family: var(--font-body);
   font-size: clamp(15px, 1.4vw, 17px);
@@ -149,7 +147,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   color: var(--text-secondary);
 }
 
-/* Mono labels */
 .label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -158,7 +155,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   color: var(--text-tertiary);
 }
 
-/* Typewriter cursor hard blink */
+/* Typewriter cursor blink */
 @keyframes tw-blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -180,4 +177,80 @@ h1, h2, h3, h4 { font-family: var(--font-display); }
   pointer-events: none;
   z-index: 9999;
   opacity: var(--noise-opacity);
+}
+
+/* ── Premium ambient glow orbs ────────────────────────────────────────────── */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ── Floating line animation ─────────────────────────────────────────────── */
+@keyframes float-line {
+  0%   { transform: translateY(0px) scaleX(1); opacity: 0.12; }
+  50%  { transform: translateY(-12px) scaleX(1.04); opacity: 0.22; }
+  100% { transform: translateY(0px) scaleX(1); opacity: 0.12; }
+}
+
+/* ── Shimmer sweep for cards ─────────────────────────────────────────────── */
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(248,248,245,0.035) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* ── Marquee ticker ──────────────────────────────────────────────────────── */
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 28s linear infinite;
+}
+
+.marquee-track:hover { animation-play-state: paused; }
+
+/* ── Stagger reveal ──────────────────────────────────────────────────────── */
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Section divider line draw ───────────────────────────────────────────── */
+@keyframes line-draw {
+  from { scaleX: 0; }
+  to   { scaleX: 1; }
+}
+
+/* ── Pulsing dot ─────────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
 }

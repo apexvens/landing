@@ -2,14 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-
-const PRODUCTS = [
-  { name: "TripWise AI", color: "#4A90E2", href: "https://tripwiseai.vercel.app/",  desc: "Plan any trip in under 2 min" },
-  { name: "FolioAI",     color: "#9B6FE8", href: "https://tryfolioai.vercel.app/", desc: "Resume → live portfolio in 60s" },
-  { name: "EVMate",      color: "#3ECF8E", href: "https://evmate-8ce3d.web.app/",  desc: "Zero range anxiety, forever" },
-];
 
 function Typewriter({ text, delay = 0, onDone }: { text: string; delay?: number; onDone?: () => void }) {
   const [count, setCount] = useState(0);
@@ -31,11 +23,11 @@ function Typewriter({ text, delay = 0, onDone }: { text: string; delay?: number;
           setDone(true);
           onDoneRef.current?.();
         }
-      }, 50);
+      }, 48);
       return () => clearInterval(interval);
     }, delay * 1000);
     return () => clearTimeout(startDelay);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, delay]);
 
   return (
@@ -67,13 +59,20 @@ export default function HeroSection() {
   }, [line2Done]);
 
   return (
-    <section style={{ background: "var(--bg)", position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <section style={{
+      background: "var(--bg)",
+      position: "relative",
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      overflow: "hidden",
+    }}>
       <div className="absolute inset-0 grid-overlay pointer-events-none" />
 
-      {/* Only right corner label — "3 Products Shipped" */}
+      {/* Right corner label */}
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
         style={{
           position: "absolute", top: 80, right: "clamp(24px, 6vw, 80px)",
           fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.2em",
@@ -93,26 +92,32 @@ export default function HeroSection() {
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
           className="label"
           style={{ marginBottom: 28 }}
         >
           Apex Ventures — Product Studio
         </motion.p>
 
-        {/* Headline */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.01, delay: 0.28 }}>
+        {/* Headline - always visible, typewriter plays over it */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.01, delay: 0.15 }}
+        >
           {/* Line 1 */}
           <h1 className="hero-headline" style={{ color: "var(--text-ghost)", marginBottom: 2 }}>
-            <Typewriter text="We build" delay={0.32} onDone={() => setLine1Done(true)} />
+            <Typewriter text="We build" delay={0.2} onDone={() => setLine1Done(true)} />
           </h1>
           {/* Line 2 */}
-          <h1 className="hero-headline" style={{ color: "var(--text-ghost)", marginBottom: 2, visibility: line1Done ? "visible" : "hidden" }}>
+          <h1 className="hero-headline" style={{ color: "var(--text-ghost)", marginBottom: 2 }}>
             {line1Done && <Typewriter text="tools that" delay={0} onDone={() => setLine2Done(true)} />}
+            {!line1Done && <span style={{ opacity: 0 }}>tools that</span>}
           </h1>
-          {/* Line 3 — full brightness */}
-          <h1 className="hero-headline" style={{ color: "var(--text-primary)", visibility: line2Done ? "visible" : "hidden" }}>
+          {/* Line 3 */}
+          <h1 className="hero-headline" style={{ color: "var(--text-primary)" }}>
             {line2Done && <Typewriter text="actually matter." delay={0} />}
+            {!line2Done && <span style={{ opacity: 0 }}>actually matter.</span>}
           </h1>
         </motion.div>
 
@@ -144,42 +149,41 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Bottom product strip */}
+      {/* Scroll hint */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={showRest ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+        initial={{ opacity: 0 }}
+        animate={showRest ? { opacity: 1 } : {}}
+        transition={{ duration: 1, delay: 0.4 }}
         style={{
-          borderTop: "1px solid var(--border)",
-          display: "grid", gridTemplateColumns: "repeat(3, 1fr)",
+          position: "absolute",
+          bottom: 40,
+          left: "clamp(24px, 6vw, 80px)",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
         }}
       >
-        {PRODUCTS.map((p, i) => (
-          <Link key={p.name} href={p.href} target="_blank" rel="noopener noreferrer"
-            style={{
-              padding: "22px clamp(24px, 6vw, 80px)",
-              borderRight: i < 2 ? "1px solid var(--border)" : "none",
-              textDecoration: "none",
-              display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
-              background: "transparent", transition: "background 0.2s",
-            }}
-            onMouseEnter={e => ((e.currentTarget as HTMLElement).style.background = "var(--bg-hover)")}
-            onMouseLeave={e => ((e.currentTarget as HTMLElement).style.background = "transparent")}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ width: 7, height: 7, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
-              <div>
-                <div style={{ fontFamily: "var(--font-display)", fontSize: 13, fontWeight: 600, letterSpacing: "-0.015em", color: "var(--text-primary)" }}>
-                  {p.name}
-                </div>
-                <div className="body-sm" style={{ marginTop: 2, fontSize: 11 }}>
-                  {p.desc}
-                </div>
-              </div>
-            </div>
-            <ArrowUpRight size={12} color="var(--text-ghost)" />
-          </Link>
-        ))}
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          style={{
+            width: 1,
+            height: 32,
+            background: "linear-gradient(to bottom, var(--text-tertiary), transparent)",
+            borderRadius: 1,
+          }}
+        />
+        <span style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 8,
+          letterSpacing: "0.2em",
+          color: "var(--text-ghost)",
+          textTransform: "uppercase",
+          writingMode: "vertical-rl",
+          transform: "rotate(180deg)",
+        }}>
+          Scroll
+        </span>
       </motion.div>
     </section>
   );

@@ -5,15 +5,15 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const LETTERS = "APEX VENTURES".split("");
 
-// Timing constants (seconds)
-const T_LOGO_START   = 0.1;
-const T_LOGO_DUR     = 0.9;
-const T_WORD_START   = 0.85;
-const T_LETTER_STEP  = 0.045;
-const T_LINE_START   = 1.55;
-const T_LINE_DUR     = 0.6;
-const T_EXIT_START   = 2.35;
-const T_DONE         = 3.0;
+// Timing constants (seconds) — start immediately
+const T_LOGO_START   = 0.0;
+const T_LOGO_DUR     = 0.7;
+const T_WORD_START   = 0.6;
+const T_LETTER_STEP  = 0.04;
+const T_LINE_START   = 1.2;
+const T_LINE_DUR     = 0.5;
+const T_EXIT_START   = 1.9;
+const T_DONE         = 2.6;
 
 export default function Loader({ onDone }: { onDone: () => void }) {
   const [phase, setPhase] = useState<"in" | "exit" | "gone">("in");
@@ -45,31 +45,23 @@ export default function Loader({ onDone }: { onDone: () => void }) {
           }}
           exit={{ clipPath: "inset(0 0 100% 0)" }}
           transition={{
-            duration: 0.7,
+            duration: 0.65,
             ease: [0.76, 0, 0.24, 1],
           }}
         >
-          {/* ── SVG logomark — path draws itself ── */}
+          {/* SVG logomark */}
           <motion.svg
             width="52"
             height="52"
             viewBox="0 0 52 52"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.01, delay: T_LOGO_START }}
           >
-            {/* Outer square with rounded corners */}
             <motion.rect
-              x="1.5"
-              y="1.5"
-              width="49"
-              height="49"
-              rx="12"
-              stroke="#F0EFE9"
-              strokeWidth="1.5"
-              fill="none"
+              x="1.5" y="1.5" width="49" height="49" rx="12"
+              stroke="#F0EFE9" strokeWidth="1.5" fill="none"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{
@@ -77,53 +69,39 @@ export default function Loader({ onDone }: { onDone: () => void }) {
                 opacity:    { duration: 0.01, delay: T_LOGO_START },
               }}
             />
-            {/* "A" letterform — two strokes forming the glyph */}
             <motion.path
               d="M16 38 L26 14 L36 38"
-              stroke="#F0EFE9"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
+              stroke="#F0EFE9" strokeWidth="2"
+              strokeLinecap="round" strokeLinejoin="round" fill="none"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{
-                pathLength: { duration: T_LOGO_DUR * 0.7, delay: T_LOGO_START + 0.2, ease: [0.4, 0, 0.2, 1] },
-                opacity:    { duration: 0.01, delay: T_LOGO_START + 0.2 },
+                pathLength: { duration: T_LOGO_DUR * 0.7, delay: T_LOGO_START + 0.15, ease: [0.4, 0, 0.2, 1] },
+                opacity:    { duration: 0.01, delay: T_LOGO_START + 0.15 },
               }}
             />
-            {/* Crossbar of the A */}
             <motion.path
               d="M19.5 30 L32.5 30"
-              stroke="#F0EFE9"
-              strokeWidth="2"
-              strokeLinecap="round"
-              fill="none"
+              stroke="#F0EFE9" strokeWidth="2" strokeLinecap="round" fill="none"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{
-                pathLength: { duration: 0.25, delay: T_LOGO_START + 0.7, ease: [0.4, 0, 0.2, 1] },
-                opacity:    { duration: 0.01, delay: T_LOGO_START + 0.7 },
+                pathLength: { duration: 0.22, delay: T_LOGO_START + 0.55, ease: [0.4, 0, 0.2, 1] },
+                opacity:    { duration: 0.01, delay: T_LOGO_START + 0.55 },
               }}
             />
           </motion.svg>
 
-          {/* ── Wordmark — letters stagger up ── */}
-          <div
-            style={{
-              display: "flex",
-              gap: 0,
-              overflow: "hidden",
-            }}
-          >
+          {/* Wordmark */}
+          <div style={{ display: "flex", gap: 0, overflow: "hidden" }}>
             {LETTERS.map((char, i) => (
               <div key={i} style={{ overflow: "hidden", display: "inline-block" }}>
                 <motion.span
                   initial={{ y: "100%", opacity: 0 }}
                   animate={{ y: "0%", opacity: char === " " ? 0 : 1 }}
                   transition={{
-                    y:       { duration: 0.55, delay: T_WORD_START + i * T_LETTER_STEP, ease: [0.22, 1, 0.36, 1] },
-                    opacity: { duration: 0.3,  delay: T_WORD_START + i * T_LETTER_STEP },
+                    y:       { duration: 0.5, delay: T_WORD_START + i * T_LETTER_STEP, ease: [0.22, 1, 0.36, 1] },
+                    opacity: { duration: 0.25, delay: T_WORD_START + i * T_LETTER_STEP },
                   }}
                   style={{
                     display: "inline-block",
@@ -141,7 +119,7 @@ export default function Loader({ onDone }: { onDone: () => void }) {
             ))}
           </div>
 
-          {/* ── Progress line ── */}
+          {/* Progress line */}
           <div
             style={{
               position: "absolute",
@@ -156,22 +134,14 @@ export default function Loader({ onDone }: { onDone: () => void }) {
             }}
           >
             <motion.div
-              style={{
-                height: "100%",
-                background: "#F0EFE9",
-                transformOrigin: "left",
-              }}
+              style={{ height: "100%", background: "#F0EFE9", transformOrigin: "left" }}
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
-              transition={{
-                duration: T_LINE_DUR,
-                delay: T_LINE_START,
-                ease: [0.4, 0, 0.2, 1],
-              }}
+              transition={{ duration: T_LINE_DUR, delay: T_LINE_START, ease: [0.4, 0, 0.2, 1] }}
             />
           </div>
 
-          {/* ── Counter ── */}
+          {/* Counter */}
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -194,32 +164,21 @@ export default function Loader({ onDone }: { onDone: () => void }) {
   );
 }
 
-// Smooth number counter
-function CounterText({
-  from, to, duration, delay,
-}: {
-  from: number; to: number; duration: number; delay: number;
-}) {
+function CounterText({ from, to, duration, delay }: { from: number; to: number; duration: number; delay: number }) {
   const [val, setVal] = useState(from);
 
   useEffect(() => {
     let start: number | null = null;
     let raf: number;
-
     const step = (ts: number) => {
       if (!start) start = ts;
       const elapsed = (ts - start) / 1000;
       const pct = Math.min(elapsed / duration, 1);
-      // ease-in-out cubic
       const eased = pct < 0.5 ? 4 * pct ** 3 : 1 - (-2 * pct + 2) ** 3 / 2;
       setVal(Math.round(from + (to - from) * eased));
       if (pct < 1) raf = requestAnimationFrame(step);
     };
-
-    const timeout = setTimeout(() => {
-      raf = requestAnimationFrame(step);
-    }, delay * 1000);
-
+    const timeout = setTimeout(() => { raf = requestAnimationFrame(step); }, delay * 1000);
     return () => { clearTimeout(timeout); cancelAnimationFrame(raf); };
   }, [from, to, duration, delay]);
 
