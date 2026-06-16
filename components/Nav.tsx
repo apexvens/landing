@@ -151,23 +151,25 @@ export default function Nav() {
             onClick={toggle}
             whileTap={{ scale: 0.88 }}
             aria-label="Toggle theme"
+            className="theme-btn"
             style={{
               background: "var(--bg-raised)",
               border: "1px solid var(--border)",
               borderRadius: 8,
               width: 34, height: 34,
               display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "none",
-              color: "var(--text-secondary)",
-              transition: "background 0.2s, border-color 0.2s, color 0.2s",
+              cursor: "pointer",
+              color: "var(--text-primary)",
+              transition: "background 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s",
               flexShrink: 0,
+              opacity: 0.65,
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--text-tertiary)";
+              (e.currentTarget as HTMLElement).style.opacity = "1";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--text-secondary)";
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+              (e.currentTarget as HTMLElement).style.opacity = "0.65";
               (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
             }}
           >

@@ -52,11 +52,15 @@
   --scrollbar-thumb: #C8C6BE;
   --selection-bg:    rgba(0,0,0,0.1);
 
-  --nav-bg-scrolled: rgba(245,244,239,0.85);
-  --nav-border:      rgba(0,0,0,0.1);
+  --nav-bg-scrolled: rgba(245,244,239,0.92);
+  --nav-border:      rgba(0,0,0,0.12);
   --mobile-menu-bg:  rgba(245,244,239,0.99);
   --grid-line:       rgba(0,0,0,0.04);
   --noise-opacity:   0.2;
+
+  /* Light mode — button needs distinct bg so it doesn't blend into nav */
+  --bg-raised: #DEDCD4;
+  --border:    rgba(0,0,0,0.15);
 }
 
 /* ── Reset ───────────────────────────────────────────────────────────────── */
@@ -79,7 +83,13 @@ body {
   background: var(--bg);
   font-family: var(--font-body);
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto;
+}
+
+body.custom-cursor-active,
+body.custom-cursor-active a,
+body.custom-cursor-active button {
+  cursor: none !important;
 }
 
 body.theme-ready {
@@ -91,9 +101,9 @@ body.theme-ready {
   color: var(--text-primary);
 }
 
-::-webkit-scrollbar { width: 1px; }
-::-webkit-scrollbar-track { background: var(--scrollbar-bg); }
-::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); }
+/* Hide scrollbar completely across all browsers */
+::-webkit-scrollbar { display: none; width: 0; }
+* { scrollbar-width: none; -ms-overflow-style: none; }
 
 /* ── Lenis ───────────────────────────────────────────────────────────────── */
 html.lenis { height: auto; }

@@ -1,22 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import Loader from "./Loader";
 
 export default function PageWrapper({ children }: { children: React.ReactNode }) {
-  const [loaded, setLoaded] = useState(false);
+  // Start with loader showing — no delay, no useEffect needed
+  const [done, setDone] = useState(false);
 
   return (
     <>
-      <Loader onDone={() => setLoaded(true)} />
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={loaded ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+      {!done && <Loader onDone={() => setDone(true)} />}
+      <div
+        style={{
+          visibility: done ? "visible" : "hidden",
+          // Prevent any layout shift while loader is active
+          pointerEvents: done ? "auto" : "none",
+        }}
       >
         {children}
-      </motion.div>
+      </div>
     </>
   );
 }

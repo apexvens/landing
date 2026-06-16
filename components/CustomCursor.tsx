@@ -9,6 +9,7 @@ export default function CustomCursor() {
   const ring = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    document.body.classList.add("custom-cursor-active");
     const move = (e: MouseEvent) => { pos.current = { x: e.clientX, y: e.clientY }; };
     window.addEventListener("mousemove", move);
 
@@ -40,6 +41,7 @@ export default function CustomCursor() {
     obs.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      document.body.classList.remove("custom-cursor-active");
       window.removeEventListener("mousemove", move);
       cancelAnimationFrame(frame);
       obs.disconnect();
