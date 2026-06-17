@@ -1,223 +1,138 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const products = [
-  { name: "TripWise AI", href: "https://tripwiseai.vercel.app/" },
-  { name: "FolioAI", href: "https://tryfolioai.vercel.app/" },
-  { name: "EVMate", href: "https://evmate-8ce3d.web.app/" },
+  { name:"TripWise AI", href:"https://tripwiseai.vercel.app/" },
+  { name:"FolioAI",     href:"https://tryfolioai.vercel.app/" },
+  { name:"EVMate",      href:"https://evmate-8ce3d.web.app/" },
 ];
-
 const social = [
-  { name: "GitHub", href: "https://github.com/neil-surjiani" },
-  { name: "LinkedIn", href: "https://www.linkedin.com/in/neil-surjiani" },
-  { name: "YouTube", href: "https://youtube.com/@NeilSurjiani" },
+  { name:"GitHub",   href:"https://github.com/neil-surjiani" },
+  { name:"LinkedIn", href:"https://www.linkedin.com/in/neil-surjiani" },
+  { name:"YouTube",  href:"https://youtube.com/@NeilSurjiani" },
 ];
 
 export default function FooterSection() {
+  const PAD = "clamp(24px,6vw,80px)";
   return (
-    <footer
-      style={{
-        background: "var(--bg)",
-        borderTop: "1px solid var(--border)",
-        padding: "80px clamp(24px, 6vw, 80px) 48px",
-      }}
-    >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <footer style={{ background:"var(--bg)", borderTop:"1px solid var(--border)", padding:`80px ${PAD} 48px` }}>
+      <div style={{ maxWidth:1200, margin:"0 auto" }}>
+        <div style={{
+          display:"grid", gridTemplateColumns:"2fr 1fr 1fr",
+          gap:60, paddingBottom:64,
+          borderBottom:"1px solid var(--border)", marginBottom:40,
+        }} className="footer-grid">
 
-        {/* Top: big CTA + nav columns */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1fr 1fr",
-            gap: 60,
-            paddingBottom: 60,
-            borderBottom: "1px solid var(--border)",
-            marginBottom: 40,
-          }}
-          className="footer-grid"
-        >
-          {/* Left: CTA */}
+          {/* CTA */}
           <div>
-            <h2
+            <motion.h2
+              initial={{ opacity:0, y:20 }}
+              whileInView={{ opacity:1, y:0 }}
+              viewport={{ once:true }}
+              transition={{ duration:0.7, ease:[0.22,1,0.36,1] }}
               style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(28px, 4vw, 48px)",
-                fontWeight: 700,
-                letterSpacing: "-0.04em",
-                color: "var(--text-primary)",
-                lineHeight: 1.1,
-                marginBottom: 20,
+                fontFamily:"var(--font-hero)",
+                fontSize:"clamp(28px,4.5vw,52px)",
+                fontWeight:700, letterSpacing:"-0.04em",
+                color:"var(--text-primary)", lineHeight:1.05, marginBottom:28,
               }}
             >
               Building products
               <br />
-              <span style={{ color: "var(--text-tertiary)" }}>
-                that matter.
-              </span>
-            </h2>
+              <span style={{ color:"var(--text-ghost)" }}>that matter.</span>
+            </motion.h2>
             <a
               href="mailto:hello@apexventures.studio"
+              data-magnetic
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                fontFamily: "var(--font-mono)",
-                fontSize: 10,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--text-secondary)",
-                textDecoration: "none",
-                borderBottom: "1px solid rgba(248,248,245,0.12)",
-                paddingBottom: 4,
-                transition: "color 0.2s, border-color 0.2s",
+                display:"inline-flex", alignItems:"center", gap:8,
+                fontFamily:"var(--font-mono)", fontSize:10,
+                letterSpacing:"0.12em", textTransform:"uppercase",
+                color:"var(--text-secondary)", textDecoration:"none",
+                borderBottom:"1px solid var(--border)", paddingBottom:5,
+                transition:"color 0.2s, border-color 0.2s, transform 0.25s var(--ease-out-expo)",
+                willChange:"transform",
               }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.color = "#F8F8F5";
-                (e.currentTarget as HTMLElement).style.borderColor =
-                  "rgba(248,248,245,0.5)";
+              onMouseEnter={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.color = "var(--text-primary)";
+                el.style.borderColor = "var(--text-tertiary)";
               }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.color =
-                  "rgba(248,248,245,0.4)";
-                (e.currentTarget as HTMLElement).style.borderColor =
-                  "rgba(248,248,245,0.12)";
+              onMouseLeave={e => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.color = "var(--text-secondary)";
+                el.style.borderColor = "var(--border)";
               }}
             >
               hello@apexventures.studio ↗
             </a>
           </div>
 
-          {/* Products col */}
+          {/* Products */}
           <div>
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "var(--text-ghost)",
-                marginBottom: 20,
-              }}
-            >
-              Products
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {products.map((p) => (
-                <Link
+            <p className="label" style={{ marginBottom:20 }}>Products</p>
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+              {products.map((p,i) => (
+                <motion.div
                   key={p.name}
-                  href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: 13,
-                    color: "var(--text-tertiary)",
-                    textDecoration: "none",
-                    fontWeight: 300,
-                    transition: "color 0.2s",
-                  }}
-                  onMouseEnter={(e) =>
-                    ((e.currentTarget as HTMLElement).style.color = "#F8F8F5")
-                  }
-                  onMouseLeave={(e) =>
-                    ((e.currentTarget as HTMLElement).style.color =
-                      "rgba(248,248,245,0.3)")
-                  }
+                  initial={{ opacity:0, x:-8 }}
+                  whileInView={{ opacity:1, x:0 }}
+                  viewport={{ once:true }}
+                  transition={{ duration:0.5, delay:i*0.07 }}
                 >
-                  {p.name}
-                </Link>
+                  <Link href={p.href} target="_blank" rel="noopener noreferrer"
+                    style={{
+                      fontFamily:"var(--font-body)", fontSize:13,
+                      color:"var(--text-tertiary)", textDecoration:"none", fontWeight:300,
+                      transition:"color 0.2s",
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}
+                  >{p.name}</Link>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Social col */}
+          {/* Social */}
           <div>
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "var(--text-ghost)",
-                marginBottom: 20,
-              }}
-            >
-              Follow
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {social.map((s) => (
-                <a
+            <p className="label" style={{ marginBottom:20 }}>Follow</p>
+            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+              {social.map((s,i) => (
+                <motion.div
                   key={s.name}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: 13,
-                    color: "var(--text-tertiary)",
-                    textDecoration: "none",
-                    fontWeight: 300,
-                    transition: "color 0.2s",
-                  }}
-                  onMouseEnter={(e) =>
-                    ((e.currentTarget as HTMLElement).style.color = "#F8F8F5")
-                  }
-                  onMouseLeave={(e) =>
-                    ((e.currentTarget as HTMLElement).style.color =
-                      "rgba(248,248,245,0.3)")
-                  }
+                  initial={{ opacity:0, x:-8 }}
+                  whileInView={{ opacity:1, x:0 }}
+                  viewport={{ once:true }}
+                  transition={{ duration:0.5, delay:i*0.07 }}
                 >
-                  {s.name} ↗
-                </a>
+                  <a href={s.href} target="_blank" rel="noopener noreferrer"
+                    style={{
+                      fontFamily:"var(--font-body)", fontSize:13,
+                      color:"var(--text-tertiary)", textDecoration:"none", fontWeight:300,
+                      transition:"color 0.2s",
+                    }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)"}
+                  >{s.name} ↗</a>
+                </motion.div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: 12,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-              color: "var(--text-ghost)",
-            }}
-          >
-            Apex Ventures Studio
-          </span>
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "var(--text-ghost)",
-            }}
-          >
-            © 2026 — All Rights Reserved
-          </span>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+          <span className="label">Apex Ventures Studio</span>
+          <span className="label">© 2026 — All Rights Reserved</span>
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 680px) {
-          .footer-grid {
-            grid-template-columns: 1fr 1fr !important;
-          }
-          .footer-grid > div:first-child {
-            grid-column: 1 / -1;
-          }
+        @media (max-width:680px) {
+          .footer-grid { grid-template-columns: 1fr 1fr !important; }
+          .footer-grid > div:first-child { grid-column: 1/-1; }
         }
       `}</style>
     </footer>

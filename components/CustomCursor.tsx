@@ -5,76 +5,94 @@ import { useEffect, useRef } from "react";
 export default function CustomCursor() {
   const dotRef  = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const pos  = useRef({ x: 0, y: 0 });
-  const ring = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
+    const dot  = dotRef.current;
+    const ring = ringRef.current;
+    if (!dot || !ring) return;
+
     document.body.classList.add("custom-cursor-active");
-    const move = (e: MouseEvent) => { pos.current = { x: e.clientX, y: e.clientY }; };
-    window.addEventListener("mousemove", move);
 
-    let frame: number;
-    const animate = () => {
-      ring.current.x += (pos.current.x - ring.current.x) * 0.11;
-      ring.current.y += (pos.current.y - ring.current.y) * 0.11;
-      if (dotRef.current)  dotRef.current.style.transform  = `translate(${pos.current.x - 3}px, ${pos.current.y - 3}px)`;
-      if (ringRef.current) ringRef.current.style.transform = `translate(${ring.current.x - 18}px, ${ring.current.y - 18}px)`;
-      frame = requestAnimationFrame(animate);
-    };
-    frame = requestAnimationFrame(animate);
+    let mx = -100, my = -100;
+    let dx = -100, dy = -100;
+    let rx = -100, ry = -100;
+    let rafId: number;
 
-    const enter = () => {
-      dotRef.current?.classList.add("cur-hover");
-      ringRef.current?.classList.add("ring-hover");
+    const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
+
+    // Track mouse
+    const onMove = (e: MouseEvent) => { mx = e.clientX; my = e.clientY; };
+
+    // Hover states
+    const onEnter = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      const tag = t.tagName.toLowerCase();
+      if (tag === "input" || tag === "textarea") {
+        dot.classList.add("is-text"); ring.classList.add("is-text");
+      } else if (t.closest("a, button, [data-magnetic]")) {
+        dot.classList.add("is-hovering"); ring.classList.add("is-hovering");
+      }
     };
-    const leave = () => {
-      dotRef.current?.classList.remove("cur-hover");
-      ringRef.current?.classList.remove("ring-hover");
+    const onLeave = () => {
+      dot.className  = "cursor-dot";
+      ring.className = "cursor-ring";
+    };
+    const onDown = () => { dot.classList.add("is-clicking"); ring.classList.add("is-clicking"); };
+    const onUp   = () => { dot.classList.remove("is-clicking"); ring.classList.remove("is-clicking"); };
+
+    // Magnetic pull — move ELEMENT toward cursor
+    const onMagneticMove = (e: MouseEvent) => {
+      document.querySelectorAll<HTMLElement>("[data-magnetic]").forEach(el => {
+        const r   = el.getBoundingClientRect();
+        const cx  = r.left + r.width  / 2;
+        const cy  = r.top  + r.height / 2;
+        const dist = Math.hypot(mx - cx, my - cy);
+        const threshold = 90;
+        if (dist < threshold) {
+          const strength = (1 - dist / threshold) * 0.42;
+          el.style.transform = `translate(${(mx - cx) * strength}px, ${(my - cy) * strength}px)`;
+        } else {
+          el.style.transform = "";
+        }
+      });
     };
 
-    const bind = () => document.querySelectorAll("a,button,[data-cursor]").forEach(el => {
-      el.addEventListener("mouseenter", enter);
-      el.addEventListener("mouseleave", leave);
-    });
-    bind();
-    const obs = new MutationObserver(bind);
-    obs.observe(document.body, { childList: true, subtree: true });
+    const tick = () => {
+      dx = lerp(dx, mx, 0.18);
+      dy = lerp(dy, my, 0.18);
+      rx = lerp(rx, mx, 0.07);
+      ry = lerp(ry, my, 0.07);
+      dot.style.transform  = `translate(${dx}px, ${dy}px)`;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    document.addEventListener("mousemove",   onMove,         { passive: true });
+    document.addEventListener("mousemove",   onMagneticMove, { passive: true });
+    document.addEventListener("mouseover",   onEnter);
+    document.addEventListener("mouseout",    onLeave);
+    document.addEventListener("mousedown",   onDown);
+    document.addEventListener("mouseup",     onUp);
 
     return () => {
       document.body.classList.remove("custom-cursor-active");
-      window.removeEventListener("mousemove", move);
-      cancelAnimationFrame(frame);
-      obs.disconnect();
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("mousemove",   onMove);
+      document.removeEventListener("mousemove",   onMagneticMove);
+      document.removeEventListener("mouseover",   onEnter);
+      document.removeEventListener("mouseout",    onLeave);
+      document.removeEventListener("mousedown",   onDown);
+      document.removeEventListener("mouseup",     onUp);
+      document.querySelectorAll<HTMLElement>("[data-magnetic]")
+        .forEach(el => (el.style.transform = ""));
     };
   }, []);
 
   return (
     <>
-      <style>{`
-        .cur-dot {
-          position: fixed; top: 0; left: 0;
-          width: 6px; height: 6px;
-          background: var(--text-primary);
-          border-radius: 50%;
-          pointer-events: none; z-index: 99999;
-          will-change: transform;
-          transition: width .18s, height .18s;
-        }
-        .cur-dot.cur-hover { width: 10px; height: 10px; }
-        .cur-ring {
-          position: fixed; top: 0; left: 0;
-          width: 36px; height: 36px;
-          border: 1px solid var(--text-tertiary);
-          border-radius: 50%;
-          pointer-events: none; z-index: 99998;
-          will-change: transform;
-          transition: width .28s, height .28s, border-color .28s;
-        }
-        .cur-ring.ring-hover { width: 54px; height: 54px; margin: -9px 0 0 -9px; border-color: var(--text-secondary); }
-        @media (pointer: coarse) { .cur-dot,.cur-ring { display:none; } body { cursor:auto; } }
-      `}</style>
-      <div ref={dotRef}  className="cur-dot"  />
-      <div ref={ringRef} className="cur-ring" />
+      <div ref={dotRef}  className="cursor-dot"  aria-hidden="true" />
+      <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
     </>
   );
 }
