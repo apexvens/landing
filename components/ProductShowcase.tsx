@@ -13,24 +13,47 @@ const products = [
     stat:{ value:"< 2 min", label:"To full itinerary" },
     imagePath:"/tripwise/hero.png",
     features:["AI day-by-day itineraries","Flight & hotel recs","Visa guidance","Budget breakdown","Smart packing list","Group co-planning"],
+    comingSoon: false,
   },
   {
-    id:"folioai", index:"02", name:"FolioAI", tagline:"Your portfolio in 60 seconds.",
+    id:"nutrisense", index:"02", name:"NutriSense", tagline:"Point. Scan. Understand what you eat.",
+    description:"No manual logging, no guesswork. Point the camera at a plate and NutriSense breaks down calories, macros and quality — then layers personalized coaching on top so the data turns into better habits, not just numbers.",
+    href:"https://mynutrisense.vercel.app/#/home",
+    color:"#5DBB6A", tag:"Health & AI",
+    stat:{ value:"0", label:"Manual logging" },
+    imagePath:"/nutrisense/hero.png",
+    features:["Instant food scanning","Calories & macro breakdown","Daily coaching","Health trend tracking","Personalized goals","Zero food diary"],
+    comingSoon: false,
+  },
+  {
+    id:"folioai", index:"03", name:"FolioAI", tagline:"Your portfolio in 60 seconds.",
     description:"Paste your resume. Get a live, beautiful portfolio site instantly. Built for developers and professionals who want to look great online without spending hours on design.",
     href:"https://tryfolioai.vercel.app/",
     color:"#9B6FE8", tag:"Developer Tools",
     stat:{ value:"60s", label:"Resume to live site" },
     imagePath:"/folioai/hero.png",
     features:["Resume-to-portfolio in 1 step","5 pro templates","Project showcase","Skill visualization","Personal branding","Instant deployment"],
+    comingSoon: false,
   },
   {
-    id:"evmate", index:"03", name:"EVMate", tagline:"EV ownership, made easy.",
+    id:"evmate", index:"04", name:"EVMate", tagline:"EV ownership, made easy.",
     description:"Stop worrying about range. EVMate finds nearby chargers, plans routes around your battery, and makes long-distance EV trips as simple as any other drive.",
     href:"https://evmate-8ce3d.web.app/",
     color:"#3ECF8E", tag:"Mobility & EV",
     stat:{ value:"0", label:"Range anxiety" },
     imagePath:"/evmate/hero.png",
     features:["Real-time charger map","Range-aware routing","Battery alerts","Multi-stop trips","Charging recommendations","Long-distance planning"],
+    comingSoon: false,
+  },
+  {
+    id:"unipilot", index:"05", name:"UniPilot", tagline:"Your AI admissions strategist.",
+    description:"The goal isn't to find colleges — search engines already do that. UniPilot reads your academic profile, extracurriculars and timeline, then builds a realistic, time-aware roadmap instead of a generic list of dream schools.",
+    href:"",
+    color:"#F5A623", tag:"EdTech & AI",
+    stat:{ value:"Reach", label:"Target · Safety tiers" },
+    imagePath:"/unipilot/hero.png",
+    features:["Realistic odds scoring","Time-aware roadmap","Reach/Target/Safety tiers","Application strategy","Progress tracking","AI strategist chat"],
+    comingSoon: true,
   },
 ];
 
@@ -104,16 +127,36 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
         overflow:"hidden", position:"relative",
         height:220, flexShrink:0, background:"var(--bg-raised)",
       }}>
-        <img
-          src={p.imagePath}
-          alt={p.name}
-          style={{
-            width:"100%", height:"100%", objectFit:"cover", display:"block",
-            transform: hov ? "scale(1.04)" : "scale(1)",
-            transition:"transform 0.6s var(--ease-out-expo)",
-            willChange:"transform",
-          }}
-        />
+        {p.comingSoon ? (
+          /* Coming Soon placeholder */
+          <div style={{
+            width:"100%", height:"100%", display:"flex", flexDirection:"column",
+            alignItems:"center", justifyContent:"center", gap:12,
+            background:`linear-gradient(135deg, ${p.color}12 0%, ${p.color}06 100%)`,
+          }}>
+            <div style={{
+              width:56, height:56, borderRadius:14,
+              background:`${p.color}20`, border:`1px solid ${p.color}30`,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              fontSize:24,
+            }}>🎓</div>
+            <div style={{
+              fontFamily:"var(--font-mono)", fontSize:9, letterSpacing:"0.2em",
+              textTransform:"uppercase", color:p.color, opacity:0.7,
+            }}>Coming Soon</div>
+          </div>
+        ) : (
+          <img
+            src={p.imagePath}
+            alt={p.name}
+            style={{
+              width:"100%", height:"100%", objectFit:"cover", display:"block",
+              transform: hov ? "scale(1.04)" : "scale(1)",
+              transition:"transform 0.6s var(--ease-out-expo)",
+              willChange:"transform",
+            }}
+          />
+        )}
         {/* Vignette bottom */}
         <div style={{
           position:"absolute", bottom:0, left:0, right:0, height:80,
@@ -186,26 +229,40 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
           </div>
 
           {/* CTA */}
-          <Link
-            href={p.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-magnetic
-            style={{
+          {p.comingSoon ? (
+            <span style={{
               display:"inline-flex", alignItems:"center", gap:8,
               fontFamily:"var(--font-display)", fontSize:13, fontWeight:600,
-              letterSpacing:"-0.01em", color:"#000",
-              background:`${p.color}`,
+              letterSpacing:"-0.01em", color:p.color,
+              background:`${p.color}18`,
               padding:"10px 18px", borderRadius:8,
-              textDecoration:"none", flexShrink:0,
-              transition:"opacity 0.2s ease, transform 0.25s var(--ease-out-expo)",
-              willChange:"transform",
-            }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = "0.85"}
-            onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = "1"}
-          >
-            Open ↗
-          </Link>
+              border:`1px solid ${p.color}40`,
+              flexShrink:0,
+            }}>
+              Coming Soon
+            </span>
+          ) : (
+            <Link
+              href={p.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-magnetic
+              style={{
+                display:"inline-flex", alignItems:"center", gap:8,
+                fontFamily:"var(--font-display)", fontSize:13, fontWeight:600,
+                letterSpacing:"-0.01em", color:"#000",
+                background:`${p.color}`,
+                padding:"10px 18px", borderRadius:8,
+                textDecoration:"none", flexShrink:0,
+                transition:"opacity 0.2s ease, transform 0.25s var(--ease-out-expo)",
+                willChange:"transform",
+              }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.opacity = "0.85"}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.opacity = "1"}
+            >
+              Open ↗
+            </Link>
+          )}
         </div>
       </div>
     </motion.div>
@@ -232,9 +289,9 @@ export default function ProductShowcase() {
           <div>
             <p className="label" style={{ marginBottom:14 }}>What we've built</p>
             <h2 className="section-heading">
-              Three products.
+              Five products.
               <br />
-              <span style={{ color:"var(--text-tertiary)" }}>Three real problems solved.</span>
+              <span style={{ color:"var(--text-tertiary)" }}>Five real problems solved.</span>
             </h2>
           </div>
           <p style={{
@@ -251,7 +308,7 @@ export default function ProductShowcase() {
           gridTemplateColumns:"repeat(3, 1fr)",
           gap:24,
           perspective:1200,
-        }} className="product-grid-3">
+        }} className="product-grid-5">
           {products.map((p, i) => (
             <ProductCard key={p.id} p={p} i={i} />
           ))}
@@ -259,8 +316,8 @@ export default function ProductShowcase() {
       </div>
 
       <style>{`
-        @media (max-width: 900px) { .product-grid-3 { grid-template-columns: 1fr 1fr !important; } }
-        @media (max-width: 580px) { .product-grid-3 { grid-template-columns: 1fr !important; } }
+        @media (max-width: 1100px) { .product-grid-5 { grid-template-columns: 1fr 1fr !important; } }
+        @media (max-width: 580px) { .product-grid-5 { grid-template-columns: 1fr !important; } }
       `}</style>
     </section>
   );
