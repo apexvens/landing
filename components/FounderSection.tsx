@@ -2,11 +2,12 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import SplitText from "./SplitText";
 
 const BIO = [
   "Apex Ventures is where ideas become products. Every tool starts with a real problem — something I've experienced, something people around me have experienced, something that should already have a good solution but doesn't.",
   "I'm not interested in perfect planning. I'm interested in shipping, learning, and improving. The fastest way to know if something works is to put it in front of people who actually need it.",
-  "These three products represent the first chapter. The pipeline is full, and every new product will be built the same way: start with the problem, build the simplest thing that solves it, then make it exceptional.",
+  "These five products represent the first chapter. The pipeline is full, and every new product will be built the same way: start with the problem, build the simplest thing that solves it, then make it exceptional.",
 ];
 
 const LINKS = [
@@ -94,11 +95,20 @@ export default function FounderSection() {
               }} />
             </motion.div>
 
-            <h3 style={{
-              fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700,
-              letterSpacing: "-0.03em", color: "var(--text-primary)", marginBottom: 6,
-            }}>
-              Neil Surjiani
+            <h3 style={{ margin: "0 0 6px", lineHeight: 1 }}>
+              <SplitText
+                text="Neil Surjiani"
+                by="chars"
+                scrubStart="start 0.92"
+                scrubEnd="start 0.55"
+                y={40}
+                rotate={2}
+                stagger={0.03}
+                style={{
+                  fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700,
+                  letterSpacing: "-0.03em", color: "var(--text-primary)",
+                }}
+              />
             </h3>
             <p style={{
               fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.15em",

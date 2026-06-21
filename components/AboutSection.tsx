@@ -2,6 +2,7 @@
 
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
+import SplitText from "./SplitText";
 
 // ─── animated count-up number ────────────────────────────────────────────────
 function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
@@ -61,7 +62,7 @@ const BELIEFS = [
 ];
 
 const STATS = [
-  { value: 3,     suffix: "",      label: "Products live" },
+  { value: 5,     suffix: "",      label: "Products live/soon" },
   { value: 1000,  suffix: "+",     label: "Dev hours logged" },
   { value: 100,   suffix: "%",     label: "AI-powered" },
   { value: 0,     suffix: "",      label: "VC funding needed" },
@@ -100,16 +101,39 @@ export default function AboutSection() {
           }}>
             Studio — About Apex Ventures
           </p>
-          <h2 style={{
-            fontFamily: "var(--font-display)",
-            fontSize: "clamp(36px, 5.5vw, 64px)",
-            fontWeight: 700, letterSpacing: "-0.04em", lineHeight: 1.05,
-            color: "var(--text-primary)",
-          }}>
-            An independent studio that builds<br />
-            <span style={{ color: "var(--text-secondary)" }}>
-              software people actually use.
-            </span>
+          <h2 style={{ margin: 0, lineHeight: 1.05 }}>
+            <SplitText
+              text="An independent studio that builds"
+              by="words"
+              scrubStart="start 0.9"
+              scrubEnd="start 0.5"
+              y={50}
+              stagger={0.04}
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(36px, 5.5vw, 64px)",
+                fontWeight: 700, letterSpacing: "-0.04em",
+                color: "var(--text-primary)",
+              }}
+              wrapperStyle={{ display: "block" }}
+              tag="span"
+            />
+            <SplitText
+              text="software people actually use."
+              by="words"
+              scrubStart="start 0.78"
+              scrubEnd="start 0.38"
+              y={50}
+              stagger={0.05}
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(36px, 5.5vw, 64px)",
+                fontWeight: 700, letterSpacing: "-0.04em",
+                color: "var(--text-secondary)",
+              }}
+              wrapperStyle={{ display: "block" }}
+              tag="span"
+            />
           </h2>
         </motion.div>
 

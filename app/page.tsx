@@ -1,16 +1,18 @@
-import SmoothScroll   from "@/components/SmoothScroll";
-import CustomCursor   from "@/components/CustomCursor";
-import ScrollProgress from "@/components/ScrollProgress";
-import Nav            from "@/components/Nav";
-import PageWrapper    from "@/components/PageWrapper";
-import HeroSection    from "@/components/HeroSection";
-import MarqueeTicker  from "@/components/MarqueeTicker";
-import ProductShowcase from "@/components/ProductShowcase";
+import SmoothScroll     from "@/components/SmoothScroll";
+import CustomCursor     from "@/components/CustomCursor";
+import ScrollProgress   from "@/components/ScrollProgress";
+import Nav              from "@/components/Nav";
+import PageWrapper      from "@/components/PageWrapper";
+import HeroSection      from "@/components/HeroSection";
+import MarqueeTicker    from "@/components/MarqueeTicker";
+import ProductShowcase  from "@/components/ProductShowcase";
+import KineticSection   from "@/components/KineticSection";
+import StatsSection     from "@/components/StatsSection";
 import ManifestoSection from "@/components/ManifestoSection";
-import VisionSection  from "@/components/VisionSection";
-import AboutSection   from "@/components/AboutSection";
-import FounderSection from "@/components/FounderSection";
-import FooterSection  from "@/components/FooterSection";
+import VisionSection    from "@/components/VisionSection";
+import AboutSection     from "@/components/AboutSection";
+import FounderSection   from "@/components/FounderSection";
+import FooterSection    from "@/components/FooterSection";
 
 export default function Home() {
   return (
@@ -23,6 +25,8 @@ export default function Home() {
           <HeroSection />
           <MarqueeTicker />
           <ProductShowcase />
+          <KineticSection />
+          <StatsSection />
           <ManifestoSection />
           <VisionSection />
           <AboutSection />

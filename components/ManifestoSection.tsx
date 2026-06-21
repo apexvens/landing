@@ -1,47 +1,27 @@
 "use client";
 
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import SplitText from "./SplitText";
 
 const PRINCIPLES = [
-  {
-    index: "01",
-    bold: "No niche.",
-    body: "We go where the problem is — not where the market report says to go.",
-    accent: "#4A90E2",
-  },
-  {
-    index: "02",
-    bold: "No trends.",
-    body: "We build what should exist, not what everyone else is already building.",
-    accent: "#9B6FE8",
-  },
-  {
-    index: "03",
-    bold: "No fluff.",
-    body: "Ship, measure, improve. Repeat until it's obvious. Then do it again.",
-    accent: "#3ECF8E",
-  },
-  {
-    index: "04",
-    bold: "No ceiling.",
-    body: "Three products shipped. Thousands of ideas queued. We're just getting started.",
-    accent: "#F0A500",
-  },
+  { index: "01", bold: "No niche.",    body: "We go where the problem is — not where the market report says to go.",         accent: "#4A90E2" },
+  { index: "02", bold: "No trends.",   body: "We build what should exist, not what everyone else is already building.",       accent: "#9B6FE8" },
+  { index: "03", bold: "No fluff.",    body: "Ship, measure, improve. Repeat until it's obvious. Then do it again.",          accent: "#3ECF8E" },
+  { index: "04", bold: "No ceiling.",  body: "Five products shipped. Thousands of ideas queued. We're just getting started.", accent: "#F0A500" },
 ];
 
-function PrincipleRow({ principle, index: rowIndex }: { principle: typeof PRINCIPLES[0]; index: number }) {
+function PrincipleRow({ principle }: { principle: typeof PRINCIPLES[0] }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10%" });
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start 0.95", "start 0.25"],
+    offset: ["start 0.96", "start 0.3"],
   });
-  const x = useTransform(scrollYProgress, [0, 1], [60, 0]);
-  const opacity = useTransform(scrollYProgress, [0, 0.45], [0, 1]);
+  const rowOp = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+  const rowX  = useTransform(scrollYProgress, [0, 0.4], [40, 0]);
 
   return (
-    <motion.div ref={ref} style={{ opacity, x }}>
+    <motion.div ref={ref} style={{ opacity: rowOp, x: rowX }}>
       <div
         style={{
           display: "grid",
@@ -55,7 +35,7 @@ function PrincipleRow({ principle, index: rowIndex }: { principle: typeof PRINCI
         }}
         className="principle-row"
       >
-        {/* Accent scan line */}
+        {/* Scan line */}
         <motion.div
           style={{
             position: "absolute", left: 0, top: 0,
@@ -67,7 +47,7 @@ function PrincipleRow({ principle, index: rowIndex }: { principle: typeof PRINCI
           }}
         />
 
-        {/* Hover glow underlay */}
+        {/* Hover glow */}
         <motion.div
           initial={{ opacity: 0 }}
           whileHover={{ opacity: 1 }}
@@ -87,24 +67,33 @@ function PrincipleRow({ principle, index: rowIndex }: { principle: typeof PRINCI
           {principle.index}
         </span>
 
-        {/* Bold statement */}
-        <motion.h3
-          whileHover={{ x: 8 }}
-          transition={{ type: "spring", stiffness: 300, damping: 24 }}
-          style={{
-            fontFamily: "var(--font-hero)",
-            fontSize: "clamp(28px, 4.5vw, 72px)",
-            fontWeight: 600,
-            letterSpacing: "-0.04em",
-            lineHeight: 1.0,
-            color: "var(--text-primary)",
-          }}
-        >
-          {principle.bold}
-        </motion.h3>
+        {/* Bold statement — char split */}
+        <h3 style={{ margin: 0, padding: 0 }}>
+          <SplitText
+            text={principle.bold}
+            by="chars"
+            scrubStart="start 0.94"
+            scrubEnd="start 0.35"
+            y={60}
+            rotate={3}
+            stagger={0.03}
+            style={{
+              fontFamily: "var(--font-hero)",
+              fontSize: "clamp(28px, 4.5vw, 72px)",
+              fontWeight: 600,
+              letterSpacing: "-0.04em",
+              lineHeight: 1.0,
+              color: "var(--text-primary)",
+            }}
+          />
+        </h3>
 
         {/* Body text — right aligned */}
-        <p
+        <motion.p
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.25 }}
           style={{
             fontFamily: "var(--font-body)", fontSize: "clamp(13px, 1.2vw, 15px)",
             lineHeight: 1.65, color: "var(--text-tertiary)", fontWeight: 300,
@@ -113,7 +102,7 @@ function PrincipleRow({ principle, index: rowIndex }: { principle: typeof PRINCI
           className="principle-body"
         >
           {principle.body}
-        </p>
+        </motion.p>
       </div>
     </motion.div>
   );
@@ -139,15 +128,10 @@ export default function ManifestoSection() {
       {/* Parallax ambient blob */}
       <motion.div
         style={{
-          position: "absolute",
-          right: "-10%",
-          top: "10%",
-          width: 500,
-          height: 500,
-          borderRadius: "50%",
+          position: "absolute", right: "-10%", top: "10%",
+          width: 500, height: 500, borderRadius: "50%",
           background: "radial-gradient(circle, rgba(74,144,226,0.06) 0%, transparent 70%)",
-          filter: "blur(40px)",
-          pointerEvents: "none",
+          filter: "blur(40px)", pointerEvents: "none",
           y: bgY,
         }}
       />
@@ -184,7 +168,7 @@ export default function ManifestoSection() {
         {/* Principle rows */}
         <div>
           {PRINCIPLES.map((p, i) => (
-            <PrincipleRow key={p.index} principle={p} index={i} />
+            <PrincipleRow key={p.index} principle={p} />
           ))}
         </div>
       </div>

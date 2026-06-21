@@ -270,3 +270,56 @@ html.lenis, html.lenis body { height: auto; }
   transform-origin: left;
   background: linear-gradient(to right, var(--blue), var(--violet), var(--emerald));
 }
+
+/* ── Split text — clip container ────────────────────────────── */
+.split-clip {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+/* ── Kinetic section — scanning line ────────────────────────── */
+@keyframes scan-line {
+  0%   { transform: translateY(-2vh); opacity: 0; }
+  5%   { opacity: 0.6; }
+  95%  { opacity: 0.6; }
+  100% { transform: translateY(102vh); opacity: 0; }
+}
+
+/* ── Word-reveal stagger helper ─────────────────────────────── */
+@keyframes word-up {
+  from { transform: translateY(1.1em) rotateZ(4deg); opacity: 0; filter: blur(4px); }
+  to   { transform: translateY(0) rotateZ(0deg);     opacity: 1; filter: blur(0); }
+}
+
+/* ── Stats grid equal height ────────────────────────────────── */
+.stats-grid > * { transition: background 0.3s ease; }
+
+/* ── Text overflow clip trick ───────────────────────────────── */
+.overflow-clip-y {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+/* ── Kinetic interlude: ensure bg is solid over everything ─── */
+.kinetic-sticky {
+  background: var(--bg);
+  will-change: transform;
+}
+
+/* ── Hero char reveal overflow fix ──────────────────────────── */
+.hero-headline {
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+/* ── Smooth reveal for SplitText word mode ──────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .split-clip > * {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+}
