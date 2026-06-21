@@ -3,22 +3,6 @@
 import React, { useRef, useMemo, CSSProperties } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
-/* ─────────────────────────────────────────────────────────────
-   SplitText  — scroll-scrubbed character / word reveal
-   
-   Props:
-     text        — the string to split
-     by          — "chars" | "words" (default "chars")
-     className   — applied to each unit's outer clip-wrapper
-     style       — applied to each unit's inner span
-     stagger     — seconds between units (default 0.025)
-     scrubStart  — IntersectionObserver / scroll offset start (default "start 0.88")
-     scrubEnd    — scroll offset end (default "start 0.25")
-     y           — translation distance (default 60px)
-     once        — only animate in once (default true)
-     color       — optional per-char color map (index => color)
-─────────────────────────────────────────────────────────────── */
-
 interface SplitTextProps {
   text: string;
   by?: "chars" | "words";
@@ -32,7 +16,7 @@ interface SplitTextProps {
   rotate?: number;
   once?: boolean;
   colorMap?: Record<number, string>;
-  tag?: keyof React.JSX.IntrinsicElements;
+  tag?: string;
 }
 
 function Unit({
@@ -56,19 +40,17 @@ function Unit({
   style?: CSSProperties;
   colorMap?: Record<number, string>;
 }) {
-  // Map each unit to a portion of the scroll range
   const rangeStart = (index / total) * (1 - stagger * total);
   const inputRange: [number, number] = [
     Math.max(0, rangeStart),
     Math.min(1, rangeStart + 0.35),
   ];
 
-  const unitY     = useTransform(scrollYProgress, inputRange, [`${y}px`, "0px"]);
-  const unitOp    = useTransform(scrollYProgress, inputRange, [0, 1]);
-  const unitRot   = useTransform(scrollYProgress, inputRange, [rotate, 0]);
-  const unitBlur  = useTransform(scrollYProgress, inputRange, [6, 0]);
-
-  const color = colorMap?.[index];
+  const unitY    = useTransform(scrollYProgress, inputRange, [`${y}px`, "0px"]);
+  const unitOp   = useTransform(scrollYProgress, inputRange, [0, 1]);
+  const unitRot  = useTransform(scrollYProgress, inputRange, [rotate, 0]);
+  const unitBlur = useTransform(scrollYProgress, inputRange, [6, 0]);
+  const color    = colorMap?.[index];
 
   return (
     <span
@@ -86,7 +68,6 @@ function Unit({
           ...style,
         }}
       >
-        {/* Preserve spaces */}
         {children === " " ? "\u00A0" : children}
       </motion.span>
     </span>
@@ -96,7 +77,6 @@ function Unit({
 export default function SplitText({
   text,
   by = "chars",
-  className,
   style,
   wrapperStyle,
   stagger = 0.018,
@@ -105,9 +85,9 @@ export default function SplitText({
   y = 70,
   rotate = 0,
   colorMap,
-  tag: Tag = "span" as keyof React.JSX.IntrinsicElements,
+  tag = "span",
 }: SplitTextProps) {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -120,31 +100,34 @@ export default function SplitText({
         wi < arr.length - 1 ? [word, " "] : [word]
       );
     }
-    // chars — split into individual characters, preserve spaces
     return text.split("");
   }, [text, by]);
 
-  return (
-    <Tag
-      ref={ref as any}
-      aria-label={text}
-      style={{ display: "inline", ...(wrapperStyle as any) }}
+  const inner = units.map((unit, i) => (
+    <Unit
+      key={i}
+      index={i}
+      total={units.length}
+      scrollYProgress={scrollYProgress}
+      stagger={stagger}
+      y={y}
+      rotate={rotate}
+      style={style}
+      colorMap={colorMap}
     >
-      {units.map((unit, i) => (
-        <Unit
-          key={i}
-          index={i}
-          total={units.length}
-          scrollYProgress={scrollYProgress}
-          stagger={stagger}
-          y={y}
-          rotate={rotate}
-          style={style}
-          colorMap={colorMap}
-        >
-          {unit}
-        </Unit>
-      ))}
-    </Tag>
+      {unit}
+    </Unit>
+  ));
+
+  // Use React.createElement to avoid TypeScript's "union too complex" error
+  // that occurs when using a dynamic JSX tag variable.
+  return React.createElement(
+    tag,
+    {
+      ref,
+      "aria-label": text,
+      style: { display: "inline", ...wrapperStyle },
+    },
+    ...inner
   );
 }
