@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, CSSProperties } from "react";
+import React, { useRef, useMemo, CSSProperties } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
 /* ─────────────────────────────────────────────────────────────
@@ -32,7 +32,7 @@ interface SplitTextProps {
   rotate?: number;
   once?: boolean;
   colorMap?: Record<number, string>;
-  tag?: keyof JSX.IntrinsicElements;
+  tag?: keyof React.JSX.IntrinsicElements;
 }
 
 function Unit({
@@ -105,7 +105,7 @@ export default function SplitText({
   y = 70,
   rotate = 0,
   colorMap,
-  tag: Tag = "span",
+  tag: Tag = "span" as keyof React.JSX.IntrinsicElements,
 }: SplitTextProps) {
   const ref = useRef<HTMLElement>(null);
 
