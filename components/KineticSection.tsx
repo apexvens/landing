@@ -1,70 +1,63 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 /* ──────────────────────────────────────────────────────────────
    KineticSection
    Full-screen scroll-pinned typography interlude.
-   One word explodes in per scroll segment, stacked vertically,
-   building the sentence: "Every. Problem. Has. An. Answer."
-   
-   The section is sticky for ~400vh so the scroll budget is
-   generous — the user feels they're "cranking" words in.
+   "Every. Problem. Has. An. Answer."
+
+   FIX: Removed useSpring — Lenis already provides smooth scroll.
+   Double-smoothing was preventing animations from progressing.
+   FIX: Word colors upgraded from near-invisible text-ghost to
+   readable, progressive opacity values.
+   FIX: Reduced from 500vh to 300vh for better UX.
 ────────────────────────────────────────────────────────────── */
 
 const LINES = [
-  { word: "Every",  color: "var(--text-ghost)",   accent: "#4A90E2" },
-  { word: "problem", color: "var(--text-ghost)",  accent: "#9B6FE8" },
-  { word: "has",    color: "var(--text-secondary)", accent: "#3ECF8E" },
-  { word: "an",     color: "var(--text-secondary)", accent: "#F0A500" },
-  { word: "answer.", color: "var(--text-primary)", accent: "#F0EFE9" },
+  { word: "Every",   color: "rgba(240,239,233,0.30)", accent: "#4A90E2" },
+  { word: "problem", color: "rgba(240,239,233,0.48)", accent: "#9B6FE8" },
+  { word: "has",     color: "rgba(240,239,233,0.66)", accent: "#3ECF8E" },
+  { word: "an",      color: "rgba(240,239,233,0.82)", accent: "#F0A500" },
+  { word: "answer.", color: "var(--text-primary)",    accent: "#F0EFE9" },
 ];
 
 function KineticWord({
-  word,
-  color,
-  accent,
-  globalProgress,
-  index,
-  total,
+  word, color, accent, globalProgress, index, total,
 }: {
-  word: string;
-  color: string;
-  accent: string;
-  globalProgress: any;
-  index: number;
-  total: number;
+  word: string; color: string; accent: string;
+  globalProgress: any; index: number; total: number;
 }) {
   const segSize = 1 / total;
   const start   = index * segSize;
-  const peak    = start + segSize * 0.6;
+  const peak    = start + segSize * 0.62;
   const chars   = word.split("");
 
   return (
     <div style={{ position: "relative", lineHeight: 0.92, overflow: "visible" }}>
-      {/* Accent slash behind word */}
+      {/* Accent slash */}
       <motion.div
         style={{
           position: "absolute",
-          left: -24,
+          left: -20,
           top: "50%",
-          width: 4,
-          height: "110%",
+          width: 3,
+          height: "108%",
           background: accent,
           borderRadius: 2,
           originY: "bottom",
           scaleY: useTransform(globalProgress, [start, peak], [0, 1]),
           y: "-50%",
-          opacity: useTransform(globalProgress, [start, peak], [0, 0.9]),
+          opacity: useTransform(globalProgress, [start, peak], [0, 0.85]),
         }}
       />
 
       {/* Characters */}
-      <div style={{ display: "inline-flex", gap: "0.02em" }}>
+      <div style={{ display: "inline-flex", gap: "0.015em" }}>
         {chars.map((ch, ci) => {
-          const charStart = start + (ci / chars.length) * segSize * 0.55;
-          const charEnd   = charStart + segSize * 0.32;
+          const charStart = start + (ci / chars.length) * segSize * 0.52;
+          const charEnd   = charStart + segSize * 0.30;
           return (
             <motion.span
               key={ci}
@@ -72,14 +65,14 @@ function KineticWord({
               style={{
                 display: "inline-block",
                 fontFamily: "var(--font-hero)",
-                fontSize: "clamp(64px, 11vw, 148px)",
+                fontSize: "clamp(60px, 10.5vw, 144px)",
                 fontWeight: 700,
                 letterSpacing: "-0.045em",
                 color,
-                y:      useTransform(globalProgress, [charStart, charEnd], [80, 0]),
+                y:       useTransform(globalProgress, [charStart, charEnd], [72, 0]),
                 opacity: useTransform(globalProgress, [charStart, charEnd], [0, 1]),
-                rotateZ: useTransform(globalProgress, [charStart, charEnd], [6, 0]),
-                filter: useTransform(
+                rotateZ: useTransform(globalProgress, [charStart, charEnd], [5, 0]),
+                filter:  useTransform(
                   useTransform(globalProgress, [charStart, charEnd], [10, 0]),
                   (b) => `blur(${b}px)`
                 ),
@@ -102,19 +95,25 @@ export default function KineticSection() {
     offset: ["start start", "end end"],
   });
 
-  // Smooth it slightly so it feels physical
-  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 28 });
+  // No useSpring — Lenis already provides smooth scroll.
+  // Adding a spring on top causes double-lag that freezes the animation.
+  const progress = scrollYProgress;
 
-  // Counter: how many words are "revealed" (0 → LINES.length)
-  const counterDisplay = useTransform(smooth, [0, 1], [0, LINES.length]);
+  // Scanning line y position
+  const scanY = useTransform(progress, [0, 1], ["-2vh", "102vh"]);
+
+  // Right-side progress bars
+  const rightOpacity = useTransform(progress, [0.05, 0.18], [0, 1]);
+
+  // Bottom CTA opacity
+  const ctaOpacity = useTransform(progress, [0.82, 1], [0, 1]);
 
   return (
-    /* Outer: 500vh tall — provides the scroll budget */
+    /* 300vh — was 500vh. More focused, less dead-air scrolling. */
     <div
       ref={containerRef}
-      style={{ height: "500vh", position: "relative" }}
+      style={{ height: "300vh", position: "relative" }}
     >
-      {/* Sticky inner — stays in view for the entire scroll budget */}
       <div
         style={{
           position: "sticky",
@@ -132,57 +131,66 @@ export default function KineticSection() {
         <motion.div
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
+            top: 0, left: 0, right: 0,
             height: 1,
-            background: "linear-gradient(to right, transparent, rgba(155,111,232,0.4), transparent)",
-            y: useTransform(smooth, [0, 1], ["-2vh", "102vh"]),
-            opacity: 0.6,
+            background: "linear-gradient(to right, transparent, rgba(155,111,232,0.5), transparent)",
+            y: scanY,
+            opacity: 0.7,
           }}
         />
 
-        {/* Left: word stack */}
-        <div style={{ position: "relative", zIndex: 1, padding: "0 clamp(24px, 6vw, 80px)" }}>
+        {/* Subtle background glow that builds with scroll */}
+        <motion.div
+          style={{
+            position: "absolute",
+            left: "50%", top: "50%",
+            x: "-50%", y: "-50%",
+            width: 900, height: 450,
+            background: "radial-gradient(ellipse, rgba(155,111,232,0.06) 0%, transparent 70%)",
+            filter: "blur(80px)",
+            pointerEvents: "none",
+            opacity: useTransform(progress, [0, 0.3, 0.9, 1], [0, 0.8, 0.8, 0]),
+          }}
+        />
+
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 1, padding: "0 clamp(24px, 6vw, 80px)", width: "100%" }}>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>
 
-            {/* Eyebrow label */}
-            <motion.p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9,
-                letterSpacing: "0.22em",
-                textTransform: "uppercase",
-                color: "var(--text-ghost)",
-                marginBottom: 40,
-                opacity: useTransform(smooth, [0, 0.08], [0, 1]),
-              }}
-            >
+            {/* Eyebrow — visible immediately, no fade-in from 0 */}
+            <p style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: 9,
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "var(--text-tertiary)",
+              marginBottom: 40,
+            }}>
               The Apex thesis
-            </motion.p>
+            </p>
 
             {/* Word lines */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(2px, 0.6vh, 10px)", paddingLeft: 32 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(2px, 0.5vh, 8px)", paddingLeft: 28 }}>
               {LINES.map((line, i) => (
                 <KineticWord
                   key={line.word}
                   {...line}
-                  globalProgress={smooth}
+                  globalProgress={progress}
                   index={i}
                   total={LINES.length}
                 />
               ))}
             </div>
 
-            {/* Bottom: scroll counter + CTA */}
+            {/* Bottom keep-scrolling hint */}
             <motion.div
               style={{
-                marginTop: 48,
-                paddingLeft: 32,
+                marginTop: 52,
+                paddingLeft: 28,
                 display: "flex",
                 alignItems: "center",
                 gap: 24,
-                opacity: useTransform(smooth, [0.85, 1], [0, 1]),
+                opacity: ctaOpacity,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -205,7 +213,7 @@ export default function KineticSection() {
           </div>
         </div>
 
-        {/* Right: floating scroll progress indicator */}
+        {/* Right: scroll progress indicator */}
         <motion.div
           style={{
             position: "absolute",
@@ -216,7 +224,7 @@ export default function KineticSection() {
             flexDirection: "column",
             alignItems: "center",
             gap: 6,
-            opacity: useTransform(smooth, [0.05, 0.15], [0, 1]),
+            opacity: rightOpacity,
           }}
         >
           {LINES.map((line, i) => {
@@ -230,8 +238,8 @@ export default function KineticSection() {
                   height: 28,
                   borderRadius: 1,
                   background: line.accent,
-                  scaleY: useTransform(smooth, [segStart, segEnd], [0.15, 1]),
-                  opacity: useTransform(smooth, [segStart, segEnd], [0.2, 0.9]),
+                  scaleY: useTransform(progress, [segStart, segEnd], [0.12, 1]),
+                  opacity: useTransform(progress, [segStart, segEnd], [0.18, 0.85]),
                   transformOrigin: "top",
                 }}
               />

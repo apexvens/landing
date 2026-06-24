@@ -6,8 +6,8 @@
 :root {
   --bg:           #050505;
   --bg-raised:    #0C0C0B;
-  --bg-card:      rgba(240,239,233,0.028);
-  --bg-hover:     rgba(240,239,233,0.045);
+  --bg-card:      rgba(240,239,233,0.032);
+  --bg-hover:     rgba(240,239,233,0.048);
   --border:       rgba(240,239,233,0.08);
   --border-hi:    rgba(240,239,233,0.15);
   --border-faint: rgba(240,239,233,0.04);
@@ -22,9 +22,17 @@
   --emerald: #3ECF8E;
   --amber:   #F0A500;
 
-  --nav-bg: rgba(5,5,5,0.72);
-  --mobile-menu-bg: rgba(5,5,5,0.98);
-  --grid-line: rgba(240,239,233,0.025);
+  /* Nav */
+  --nav-bg:           rgba(5,5,5,0.72);
+  --nav-bg-scrolled:  rgba(6,6,5,0.92);
+  --nav-border:       rgba(240,239,233,0.07);
+  --mobile-menu-bg:   rgba(5,5,5,0.98);
+
+  /* Image vignette — dark translucent so images look great in both themes */
+  --img-vignette-start: rgba(5,5,5,0.65);
+  --img-vignette-mid:   rgba(5,5,5,0.18);
+
+  --grid-line:    rgba(240,239,233,0.025);
   --noise-opacity: 0.28;
   --selection-bg: rgba(240,239,233,0.12);
 
@@ -41,24 +49,30 @@
 [data-theme="light"] {
   --bg:           #F5F4EF;
   --bg-raised:    #ECEAE3;
-  --bg-card:      rgba(0,0,0,0.028);
-  --bg-hover:     rgba(0,0,0,0.04);
+  /* White cards on warm beige — classic premium look */
+  --bg-card:      rgba(255,255,255,0.72);
+  --bg-hover:     rgba(255,255,255,0.92);
   --border:       rgba(0,0,0,0.10);
   --border-hi:    rgba(0,0,0,0.20);
-  --border-faint: rgba(0,0,0,0.05);
+  --border-faint: rgba(0,0,0,0.055);
 
   --text-primary:   #0F0F0D;
   --text-secondary: rgba(15,15,13,0.52);
   --text-tertiary:  rgba(15,15,13,0.30);
   --text-ghost:     rgba(15,15,13,0.12);
 
-  --nav-bg: rgba(245,244,239,0.80);
-  --mobile-menu-bg: rgba(245,244,239,0.99);
-  --grid-line: rgba(0,0,0,0.035);
+  --nav-bg:           rgba(245,244,239,0.80);
+  --nav-bg-scrolled:  rgba(245,244,239,0.96);
+  --nav-border:       rgba(0,0,0,0.09);
+  --mobile-menu-bg:   rgba(245,244,239,0.99);
+
+  /* In light mode, still use dark vignette — images look far better */
+  --img-vignette-start: rgba(0,0,0,0.42);
+  --img-vignette-mid:   rgba(0,0,0,0.10);
+
+  --grid-line:    rgba(0,0,0,0.035);
   --noise-opacity: 0.18;
   --selection-bg: rgba(0,0,0,0.08);
-
-  --bg-raised: #DEDCD5;
 }
 
 /* ── Reset ──────────────────────────────────────────────────── */
@@ -278,14 +292,6 @@ html.lenis, html.lenis body { height: auto; }
   vertical-align: bottom;
 }
 
-/* ── Kinetic section — scanning line ────────────────────────── */
-@keyframes scan-line {
-  0%   { transform: translateY(-2vh); opacity: 0; }
-  5%   { opacity: 0.6; }
-  95%  { opacity: 0.6; }
-  100% { transform: translateY(102vh); opacity: 0; }
-}
-
 /* ── Word-reveal stagger helper ─────────────────────────────── */
 @keyframes word-up {
   from { transform: translateY(1.1em) rotateZ(4deg); opacity: 0; filter: blur(4px); }
@@ -312,6 +318,25 @@ html.lenis, html.lenis body { height: auto; }
 .hero-headline {
   overflow: hidden;
   padding-bottom: 0.06em;
+}
+
+/* ── Product card image — theme-aware vignette ──────────────── */
+.product-img-vignette {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 90px;
+  background: linear-gradient(
+    to top,
+    var(--img-vignette-start) 0%,
+    var(--img-vignette-mid) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ── Light mode product card elevated shadow ────────────────── */
+[data-theme="light"] .product-card-box {
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
 }
 
 /* ── Smooth reveal for SplitText word mode ──────────────────── */

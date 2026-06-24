@@ -14,6 +14,7 @@ const products = [
     imagePath:"/tripwise/hero.png",
     features:["AI day-by-day itineraries","Flight & hotel recs","Visa guidance","Budget breakdown","Smart packing list","Group co-planning"],
     comingSoon: false,
+    emoji: "✈️",
   },
   {
     id:"nutrisense", index:"02", name:"NutriSense", tagline:"Point. Scan. Understand what you eat.",
@@ -24,6 +25,7 @@ const products = [
     imagePath:"/nutrisense/hero.png",
     features:["Instant food scanning","Calories & macro breakdown","Daily coaching","Health trend tracking","Personalized goals","Zero food diary"],
     comingSoon: false,
+    emoji: "🥗",
   },
   {
     id:"folioai", index:"03", name:"FolioAI", tagline:"Your portfolio in 60 seconds.",
@@ -34,6 +36,7 @@ const products = [
     imagePath:"/folioai/hero.png",
     features:["Resume-to-portfolio in 1 step","5 pro templates","Project showcase","Skill visualization","Personal branding","Instant deployment"],
     comingSoon: false,
+    emoji: "💼",
   },
   {
     id:"evmate", index:"04", name:"EVMate", tagline:"EV ownership, made easy.",
@@ -44,6 +47,7 @@ const products = [
     imagePath:"/evmate/hero.png",
     features:["Real-time charger map","Range-aware routing","Battery alerts","Multi-stop trips","Charging recommendations","Long-distance planning"],
     comingSoon: false,
+    emoji: "⚡",
   },
   {
     id:"unipilot", index:"05", name:"UniPilot", tagline:"Your AI admissions strategist.",
@@ -54,18 +58,20 @@ const products = [
     imagePath:"/unipilot/hero.png",
     features:["Realistic odds scoring","Time-aware roadmap","Reach/Target/Safety tiers","Application strategy","Progress tracking","AI strategist chat"],
     comingSoon: true,
+    emoji: "🎓",
   },
 ];
 
 /* ── 3-D tilt card ──────────────────────────────────────────── */
 function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
-  const ref   = useRef<HTMLDivElement>(null);
+  const ref    = useRef<HTMLDivElement>(null);
   const [hov, setHov] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
 
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-  const rotX = useSpring(useTransform(rawY, [-0.5, 0.5], [8, -8]),  { stiffness:200, damping:28 });
-  const rotY = useSpring(useTransform(rawX, [-0.5, 0.5], [-8, 8]), { stiffness:200, damping:28 });
+  const rotX = useSpring(useTransform(rawY, [-0.5, 0.5], [7, -7]),  { stiffness:200, damping:28 });
+  const rotY = useSpring(useTransform(rawX, [-0.5, 0.5], [-7, 7]), { stiffness:200, damping:28 });
   const glareX = useTransform(rawX, [-0.5, 0.5], ["0%", "100%"]);
   const glareY = useTransform(rawY, [-0.5, 0.5], ["0%", "100%"]);
 
@@ -75,6 +81,8 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
     rawY.set((e.clientY - r.top)  / r.height - 0.5);
   };
   const onLeave = () => { rawX.set(0); rawY.set(0); setHov(false); };
+
+  const showPlaceholder = p.comingSoon || imgFailed;
 
   return (
     <motion.div
@@ -86,6 +94,7 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
       whileInView={{ opacity:1, y:0 }}
       viewport={{ once:true, margin:"-60px" }}
       transition={{ duration:0.8, delay:i * 0.12, ease:[0.22,1,0.36,1] }}
+      className="product-card-box"
       style={{
         rotateX:rotX, rotateY:rotY,
         transformStyle:"preserve-3d",
@@ -93,7 +102,7 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
         background:"var(--bg-card)",
         backdropFilter:"blur(16px)",
         WebkitBackdropFilter:"blur(16px)",
-        border:`1px solid ${hov ? p.color + "55" : "var(--border)"}`,
+        border:`1px solid ${hov ? p.color + "50" : "var(--border)"}`,
         overflow:"hidden",
         position:"relative",
         display:"flex", flexDirection:"column",
@@ -114,11 +123,11 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
         }}
       />
 
-      {/* Top accent line — animated gradient */}
+      {/* Top accent line */}
       <div style={{
         height:2, width:"100%", flexShrink:0,
         background:`linear-gradient(to right, transparent 0%, ${p.color} 50%, transparent 100%)`,
-        opacity: hov ? 0.9 : 0.4,
+        opacity: hov ? 0.9 : 0.45,
         transition:"opacity 0.3s ease",
       }} />
 
@@ -127,51 +136,59 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
         overflow:"hidden", position:"relative",
         height:220, flexShrink:0, background:"var(--bg-raised)",
       }}>
-        {p.comingSoon ? (
-          /* Coming Soon placeholder */
+        {showPlaceholder ? (
+          /* Placeholder for coming-soon or missing screenshot */
           <div style={{
             width:"100%", height:"100%", display:"flex", flexDirection:"column",
-            alignItems:"center", justifyContent:"center", gap:12,
-            background:`linear-gradient(135deg, ${p.color}12 0%, ${p.color}06 100%)`,
+            alignItems:"center", justifyContent:"center", gap:14,
+            background:`linear-gradient(145deg, ${p.color}15 0%, ${p.color}06 100%)`,
           }}>
             <div style={{
-              width:56, height:56, borderRadius:14,
-              background:`${p.color}20`, border:`1px solid ${p.color}30`,
+              width:60, height:60, borderRadius:16,
+              background:`${p.color}1E`, border:`1px solid ${p.color}30`,
               display:"flex", alignItems:"center", justifyContent:"center",
-              fontSize:24,
-            }}>🎓</div>
+              fontSize:26,
+            }}>{p.emoji}</div>
             <div style={{
               fontFamily:"var(--font-mono)", fontSize:9, letterSpacing:"0.2em",
               textTransform:"uppercase", color:p.color, opacity:0.7,
-            }}>Coming Soon</div>
+            }}>
+              {p.comingSoon ? "Coming Soon" : p.name}
+            </div>
           </div>
         ) : (
-          <img
-            src={p.imagePath}
-            alt={p.name}
-            style={{
-              width:"100%", height:"100%", objectFit:"cover", display:"block",
-              transform: hov ? "scale(1.04)" : "scale(1)",
-              transition:"transform 0.6s var(--ease-out-expo)",
-              willChange:"transform",
-            }}
-          />
+          <>
+            <img
+              src={p.imagePath}
+              alt={p.name}
+              onError={() => setImgFailed(true)}
+              style={{
+                width:"100%", height:"100%", objectFit:"cover", display:"block",
+                transform: hov ? "scale(1.04)" : "scale(1)",
+                transition:"transform 0.6s var(--ease-out-expo)",
+                willChange:"transform",
+              }}
+            />
+            {/* Subtle accent color wash — gives each card branded feel */}
+            <div style={{
+              position:"absolute", inset:0, zIndex:2,
+              background:`linear-gradient(140deg, ${p.color}12 0%, transparent 55%)`,
+              pointerEvents:"none",
+            }} />
+          </>
         )}
-        {/* Vignette bottom */}
-        <div style={{
-          position:"absolute", bottom:0, left:0, right:0, height:80,
-          background:"linear-gradient(to top, var(--bg), transparent)",
-          pointerEvents:"none",
-        }} />
+
+        {/* Theme-aware vignette via CSS class — no more light-mode bleed */}
+        <div className="product-img-vignette" />
       </div>
 
       {/* Body */}
-      <div style={{ padding:"28px 28px 32px", flex:1, display:"flex", flexDirection:"column", gap:16 }}>
+      <div style={{ padding:"26px 26px 30px", flex:1, display:"flex", flexDirection:"column", gap:15 }}>
         {/* Tag + index */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <span style={{
             fontFamily:"var(--font-mono)", fontSize:9, letterSpacing:"0.18em",
-            textTransform:"uppercase", color:p.color, opacity:0.8,
+            textTransform:"uppercase", color:p.color, opacity:0.85,
           }}>{p.tag}</span>
           <span style={{
             fontFamily:"var(--font-mono)", fontSize:9, letterSpacing:"0.12em",
@@ -182,44 +199,44 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
         {/* Name + tagline */}
         <div>
           <h3 style={{
-            fontFamily:"var(--font-display)", fontSize:"clamp(22px,2.4vw,28px)",
+            fontFamily:"var(--font-hero)", fontSize:"clamp(21px,2.2vw,27px)",
             fontWeight:700, letterSpacing:"-0.03em",
-            color:"var(--text-primary)", lineHeight:1.15, marginBottom:6,
+            color:"var(--text-primary)", lineHeight:1.15, marginBottom:5,
           }}>{p.name}</h3>
           <p style={{
-            fontFamily:"var(--font-display)", fontSize:14, fontWeight:400,
+            fontFamily:"var(--font-display)", fontSize:13.5, fontWeight:400,
             color:"var(--text-tertiary)", letterSpacing:"-0.01em",
           }}>{p.tagline}</p>
         </div>
 
         {/* Description */}
         <p style={{
-          fontFamily:"var(--font-body)", fontSize:13, lineHeight:1.75,
+          fontFamily:"var(--font-body)", fontSize:13, lineHeight:1.78,
           color:"var(--text-secondary)", fontWeight:300, flex:1,
         }}>{p.description}</p>
 
-        {/* Features */}
-        <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:4 }}>
+        {/* Feature pills */}
+        <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginTop:2 }}>
           {p.features.slice(0,4).map(f => (
             <span key={f} style={{
               fontFamily:"var(--font-body)", fontSize:11, fontWeight:400,
               color:"var(--text-tertiary)", padding:"4px 10px", borderRadius:100,
               border:"1px solid var(--border-faint)",
-              background:"var(--bg-card)",
+              background:"var(--bg-raised)",
               whiteSpace:"nowrap",
             }}>{f}</span>
           ))}
         </div>
 
         {/* Divider */}
-        <div style={{ height:1, background:"var(--border-faint)", margin:"4px 0" }} />
+        <div style={{ height:1, background:"var(--border-faint)", margin:"2px 0" }} />
 
         {/* Stat + CTA row */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:16 }}>
           {/* Stat */}
           <div style={{ borderLeft:`2px solid ${p.color}`, paddingLeft:12 }}>
             <div style={{
-              fontFamily:"var(--font-display)", fontSize:"clamp(22px,2.5vw,28px)",
+              fontFamily:"var(--font-display)", fontSize:"clamp(20px,2.2vw,26px)",
               fontWeight:700, letterSpacing:"-0.04em", color:p.color, lineHeight:1,
             }}>{p.stat.value}</div>
             <div style={{
@@ -234,9 +251,9 @@ function ProductCard({ p, i }: { p: typeof products[0]; i: number }) {
               display:"inline-flex", alignItems:"center", gap:8,
               fontFamily:"var(--font-display)", fontSize:13, fontWeight:600,
               letterSpacing:"-0.01em", color:p.color,
-              background:`${p.color}18`,
+              background:`${p.color}15`,
               padding:"10px 18px", borderRadius:8,
-              border:`1px solid ${p.color}40`,
+              border:`1px solid ${p.color}38`,
               flexShrink:0,
             }}>
               Coming Soon
@@ -306,7 +323,7 @@ export default function ProductShowcase() {
         <div style={{
           display:"grid",
           gridTemplateColumns:"repeat(3, 1fr)",
-          gap:24,
+          gap:22,
           perspective:1200,
         }} className="product-grid-5">
           {products.map((p, i) => (
@@ -317,7 +334,7 @@ export default function ProductShowcase() {
 
       <style>{`
         @media (max-width: 1100px) { .product-grid-5 { grid-template-columns: 1fr 1fr !important; } }
-        @media (max-width: 580px) { .product-grid-5 { grid-template-columns: 1fr !important; } }
+        @media (max-width: 580px)  { .product-grid-5 { grid-template-columns: 1fr !important; } }
       `}</style>
     </section>
   );
