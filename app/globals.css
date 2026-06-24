@@ -2,15 +2,19 @@
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap');
 @import "tailwindcss";
 
-/* ── Tokens: Dark ───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Dark (default) ─────────────────────────────────────────── */
 :root {
-  --bg:           #050505;
-  --bg-raised:    #0C0C0B;
-  --bg-card:      rgba(240,239,233,0.032);
-  --bg-hover:     rgba(240,239,233,0.048);
-  --border:       rgba(240,239,233,0.08);
-  --border-hi:    rgba(240,239,233,0.15);
-  --border-faint: rgba(240,239,233,0.04);
+  --bg:            #050505;
+  --bg-raised:     #0D0D0C;
+  --bg-card:       rgba(240,239,233,0.034);
+  --bg-hover:      rgba(240,239,233,0.055);
+  --border:        rgba(240,239,233,0.08);
+  --border-hi:     rgba(240,239,233,0.16);
+  --border-faint:  rgba(240,239,233,0.042);
 
   --text-primary:   #F0EFE9;
   --text-secondary: rgba(240,239,233,0.52);
@@ -22,60 +26,66 @@
   --emerald: #3ECF8E;
   --amber:   #F0A500;
 
-  /* Nav */
-  --nav-bg:           rgba(5,5,5,0.72);
-  --nav-bg-scrolled:  rgba(6,6,5,0.92);
-  --nav-border:       rgba(240,239,233,0.07);
-  --mobile-menu-bg:   rgba(5,5,5,0.98);
+  --nav-bg:          rgba(5,5,5,0.70);
+  --nav-bg-scrolled: rgba(6,6,5,0.94);
+  --nav-border:      rgba(240,239,233,0.07);
+  --mobile-menu-bg:  rgba(5,5,5,0.98);
 
-  /* Image vignette — dark translucent so images look great in both themes */
-  --img-vignette-start: rgba(5,5,5,0.65);
-  --img-vignette-mid:   rgba(5,5,5,0.18);
+  /* Image vignette — always dark so screenshots look sharp */
+  --img-vignette-a: rgba(5,5,5,0.65);
+  --img-vignette-b: rgba(5,5,5,0.18);
 
-  --grid-line:    rgba(240,239,233,0.025);
-  --noise-opacity: 0.28;
-  --selection-bg: rgba(240,239,233,0.12);
+  --grid-line:      rgba(240,239,233,0.025);
+  --noise-opacity:  0.28;
+  --selection-bg:   rgba(240,239,233,0.12);
 
   --font-hero:    'Clash Display', 'Space Grotesk', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Inter', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 
+  --ease-expo:     cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out:   cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-inout:  cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-/* ── Tokens: Light ──────────────────────────────────────────── */
+/* ── Light ──────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg:           #F5F4EF;
-  --bg-raised:    #ECEAE3;
-  /* White cards on warm beige — classic premium look */
-  --bg-card:      rgba(255,255,255,0.72);
-  --bg-hover:     rgba(255,255,255,0.92);
-  --border:       rgba(0,0,0,0.10);
-  --border-hi:    rgba(0,0,0,0.20);
-  --border-faint: rgba(0,0,0,0.055);
+  --bg:            #F5F4EF;
+  --bg-raised:     #ECEAE3;
+  /*
+    White cards on warm-beige background.
+    This is the correct light-mode premium pattern —
+    clear contrast, paper-like feel.
+  */
+  --bg-card:       rgba(255,255,255,0.78);
+  --bg-hover:      rgba(255,255,255,0.95);
+  --border:        rgba(0,0,0,0.09);
+  --border-hi:     rgba(0,0,0,0.18);
+  --border-faint:  rgba(0,0,0,0.05);
 
   --text-primary:   #0F0F0D;
   --text-secondary: rgba(15,15,13,0.52);
-  --text-tertiary:  rgba(15,15,13,0.30);
-  --text-ghost:     rgba(15,15,13,0.12);
+  --text-tertiary:  rgba(15,15,13,0.32);
+  --text-ghost:     rgba(15,15,13,0.13);
 
-  --nav-bg:           rgba(245,244,239,0.80);
-  --nav-bg-scrolled:  rgba(245,244,239,0.96);
-  --nav-border:       rgba(0,0,0,0.09);
-  --mobile-menu-bg:   rgba(245,244,239,0.99);
+  --nav-bg:          rgba(245,244,239,0.78);
+  --nav-bg-scrolled: rgba(245,244,239,0.97);
+  --nav-border:      rgba(0,0,0,0.08);
+  --mobile-menu-bg:  rgba(245,244,239,0.99);
 
-  /* In light mode, still use dark vignette — images look far better */
-  --img-vignette-start: rgba(0,0,0,0.42);
-  --img-vignette-mid:   rgba(0,0,0,0.10);
+  /* Dark vignette even in light mode — images look far better */
+  --img-vignette-a: rgba(0,0,0,0.40);
+  --img-vignette-b: rgba(0,0,0,0.10);
 
-  --grid-line:    rgba(0,0,0,0.035);
-  --noise-opacity: 0.18;
-  --selection-bg: rgba(0,0,0,0.08);
+  --grid-line:      rgba(0,0,0,0.038);
+  --noise-opacity:  0.16;
+  --selection-bg:   rgba(0,0,0,0.08);
 }
 
-/* ── Reset ──────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
@@ -92,7 +102,7 @@ body {
   font-family: var(--font-body);
   overflow-x: hidden;
 }
-body.theme-ready { transition: background 0.35s ease; }
+body.theme-ready  { transition: background 0.35s ease; }
 body.custom-cursor-active,
 body.custom-cursor-active a,
 body.custom-cursor-active button { cursor: none !important; }
@@ -101,12 +111,16 @@ body.custom-cursor-active button { cursor: none !important; }
 ::-webkit-scrollbar { display: none; width: 0; }
 * { scrollbar-width: none; -ms-overflow-style: none; }
 
-/* ── Lenis ──────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   LENIS
+═══════════════════════════════════════════════════════════════ */
 html.lenis, html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth  { scroll-behavior: auto !important; }
 .lenis.lenis-stopped { overflow: hidden; }
 
-/* ── Type scale ─────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   TYPE SCALE
+═══════════════════════════════════════════════════════════════ */
 .hero-headline {
   font-family: var(--font-hero);
   font-size: clamp(52px, 9.5vw, 120px);
@@ -136,39 +150,28 @@ html.lenis, html.lenis body { height: auto; }
   color: var(--text-tertiary);
 }
 
-/* ── Custom cursor ──────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════════════════════════════ */
 .cursor-dot {
-  position: fixed;
-  top: 0; left: 0;
-  width: 5px; height: 5px;
-  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  width: 5px; height: 5px; border-radius: 50%;
   background: var(--text-primary);
-  pointer-events: none;
-  z-index: 999999;
-  margin-left: -2.5px;
-  margin-top: -2.5px;
+  pointer-events: none; z-index: 999999;
+  margin-left: -2.5px; margin-top: -2.5px;
   will-change: transform;
-  transition: width 0.2s var(--ease-out-expo),
-              height 0.2s var(--ease-out-expo),
-              background 0.2s ease,
-              opacity 0.3s ease;
+  transition: width 0.2s var(--ease-expo), height 0.2s var(--ease-expo),
+              background 0.2s ease, opacity 0.3s ease;
 }
 .cursor-ring {
-  position: fixed;
-  top: 0; left: 0;
-  width: 32px; height: 32px;
-  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  width: 32px; height: 32px; border-radius: 50%;
   border: 1px solid rgba(240,239,233,0.35);
-  pointer-events: none;
-  z-index: 999998;
-  margin-left: -16px;
-  margin-top: -16px;
+  pointer-events: none; z-index: 999998;
+  margin-left: -16px; margin-top: -16px;
   will-change: transform;
-  transition: width 0.25s var(--ease-out-expo),
-              height 0.25s var(--ease-out-expo),
-              border-color 0.2s ease,
-              border-width 0.2s ease,
-              opacity 0.3s ease;
+  transition: width 0.25s var(--ease-expo), height 0.25s var(--ease-expo),
+              border-color 0.2s ease, opacity 0.3s ease;
 }
 .cursor-dot.is-hovering  { width: 8px; height: 8px; }
 .cursor-ring.is-hovering { width: 44px; height: 44px; border-color: rgba(240,239,233,0.6); }
@@ -177,7 +180,9 @@ html.lenis, html.lenis body { height: auto; }
 .cursor-dot.is-text  { width: 2px; height: 24px; border-radius: 2px; }
 .cursor-ring.is-text { opacity: 0; }
 
-/* ── Noise ──────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   NOISE TEXTURE
+═══════════════════════════════════════════════════════════════ */
 .noise::after {
   content: '';
   position: fixed; inset: 0;
@@ -186,7 +191,9 @@ html.lenis, html.lenis body { height: auto; }
   opacity: var(--noise-opacity);
 }
 
-/* ── Grid overlay ───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   GRID OVERLAY
+═══════════════════════════════════════════════════════════════ */
 .grid-overlay {
   background-image:
     linear-gradient(var(--grid-line) 1px, transparent 1px),
@@ -194,7 +201,9 @@ html.lenis, html.lenis body { height: auto; }
   background-size: 80px 80px;
 }
 
-/* ── Glassmorphism card ─────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════════════════════ */
 .glass {
   background: var(--bg-card);
   backdrop-filter: blur(20px) saturate(1.4);
@@ -202,17 +211,6 @@ html.lenis, html.lenis body { height: auto; }
   border: 1px solid var(--border);
 }
 
-/* ── Gradient border ────────────────────────────────────────── */
-.grad-border {
-  border: 1px solid transparent;
-  background-image:
-    linear-gradient(var(--bg-card), var(--bg-card)),
-    linear-gradient(135deg, var(--blue), var(--violet), var(--emerald));
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-}
-
-/* ── Gradient text ──────────────────────────────────────────── */
 .grad-text {
   background: linear-gradient(135deg, var(--text-primary) 40%, rgba(240,239,233,0.4));
   -webkit-background-clip: text;
@@ -220,7 +218,31 @@ html.lenis, html.lenis body { height: auto; }
   background-clip: text;
 }
 
-/* ── Floating orb animations (hero background mesh) ────────── */
+/* ═══════════════════════════════════════════════════════════════
+   PRODUCT CARD  —  image vignette (theme-aware via CSS vars)
+═══════════════════════════════════════════════════════════════ */
+.product-img-vignette {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 88px;
+  background: linear-gradient(
+    to top,
+    var(--img-vignette-a) 0%,
+    var(--img-vignette-b) 55%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Light mode: white cards cast subtle shadows for depth */
+[data-theme="light"] .product-card-box {
+  box-shadow: 0 2px 18px rgba(0,0,0,0.055), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════════════════ */
 @keyframes orb-a {
   0%,100% { transform: translate(0,0) scale(1); }
   25%  { transform: translate(6%,-9%) scale(1.06); }
@@ -242,7 +264,6 @@ html.lenis, html.lenis body { height: auto; }
   80%  { transform: translate(4%,-4%) scale(1.05); }
 }
 
-/* ── Marquee ────────────────────────────────────────────────── */
 @keyframes marquee-left {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -253,31 +274,21 @@ html.lenis, html.lenis body { height: auto; }
 }
 .marquee-track:hover { animation-play-state: paused; }
 
-/* ── Shimmer card sweep ─────────────────────────────────────── */
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
-}
-
-/* ── Typewriter cursor ──────────────────────────────────────── */
 @keyframes tw-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
 
-/* ── Scroll bob ─────────────────────────────────────────────── */
 @keyframes scroll-bob {
   0%,100% { transform: translateY(0); }
   50%     { transform: translateY(7px); }
 }
 
-/* ── Pulse dot ──────────────────────────────────────────────── */
 @keyframes pulse-dot {
   0%,100% { opacity:1; transform:scale(1); }
   50%     { opacity:0.4; transform:scale(0.7); }
 }
 
-/* ── 3D card tilt preserve ─────────────────────────────────── */
-.card-3d { transform-style: preserve-3d; }
-
-/* ── Scroll progress bar ────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL PROGRESS BAR
+═══════════════════════════════════════════════════════════════ */
 .scroll-progress {
   position: fixed; top: 0; left: 0; right: 0;
   height: 2px; z-index: 9999; pointer-events: none;
@@ -285,61 +296,18 @@ html.lenis, html.lenis body { height: auto; }
   background: linear-gradient(to right, var(--blue), var(--violet), var(--emerald));
 }
 
-/* ── Split text — clip container ────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   SPLIT TEXT CLIP
+═══════════════════════════════════════════════════════════════ */
 .split-clip {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
 }
 
-/* ── Word-reveal stagger helper ─────────────────────────────── */
-@keyframes word-up {
-  from { transform: translateY(1.1em) rotateZ(4deg); opacity: 0; filter: blur(4px); }
-  to   { transform: translateY(0) rotateZ(0deg);     opacity: 1; filter: blur(0); }
-}
-
-/* ── Stats grid equal height ────────────────────────────────── */
-.stats-grid > * { transition: background 0.3s ease; }
-
-/* ── Text overflow clip trick ───────────────────────────────── */
-.overflow-clip-y {
-  overflow: hidden;
-  display: inline-block;
-  vertical-align: bottom;
-}
-
-/* ── Kinetic interlude: ensure bg is solid over everything ─── */
-.kinetic-sticky {
-  background: var(--bg);
-  will-change: transform;
-}
-
-/* ── Hero char reveal overflow fix ──────────────────────────── */
-.hero-headline {
-  overflow: hidden;
-  padding-bottom: 0.06em;
-}
-
-/* ── Product card image — theme-aware vignette ──────────────── */
-.product-img-vignette {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 90px;
-  background: linear-gradient(
-    to top,
-    var(--img-vignette-start) 0%,
-    var(--img-vignette-mid) 55%,
-    transparent 100%
-  );
-  pointer-events: none;
-}
-
-/* ── Light mode product card elevated shadow ────────────────── */
-[data-theme="light"] .product-card-box {
-  box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
-}
-
-/* ── Smooth reveal for SplitText word mode ──────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   .split-clip > * {
     animation: none !important;
