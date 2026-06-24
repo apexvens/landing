@@ -4,16 +4,19 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
 /* ────────────────────────────────────────────────────────────────
-   KineticSection  –  "Every. Problem. Has. An. Answer."
+   KineticSection  —  "Every. Problem. Has. An. Answer."
 
-   Rules of Hooks are respected throughout:
-   • CharSpan  — one component per character (hooks at top level)
-   • ProgressBar — one component per line  (hooks at top level)
-   No useTransform anywhere inside a .map() call.
+   FIX: Per-character Y-stagger was making each letter appear at a
+   different height during scroll, creating a "diagonal cascade"
+   that looked like a rendering bug.
 
-   Content starts at 28 % opacity so the section is NEVER blank.
-   Lenis handles easing; no useSpring needed here.
-   Height: 220 vh  (was 500 vh — was the source of tedium)
+   Solution:
+   • Y-transform applied to the WHOLE WORD as a unit (clipped with
+     overflow:hidden so it slides up cleanly from below)
+   • Per-character opacity ONLY — creates a "light sweeping across"
+     illumination effect without any vertical misalignment
+   • Blur filter removed — was smearing text during animation
+   • All hooks at component top level (no hooks in .map() calls)
 ──────────────────────────────────────────────────────────────── */
 
 const LINES = [
@@ -24,7 +27,7 @@ const LINES = [
   { word: "answer.", litColor: "var(--text-primary)",    accent: "#F0EFE9" },
 ] as const;
 
-/* ── Each character: hooks at component top level ── */
+/* ── Character: opacity-only cascade (no y, no blur) ── */
 function CharSpan({
   char, progress, startP, endP, litColor,
 }: {
@@ -34,10 +37,7 @@ function CharSpan({
   endP: number;
   litColor: string;
 }) {
-  const y   = useTransform(progress, [startP, endP], [46, 0]);
-  const op  = useTransform(progress, [startP, endP], [0.22, 1]);
-  const blV = useTransform(progress, [startP, endP], [6, 0]);
-  const blr = useTransform(blV, (b: number) => `blur(${b}px)`);
+  const op = useTransform(progress, [startP, endP], [0.16, 1]);
 
   return (
     <motion.span
@@ -49,8 +49,8 @@ function CharSpan({
         fontWeight: 700,
         letterSpacing: "-0.045em",
         color: litColor,
-        y, opacity: op, filter: blr,
-        willChange: "transform, opacity, filter",
+        opacity: op,
+        willChange: "opacity",
       }}
     >
       {char === " " ? "\u00A0" : char}
@@ -58,7 +58,32 @@ function CharSpan({
   );
 }
 
-/* ── Right-edge progress bar per line — hooks at component top level ── */
+/* ── Accent bar: hooks at component top level ── */
+function AccentBar({
+  accent, progress, startP, peakP,
+}: {
+  accent: string;
+  progress: MotionValue<number>;
+  startP: number;
+  peakP: number;
+}) {
+  const sc = useTransform(progress, [startP, peakP], [0, 1]);
+  const op = useTransform(progress, [startP, peakP], [0, 0.75]);
+
+  return (
+    <motion.div style={{
+      position: "absolute",
+      left: -20, top: "50%", y: "-50%",
+      width: 2, height: "78%",
+      borderRadius: 2,
+      background: accent,
+      scaleY: sc, opacity: op,
+      transformOrigin: "top",
+    }} />
+  );
+}
+
+/* ── Right-edge progress bar: hooks at component top level ── */
 function ProgressBar({
   accent, progress, startP, endP,
 }: {
@@ -67,12 +92,13 @@ function ProgressBar({
   startP: number;
   endP: number;
 }) {
-  const sc = useTransform(progress, [startP, endP], [0.10, 1]);
-  const op = useTransform(progress, [startP, endP], [0.18, 0.85]);
+  const sc = useTransform(progress, [startP, endP], [0.08, 1]);
+  const op = useTransform(progress, [startP, endP], [0.15, 0.80]);
 
   return (
     <motion.div style={{
-      width: 2, height: 26, borderRadius: 1,
+      width: 2, height: 26,
+      borderRadius: 1,
       background: accent,
       scaleY: sc, opacity: op,
       transformOrigin: "top",
@@ -80,7 +106,7 @@ function ProgressBar({
   );
 }
 
-/* ── Word row: accent bar + individual CharSpan components ── */
+/* ── Word row: slides up as a unit, chars illuminate ── */
 function KineticWord({
   line, progress, index, total,
 }: {
@@ -91,39 +117,53 @@ function KineticWord({
 }) {
   const segSize  = 1 / total;
   const segStart = index * segSize;
-  const segPeak  = segStart + segSize * 0.72;
-  const chars    = line.word.split("");
+  const slideEnd = segStart + segSize * 0.40; // word fully in by 40% of its segment
 
-  /* Accent bar hooks live here at top level of this component */
-  const barSc = useTransform(progress, [segStart, segPeak], [0, 1]);
-  const barOp = useTransform(progress, [segStart, segPeak], [0, 0.80]);
+  /* Word-level slide — hooks at top of THIS component */
+  const wordY  = useTransform(progress, [segStart, slideEnd], [60, 0]);
+  const wordOp = useTransform(progress, [segStart, slideEnd], [0, 1]);
+
+  const chars = line.word.split("");
 
   return (
-    <div style={{ position: "relative", lineHeight: 0.9 }}>
-      <motion.div style={{
-        position: "absolute", left: -18, top: "50%", y: "-50%",
-        width: 2, height: "80%", borderRadius: 2,
-        background: line.accent,
-        scaleY: barSc, opacity: barOp,
-        transformOrigin: "top",
-      }} />
+    <div style={{ position: "relative" }}>
+      {/* Accent bar lives outside the overflow:hidden clip */}
+      <AccentBar
+        accent={line.accent}
+        progress={progress}
+        startP={segStart}
+        peakP={segStart + segSize * 0.65}
+      />
 
-      <span aria-label={line.word} style={{ display: "inline-flex", gap: "0.01em" }}>
-        {chars.map((ch, ci) => {
-          const charStart = segStart + (ci / chars.length) * segSize * 0.52;
-          const charEnd   = charStart + segSize * 0.28;
-          return (
-            <CharSpan
-              key={ci}
-              char={ch}
-              progress={progress}
-              startP={charStart}
-              endP={charEnd}
-              litColor={line.litColor}
-            />
-          );
-        })}
-      </span>
+      {/* overflow:hidden clips the slide-up so it emerges from below */}
+      <div style={{ overflow: "hidden", paddingBottom: "0.05em" }}>
+        <motion.span
+          aria-label={line.word}
+          style={{
+            display: "inline-flex",
+            gap: "0.01em",
+            y: wordY,
+            opacity: wordOp,
+            willChange: "transform, opacity",
+          }}
+        >
+          {chars.map((ch, ci) => {
+            /* Stagger opacity across the remaining 60% of the segment */
+            const charStart = slideEnd + (ci / chars.length) * segSize * 0.42;
+            const charEnd   = charStart + segSize * 0.25;
+            return (
+              <CharSpan
+                key={ci}
+                char={ch}
+                progress={progress}
+                startP={charStart}
+                endP={charEnd}
+                litColor={line.litColor}
+              />
+            );
+          })}
+        </motion.span>
+      </div>
     </div>
   );
 }
@@ -136,50 +176,59 @@ export default function KineticSection() {
     offset: ["start start", "end end"],
   });
 
-  const progress = scrollYProgress; // Lenis handles easing — no extra spring needed
+  const progress = scrollYProgress; // Lenis handles easing; no spring needed
 
-  /* CTA — hooks at component top level */
-  const ctaOp = useTransform(progress, [0.80, 1], [0, 1]);
-  const ctaY  = useTransform(progress, [0.80, 1], [14, 0]);
+  const ctaOp = useTransform(progress, [0.82, 1], [0, 1]);
+  const ctaY  = useTransform(progress, [0.82, 1], [12, 0]);
 
   return (
     <div ref={containerRef} style={{ height: "220vh", position: "relative" }}>
       <div style={{
-        position: "sticky", top: 0, height: "100vh",
-        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         background: "var(--bg)",
         borderTop: "1px solid var(--border)",
-        overflow: "hidden",
+        /* No overflow:hidden — would clip word slide animations */
       }}>
         {/* Ambient glow */}
         <div style={{
-          position: "absolute", left: "50%", top: "52%",
-          transform: "translate(-50%, -50%)",
+          position: "absolute",
+          left: "50%", top: "50%",
+          transform: "translate(-50%,-50%)",
           width: 900, height: 480,
-          background: "radial-gradient(ellipse, rgba(155,111,232,0.06) 0%, transparent 68%)",
-          filter: "blur(100px)", pointerEvents: "none",
+          background: "radial-gradient(ellipse, rgba(155,111,232,0.055) 0%, transparent 68%)",
+          filter: "blur(100px)",
+          pointerEvents: "none",
         }} />
 
-        {/* Main content */}
+        {/* Content */}
         <div style={{
           position: "relative", zIndex: 1,
-          padding: "0 clamp(24px, 6vw, 80px)", width: "100%",
+          padding: "0 clamp(24px, 6vw, 80px)",
+          width: "100%",
         }}>
           <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-            {/* Eyebrow — static, always visible */}
+            {/* Eyebrow */}
             <p style={{
-              fontFamily: "var(--font-mono)", fontSize: 9,
-              letterSpacing: "0.22em", textTransform: "uppercase",
-              color: "var(--text-tertiary)", margin: "0 0 44px",
+              fontFamily: "var(--font-mono)",
+              fontSize: 9, letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "var(--text-tertiary)",
+              margin: "0 0 44px",
             }}>
               The Apex thesis
             </p>
 
             {/* Words */}
             <div style={{
-              display: "flex", flexDirection: "column",
-              gap: "clamp(2px, 0.3vh, 6px)",
-              paddingLeft: 24,
+              display: "flex",
+              flexDirection: "column",
+              gap: "clamp(2px, 0.4vh, 8px)",
+              paddingLeft: 28,
             }}>
               {LINES.map((line, i) => (
                 <KineticWord
@@ -192,9 +241,9 @@ export default function KineticSection() {
               ))}
             </div>
 
-            {/* Bottom hint */}
+            {/* CTA */}
             <motion.div style={{
-              marginTop: 52, paddingLeft: 24,
+              marginTop: 52, paddingLeft: 28,
               display: "flex", alignItems: "center", gap: 10,
               opacity: ctaOp, y: ctaY,
             }}>
@@ -205,8 +254,9 @@ export default function KineticSection() {
                 flexShrink: 0,
               }} />
               <span style={{
-                fontFamily: "var(--font-mono)", fontSize: 9,
-                letterSpacing: "0.18em", textTransform: "uppercase",
+                fontFamily: "var(--font-mono)",
+                fontSize: 9, letterSpacing: "0.18em",
+                textTransform: "uppercase",
                 color: "var(--text-tertiary)",
               }}>
                 Five products built on this
@@ -215,7 +265,7 @@ export default function KineticSection() {
           </div>
         </div>
 
-        {/* Right-edge progress indicator — each bar is its own component */}
+        {/* Right edge progress bars */}
         <div style={{
           position: "absolute",
           right: "clamp(24px, 4vw, 60px)",

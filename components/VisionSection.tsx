@@ -4,43 +4,40 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 
 /* ────────────────────────────────────────────────────────────────
-   VisionSection  –  "Building Today. Scaling Tomorrow."
+   VisionSection  —  "Building Today. Scaling Tomorrow."
 
-   Rules of Hooks respected throughout:
-   • WordLine    — component per word  (hooks at top level)
-   • ProgressBar — component per bar   (hooks at top level)
-   • BodyLine    — component per line  (hooks at top level)
-   No useTransform inside any .map() call.
-
-   Content starts at 18 % opacity — never blank.
-   Height: 200 vh (was 400 vh).
+   Same fix as KineticSection:
+   • No blur filter (smears text during animation)
+   • No per-character Y (causes diagonal stagger glitch)
+   • Word slides up as a unit via overflow:hidden clip
+   • No overflow:hidden on sticky wrapper (would clip words)
+   • All hooks at component top level — zero hooks inside .map()
 ──────────────────────────────────────────────────────────────── */
 
 const WORDS = [
-  { text: "Building",   primary: true,  skewX: "-1.5deg" },
-  { text: "Today.",     primary: false, skewX: "1deg"    },
-  { text: "Scaling",    primary: true,  skewX: "-1deg"   },
-  { text: "Tomorrow.",  primary: false, skewX: "0.8deg"  },
+  { text: "Building",   primary: true  },
+  { text: "Today.",     primary: false },
+  { text: "Scaling",    primary: true  },
+  { text: "Tomorrow.",  primary: false },
 ] as const;
 
-/* ── Word — hooks at component top level ── */
+/* ── Word line: slides up as a unit, hooks at top level ── */
 function WordLine({
-  text, primary, skewX, progress, startP, endP,
+  text, primary, progress, startP, endP,
 }: {
   text: string;
   primary: boolean;
-  skewX: string;
   progress: MotionValue<number>;
   startP: number;
   endP: number;
 }) {
-  const y   = useTransform(progress, [startP, endP], [50, 0]);
-  const op  = useTransform(progress, [startP, endP], [0.16, primary ? 1 : 0.33]);
-  const blV = useTransform(progress, [startP, endP], [8, 0]);
-  const blr = useTransform(blV, (b: number) => `blur(${b}px)`);
+  const slideEnd = startP + (endP - startP) * 0.45;
+
+  const y  = useTransform(progress, [startP, slideEnd], [58, 0]);
+  const op = useTransform(progress, [startP, endP],     [0,  primary ? 1 : 0.32]);
 
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: "hidden", paddingBottom: "0.04em" }}>
       <motion.span
         aria-label={text}
         style={{
@@ -51,9 +48,8 @@ function WordLine({
           letterSpacing: "-0.045em",
           lineHeight: 0.92,
           color: primary ? "var(--text-primary)" : "var(--text-secondary)",
-          skewX,
-          y, opacity: op, filter: blr,
-          willChange: "transform, opacity, filter",
+          y, opacity: op,
+          willChange: "transform, opacity",
         }}
       >
         {text}
@@ -62,7 +58,7 @@ function WordLine({
   );
 }
 
-/* ── Right-edge bar — hooks at component top level ── */
+/* ── Right-edge progress bar ── */
 function ProgressBar({
   primary, progress, startP, endP,
 }: {
@@ -72,7 +68,7 @@ function ProgressBar({
   endP: number;
 }) {
   const sc = useTransform(progress, [startP, endP], [0.08, 1]);
-  const op = useTransform(progress, [startP, endP], [0.14, primary ? 0.85 : 0.42]);
+  const op = useTransform(progress, [startP, endP], [0.12, primary ? 0.85 : 0.40]);
 
   return (
     <motion.div style={{
@@ -84,7 +80,7 @@ function ProgressBar({
   );
 }
 
-/* ── Body paragraph — hooks at component top level ── */
+/* ── Body copy lines ── */
 function BodyLine({
   text, progress, startP, endP,
 }: {
@@ -119,47 +115,55 @@ export default function VisionSection() {
     offset: ["start start", "end end"],
   });
 
-  const progress = scrollYProgress; // Lenis handles easing; no spring needed
+  const progress = scrollYProgress;
 
-  const orbScale = useTransform(progress, [0, 1], [0.82, 1.14]);
-  const orbOp    = useTransform(progress, [0, 0.15, 0.85, 1], [0.25, 1, 1, 0.25]);
+  const orbScale = useTransform(progress, [0, 1],          [0.82, 1.14]);
+  const orbOp    = useTransform(progress, [0, 0.2, 0.8, 1],[0.25, 1, 1, 0.25]);
 
   return (
     <div ref={containerRef} style={{ height: "200vh", position: "relative" }}>
       <div style={{
-        position: "sticky", top: 0, height: "100vh",
-        display: "flex", alignItems: "center",
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
         background: "var(--bg)",
         borderTop: "1px solid var(--border)",
-        overflow: "hidden",
+        /* No overflow:hidden — would clip word slide animations */
       }}>
         {/* Ambient orb */}
         <motion.div style={{
-          position: "absolute", left: "50%", top: "50%",
+          position: "absolute",
+          left: "50%", top: "50%",
           x: "-50%", y: "-50%",
           width: 800, height: 400,
-          background: "radial-gradient(ellipse, rgba(74,144,226,0.08) 0%, transparent 68%)",
+          background: "radial-gradient(ellipse, rgba(74,144,226,0.075) 0%, transparent 68%)",
           filter: "blur(90px)",
           pointerEvents: "none",
-          scale: orbScale, opacity: orbOp,
+          scale: orbScale,
+          opacity: orbOp,
         }} />
 
+        {/* Content */}
         <div style={{
           position: "relative", zIndex: 1,
           padding: "0 clamp(24px, 6vw, 80px)",
           width: "100%", maxWidth: 1200, margin: "0 auto",
         }}>
-          {/* Eyebrow — static, always visible */}
+          {/* Eyebrow */}
           <p style={{
-            fontFamily: "var(--font-mono)", fontSize: 9,
-            letterSpacing: "0.22em", textTransform: "uppercase",
-            color: "var(--text-tertiary)", margin: "0 0 48px",
+            fontFamily: "var(--font-mono)",
+            fontSize: 9, letterSpacing: "0.22em",
+            textTransform: "uppercase",
+            color: "var(--text-tertiary)",
+            margin: "0 0 48px",
           }}>
             Our mandate
           </p>
 
-          {/* Words — each rendered as its own component */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.02em" }}>
+          {/* Words */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.03em" }}>
             {WORDS.map((word, i) => {
               const seg   = 1 / WORDS.length;
               const start = i * seg;
@@ -169,7 +173,6 @@ export default function VisionSection() {
                   key={word.text}
                   text={word.text}
                   primary={word.primary}
-                  skewX={word.skewX}
                   progress={progress}
                   startP={start}
                   endP={end}
@@ -187,19 +190,19 @@ export default function VisionSection() {
             <BodyLine
               text="Building AI-powered tools across mobility, health, productivity, and education."
               progress={progress}
-              startP={0.72}
+              startP={0.74}
               endP={0.90}
             />
             <BodyLine
-              text="No niche. No category. Just real problems, solved exceptionally."
+              text="No niche. No category. Just real problems, solved exceptionally well."
               progress={progress}
-              startP={0.82}
+              startP={0.84}
               endP={1.00}
             />
           </div>
         </div>
 
-        {/* Right-edge progress — each is its own component */}
+        {/* Right edge progress bars */}
         <div style={{
           position: "absolute",
           right: "clamp(24px, 4vw, 60px)",
