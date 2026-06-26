@@ -3,17 +3,9 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
-/* ────────────────────────────────────────────────────────────────
-   VisionSection  —  "Building Today. Scaling Tomorrow."
+/* ── VisionSection — light mode fix: CSS vars for text color ── */
 
-   Same approach as KineticSection: useInView viewport trigger,
-   no scroll scrubbing, no complex hook chains.
-──────────────────────────────────────────────────────────────── */
-
-interface Word {
-  text:    string;
-  primary: boolean;
-}
+interface Word { text: string; primary: boolean; }
 
 const WORDS: Word[] = [
   { text: "Building",   primary: true  },
@@ -38,13 +30,11 @@ export default function VisionSection() {
       ref={ref}
       style={{
         minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
+        display: "flex", alignItems: "center",
         background: "var(--bg)",
         borderTop: "1px solid var(--border)",
         padding: "100px clamp(24px, 6vw, 80px)",
-        position: "relative",
-        overflow: "hidden",
+        position: "relative", overflow: "hidden",
       }}
     >
       {/* Ambient orb */}
@@ -53,31 +43,23 @@ export default function VisionSection() {
         animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
         style={{
-          position: "absolute",
-          left: "50%", top: "50%",
+          position: "absolute", left: "50%", top: "50%",
           x: "-50%", y: "-50%",
           width: 800, height: 400,
           background: "radial-gradient(ellipse, rgba(74,144,226,0.075) 0%, transparent 68%)",
-          filter: "blur(90px)",
-          pointerEvents: "none",
+          filter: "blur(90px)", pointerEvents: "none",
         }}
       />
 
-      <div style={{
-        maxWidth: 1200, margin: "0 auto", width: "100%",
-        position: "relative", zIndex: 1,
-      }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 9, letterSpacing: "0.22em",
-            textTransform: "uppercase",
-            color: "var(--text-tertiary)",
-            margin: "0 0 48px",
+            fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.22em",
+            textTransform: "uppercase", color: "var(--text-tertiary)", margin: "0 0 48px",
           }}
         >
           Our mandate
@@ -98,10 +80,9 @@ export default function VisionSection() {
                     display: "block",
                     fontFamily: "var(--font-hero)",
                     fontSize: "clamp(48px, 9.5vw, 128px)",
-                    fontWeight: 700,
-                    letterSpacing: "-0.045em",
-                    lineHeight: 0.92,
-                    color: word.primary ? "var(--text-primary)" : "var(--text-secondary)",
+                    fontWeight: 700, letterSpacing: "-0.045em", lineHeight: 0.92,
+                    /* CSS vars adapt automatically to light/dark */
+                    color: word.primary ? "var(--text-primary)" : "var(--text-tertiary)",
                   }}
                 >
                   {word.text}
@@ -120,12 +101,8 @@ export default function VisionSection() {
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
               transition={{ delay: WORDS.length * 0.12 + i * 0.1 + 0.1, duration: 0.6, ease: EASE }}
               style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "clamp(13px, 1.2vw, 15px)",
-                lineHeight: 1.72,
-                color: "var(--text-tertiary)",
-                fontWeight: 300,
-                margin: 0,
+                fontFamily: "var(--font-body)", fontSize: "clamp(13px, 1.2vw, 15px)",
+                lineHeight: 1.72, color: "var(--text-tertiary)", fontWeight: 300, margin: 0,
               }}
             >
               {text}
@@ -134,10 +111,9 @@ export default function VisionSection() {
         </div>
       </div>
 
-      {/* Right edge indicators */}
+      {/* Right edge */}
       <div style={{
-        position: "absolute",
-        right: "clamp(24px, 4vw, 60px)",
+        position: "absolute", right: "clamp(24px, 4vw, 60px)",
         top: "50%", transform: "translateY(-50%)",
         display: "flex", flexDirection: "column", gap: 6,
       }}>
@@ -146,7 +122,7 @@ export default function VisionSection() {
             key={word.text}
             initial={{ scaleY: 0, opacity: 0 }}
             animate={inView
-              ? { scaleY: 1, opacity: word.primary ? 0.85 : 0.40 }
+              ? { scaleY: 1, opacity: word.primary ? 0.85 : 0.35 }
               : { scaleY: 0, opacity: 0 }
             }
             transition={{ delay: i * 0.12 + 0.05, duration: 0.5, ease: EASE }}

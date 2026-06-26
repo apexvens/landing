@@ -6,7 +6,7 @@ import SplitText from "./SplitText";
 
 function AnimatedNumber({ to, suffix = "", delay = 0 }: { to: number; suffix?: string; delay?: number }) {
   const [val, setVal] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
+  const ref    = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function AnimatedNumber({ to, suffix = "", delay = 0 }: { to: number; suffix?: s
       const start = performance.now();
       const dur = 1400;
       const tick = () => {
-        const p = Math.min((performance.now() - start) / dur, 1);
+        const p    = Math.min((performance.now() - start) / dur, 1);
         const ease = 1 - Math.pow(1 - p, 4);
         setVal(Math.round(ease * to));
         if (p < 1) requestAnimationFrame(tick);
@@ -28,14 +28,16 @@ function AnimatedNumber({ to, suffix = "", delay = 0 }: { to: number; suffix?: s
   return <span ref={ref}>{val}{suffix}</span>;
 }
 
+/* Updated to reflect real numbers: 4 shipped, 2 in progress, ∞ ideas */
 const STATS = [
-  { value: 5,    suffix: "",    label: "Products Built",  accent: "#4A90E2", symbol: null },
-  { value: 1000, suffix: "+",   label: "Hours Shipped",   accent: "#9B6FE8", symbol: null },
-  { value: 0,    suffix: "",    label: "Ideas Ahead",      accent: "#3ECF8E", symbol: "∞"  },
+  { value: 4,   suffix: "",  label: "Products Shipped",   accent: "#4A90E2", symbol: null },
+  { value: 2,   suffix: "",  label: "In Development",     accent: "#9B6FE8", symbol: null },
+  { value: 0,   suffix: "",  label: "Ideas Ahead",         accent: "#3ECF8E", symbol: "∞"  },
 ];
 
 export default function StatsSection() {
   const ref = useRef<HTMLElement>(null);
+
   return (
     <section
       ref={ref}
@@ -47,7 +49,7 @@ export default function StatsSection() {
         overflow: "hidden",
       }}
     >
-      {/* Ambient glow */}
+      {/* Ambient */}
       <div style={{
         position: "absolute", left: "50%", top: "50%",
         transform: "translate(-50%,-50%)",
@@ -57,7 +59,7 @@ export default function StatsSection() {
       }} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
-        {/* Section eyebrow with split reveal */}
+        {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 72 }}>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -70,8 +72,6 @@ export default function StatsSection() {
           >
             By the numbers
           </motion.p>
-
-          {/* Split-text section headline */}
           <div style={{ lineHeight: 1 }}>
             <SplitText
               text="Numbers don't lie."
@@ -119,7 +119,6 @@ export default function StatsSection() {
               }}
               whileHover={{ background: `${stat.accent}08` } as any}
             >
-              {/* Hover accent line */}
               <motion.div
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
@@ -127,21 +126,18 @@ export default function StatsSection() {
                 transition={{ duration: 0.8, delay: 0.3 + i * 0.1 }}
                 style={{
                   position: "absolute", top: 0, left: 0, right: 0, height: 2,
-                  background: stat.accent,
-                  transformOrigin: "left",
-                  opacity: 0.6,
+                  background: stat.accent, transformOrigin: "left", opacity: 0.6,
                 }}
               />
-
               <div style={{
                 fontFamily: "var(--font-hero)",
                 fontSize: "clamp(52px, 8vw, 96px)",
-                fontWeight: 700,
-                letterSpacing: "-0.045em",
-                color: stat.accent,
-                lineHeight: 1,
+                fontWeight: 700, letterSpacing: "-0.045em",
+                color: stat.accent, lineHeight: 1,
               }}>
-                {stat.symbol ?? <AnimatedNumber to={stat.value} suffix={stat.suffix} delay={i * 120} />}
+                {stat.symbol ?? (
+                  <AnimatedNumber to={stat.value} suffix={stat.suffix} delay={i * 120} />
+                )}
               </div>
               <div style={{
                 fontFamily: "var(--font-mono)", fontSize: 9,

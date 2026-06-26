@@ -140,6 +140,30 @@ const products: Product[] = [
       "AI admissions chat",
     ],
   },
+
+  {
+    id:    "inboxos",
+    index: "06",
+    name:  "InboxOS",
+    tagline: "Your inbox, finally intelligent.",
+    description: "InboxOS takes over any email inbox and surfaces what actually matters — deadlines, opportunities, follow-ups — so you never miss what's important.",
+    longDescription: "InboxOS connects to any email inbox and uses AI to read, categorise, and prioritise every message automatically. It surfaces emails containing deadlines, meeting requests, partnership opportunities, follow-ups, and critical alerts — presenting them in a clean priority feed instead of a chronological flood. InboxOS learns your patterns over time, getting smarter about what deserves your attention right now and what can safely wait.",
+    href:  "",
+    color: "#6366F1",
+    tag:   "Productivity · AI",
+    stat:  { value: "∞→0", label: "Inbox overload" },
+    imagePath:  "/inboxos/hero.png",
+    comingSoon: true,
+    emoji:      "📬",
+    features: [
+      "Multi-inbox support",
+      "Deadline detection",
+      "Opportunity surfacing",
+      "Smart categorisation",
+      "Priority feed view",
+      "Pattern learning AI",
+    ],
+  },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
@@ -817,9 +841,9 @@ export default function ProductShowcase() {
               lineHeight: 1.05, margin: 0,
               color: "var(--text-primary)",
             }}>
-              Five products.{" "}
+              Six products.{" "}
               <span style={{ color: "var(--text-tertiary)" }}>
-                Five real problems solved.
+                Six real problems solved.
               </span>
             </h2>
           </div>

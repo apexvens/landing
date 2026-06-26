@@ -5,8 +5,11 @@ import { motion } from "framer-motion";
 
 const products = [
   { name:"TripWise AI", href:"https://tripwiseai.vercel.app/" },
+  { name:"NutriSense",  href:"https://mynutrisense.vercel.app/#/home" },
   { name:"FolioAI",     href:"https://tryfolioai.vercel.app/" },
   { name:"EVMate",      href:"https://evmate-8ce3d.web.app/" },
+  { name:"UniPilot",    href:"" },
+  { name:"InboxOS",     href:"" },
 ];
 const social = [
   { name:"GitHub",   href:"https://github.com/neil-surjiani" },
@@ -43,31 +46,13 @@ export default function FooterSection() {
               <br />
               <span style={{ color:"var(--text-ghost)" }}>that matter.</span>
             </motion.h2>
-            <a
-              href="mailto:hello@apexventures.studio"
-              data-magnetic
-              style={{
-                display:"inline-flex", alignItems:"center", gap:8,
-                fontFamily:"var(--font-mono)", fontSize:10,
-                letterSpacing:"0.12em", textTransform:"uppercase",
-                color:"var(--text-secondary)", textDecoration:"none",
-                borderBottom:"1px solid var(--border)", paddingBottom:5,
-                transition:"color 0.2s, border-color 0.2s, transform 0.25s var(--ease-out-expo)",
-                willChange:"transform",
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.color = "var(--text-primary)";
-                el.style.borderColor = "var(--text-tertiary)";
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.color = "var(--text-secondary)";
-                el.style.borderColor = "var(--border)";
-              }}
-            >
-              hello@apexventures.studio ↗
-            </a>
+            <p style={{
+                fontFamily:"var(--font-body)", fontSize:14, fontWeight:300,
+                color:"var(--text-tertiary)", lineHeight:1.65, margin:0, maxWidth:320,
+              }}>
+                An independent studio out of Pune, India.
+                Building AI products that actually make a dent.
+              </p>
           </div>
 
           {/* Products */}

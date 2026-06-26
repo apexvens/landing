@@ -21,7 +21,7 @@ function Orb({ color, size, top, left, anim, delay, blur = 90 }: {
   );
 }
 
-/* ── Typewriter ──────────────────────────────────────────────── */
+/* ── Typewriter — supports \n for explicit line breaks ───────── */
 function Typewriter({
   text,
   startDelay = 0,
@@ -38,42 +38,42 @@ function Typewriter({
 
   useEffect(() => {
     if (!active) return;
-
     let typeTimer: ReturnType<typeof setInterval>;
     let i = 0;
-
     const startTimer = setTimeout(() => {
       typeTimer = setInterval(() => {
         i += 1;
         setDisplayed(text.slice(0, i));
         if (i >= text.length) {
           clearInterval(typeTimer);
-          /* Keep cursor blinking for 1.4 s then hide */
           setTimeout(() => setDone(true), 1400);
         }
       }, speed);
     }, startDelay);
-
-    return () => {
-      clearTimeout(startTimer);
-      clearInterval(typeTimer);
-    };
+    return () => { clearTimeout(startTimer); clearInterval(typeTimer); };
   }, [text, startDelay, speed, active]);
+
+  /* Render with explicit <br> at every \n */
+  const lines = displayed.split("\n");
 
   return (
     <>
-      {displayed || <>&nbsp;</>}
+      {lines.map((line, idx) => (
+        <span key={idx}>
+          {idx > 0 && <br />}
+          {line}
+        </span>
+      ))}
       {!done && (
-        /* tw-blink is defined in globals.css */
         <span
           aria-hidden="true"
           style={{
             display: "inline-block",
-            width: "clamp(3px, 0.35vw, 5px)",
-            height: "0.82em",
+            width: "clamp(3px, 0.32vw, 5px)",
+            height: "0.80em",
             background: "var(--violet)",
             borderRadius: 2,
-            marginLeft: "0.06em",
+            marginLeft: "0.05em",
             verticalAlign: "text-bottom",
             animation: "tw-blink 1.05s step-end infinite",
           }}
@@ -85,8 +85,8 @@ function Typewriter({
 
 /* ── Hero ────────────────────────────────────────────────────── */
 export default function HeroSection() {
-  const ready   = useReady();
-  const PAD     = "clamp(24px, 6vw, 80px)";
+  const ready      = useReady();
+  const PAD        = "clamp(24px, 6vw, 80px)";
   const sectionRef = useRef<HTMLElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -100,21 +100,14 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       style={{
-        position: "relative",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: "var(--bg)",
-        overflow: "hidden",
+        position: "relative", minHeight: "100vh",
+        display: "flex", flexDirection: "column",
+        background: "var(--bg)", overflow: "hidden",
       }}
     >
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 grid-overlay pointer-events-none"
-        style={{ opacity: 0.6 }}
-      />
+      <div className="absolute inset-0 grid-overlay pointer-events-none" style={{ opacity: 0.6 }} />
 
-      {/* Gradient mesh orbs */}
+      {/* Orbs */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
         <Orb color="rgba(74,144,226,0.18)"  size={700} top="5%"  left="55%" anim="orb-a 14s ease-in-out infinite" delay="0s"  blur={100} />
         <Orb color="rgba(155,111,232,0.15)" size={600} top="30%" left="5%"  anim="orb-b 18s ease-in-out infinite" delay="-5s" blur={90}  />
@@ -129,13 +122,8 @@ export default function HeroSection() {
       {/* Content */}
       <motion.div style={{ y: heroY, opacity: heroOp }}>
         <div style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: `120px ${PAD} 0`,
-          position: "relative",
-          zIndex: 1,
+          flex: 1, display: "flex", flexDirection: "column", justifyContent: "center",
+          padding: `120px ${PAD} 0`, position: "relative", zIndex: 1,
         }}>
           {/* Eyebrow */}
           <motion.div
@@ -145,27 +133,20 @@ export default function HeroSection() {
             style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 40 }}
           >
             <span style={{
-              display: "inline-block",
-              width: 5, height: 5, borderRadius: "50%",
+              display: "inline-block", width: 5, height: 5, borderRadius: "50%",
               background: "var(--emerald)",
               animation: "pulse-dot 2.2s ease-in-out infinite",
             }} />
-            <span className="label">
-              Apex Ventures — Independent Product Studio · Pune
-            </span>
+            <span className="label">Apex Ventures — Independent Product Studio · Pune</span>
           </motion.div>
 
-          {/* ── Typewriter headline ── */}
+          {/* Typewriter headline — 3 explicit lines */}
           <div
             className="hero-headline"
-            style={{
-              display: "block",
-              /* Let text wrap naturally across viewport widths */
-              maxWidth: "14ch",
-            }}
+            style={{ display: "block" }}
           >
             <Typewriter
-              text="We build tools that matter."
+              text={"We build tools\nthat actually\nmatter."}
               startDelay={320}
               speed={52}
               active={ready}
@@ -176,14 +157,11 @@ export default function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.9, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
             style={{
               marginTop: 64,
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              gap: 32,
+              display: "flex", flexWrap: "wrap",
+              alignItems: "flex-end", justifyContent: "space-between", gap: 32,
             }}
           >
             <p className="body-lg" style={{ maxWidth: 420 }}>
@@ -198,27 +176,18 @@ export default function HeroSection() {
                 document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
               }}
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 10,
-                fontFamily: "var(--font-display)",
-                fontSize: 14,
-                fontWeight: 600,
+                display: "inline-flex", alignItems: "center", gap: 10,
+                fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 600,
                 letterSpacing: "-0.01em",
-                color: "#000",
+                /* Uses bg/fg swap so it reads in both light + dark mode */
+                color: "var(--bg)",
                 background: "var(--text-primary)",
-                padding: "12px 24px",
-                borderRadius: 8,
-                textDecoration: "none",
-                flexShrink: 0,
-                transition: "background 0.2s ease, transform 0.25s var(--ease-out-expo)",
+                padding: "12px 24px", borderRadius: 8,
+                textDecoration: "none", flexShrink: 0,
+                transition: "opacity 0.2s ease, transform 0.25s var(--ease-out-expo)",
               }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLElement).style.background = "rgba(240,239,233,0.88)";
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLElement).style.background = "var(--text-primary)";
-              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = "0.82"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = "1"; }}
             >
               See products
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
@@ -237,8 +206,7 @@ export default function HeroSection() {
         animate={ready ? { opacity: 1 } : {}}
         transition={{ delay: 1.8, duration: 0.8 }}
         style={{
-          position: "absolute",
-          bottom: 40, left: PAD,
+          position: "absolute", bottom: 40, left: PAD,
           display: "flex", alignItems: "center", gap: 10, zIndex: 1,
         }}
       >
@@ -248,15 +216,10 @@ export default function HeroSection() {
           animation: "scroll-bob 2.2s ease-in-out infinite",
         }} />
         <span style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 8, letterSpacing: "0.2em",
-          color: "var(--text-ghost)",
-          textTransform: "uppercase",
-          writingMode: "vertical-rl",
-          transform: "rotate(180deg)",
-        }}>
-          Scroll
-        </span>
+          fontFamily: "var(--font-mono)", fontSize: 8, letterSpacing: "0.2em",
+          color: "var(--text-ghost)", textTransform: "uppercase",
+          writingMode: "vertical-rl", transform: "rotate(180deg)",
+        }}>Scroll</span>
       </motion.div>
 
       {/* Corner stat */}
@@ -264,25 +227,14 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 12 }}
         animate={ready ? { opacity: 1, y: 0 } : {}}
         transition={{ delay: 1.6, duration: 0.8 }}
-        style={{
-          position: "absolute",
-          bottom: 40, right: PAD,
-          zIndex: 1, textAlign: "right",
-        }}
+        style={{ position: "absolute", bottom: 40, right: PAD, zIndex: 1, textAlign: "right" }}
       >
         <div style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "clamp(36px, 5vw, 56px)",
-          fontWeight: 700,
-          letterSpacing: "-0.04em",
-          color: "var(--text-ghost)",
-          lineHeight: 1,
-        }}>
-          5
-        </div>
-        <div className="label" style={{ marginTop: 4 }}>
-          Products live / soon
-        </div>
+          fontFamily: "var(--font-display)", fontSize: "clamp(36px,5vw,56px)",
+          fontWeight: 700, letterSpacing: "-0.04em",
+          color: "var(--text-ghost)", lineHeight: 1,
+        }}>6</div>
+        <div className="label" style={{ marginTop: 4 }}>Products live / soon</div>
       </motion.div>
     </section>
   );
