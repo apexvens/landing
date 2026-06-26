@@ -9,7 +9,7 @@ const products = [
   { name:"FolioAI",     href:"https://tryfolioai.vercel.app/" },
   { name:"EVMate",      href:"https://evmate-8ce3d.web.app/" },
   { name:"UniPilot",    href:"" },
-  { name:"InboxOS",     href:"" },
+  { name:"InboxOS",     href:"https://inboxosai.vercel.app" },
 ];
 const social = [
   { name:"GitHub",   href:"https://github.com/neil-surjiani" },
