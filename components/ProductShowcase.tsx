@@ -164,6 +164,30 @@ const products: Product[] = [
       "Pattern learning AI",
     ],
   },
+
+  {
+    id:    "airfitness",
+    index: "07",
+    name:  "AirFitness",
+    tagline: "Train smarter with AI.",
+    description: "A browser-based AI fitness trainer. Your webcam plus on-device pose estimation counts reps, scores form, and coaches you in real time — nothing ever leaves your device.",
+    longDescription: "AirFitness turns any webcam into a personal trainer. On-device pose estimation tracks 33 body landmarks at up to 60 frames per second, computing joint angles to automatically count reps, score form, and deliver live coaching cues like \"Go Lower\" or \"Straighten Back\" the instant your form drifts. The entire pipeline — detection, angle math, rep counting — runs locally in the browser, with nine tracked exercises spanning strength, core, and cardio, and zero data ever recorded, uploaded, or stored.",
+    href:  "https://airfittness.vercel.app/",
+    color: "#EF4444",
+    tag:   "Fitness · AI",
+    stat:  { value: "9", label: "Tracked exercises" },
+    imagePath:  "/airfitness/hero.png",
+    comingSoon: false,
+    emoji:      "🏋️",
+    features: [
+      "Real-time 33-point pose tracking",
+      "Automatic rep counting",
+      "Live form-correction cues",
+      "Runs 100% on-device",
+      "Nine tracked exercises",
+      "Zero data collection",
+    ],
+  },
 ];
 
 /* ═══════════════════════════════════════════════════════════════
