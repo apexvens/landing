@@ -6,9 +6,9 @@ import { useEffect, useRef, useState } from "react";
 // Simple state machine: "in" → "exit" → parent unmounts
 
 const WORDMARK = "APEX VENTURES".split("");
-const FILL_MS  = 2400;  // how long progress bar fills
-const EXIT_MS  = 2800;  // when fade-out starts
-const DONE_MS  = 3600;  // when onDone fires (after fade completes)
+const FILL_MS  = 700;   // how long progress bar fills
+const EXIT_MS  = 850;   // when fade-out starts
+const DONE_MS  = 1150;  // when onDone fires (after fade completes)
 
 export default function Loader({ onDone }: { onDone: () => void }) {
   const [progress, setProgress]   = useState(0);

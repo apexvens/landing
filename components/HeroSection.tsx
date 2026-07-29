@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useReady } from "./PageWrapper";
 
-/* ── Orb ─────────────────────────────────────────────────────── */
-function Orb({ color, size, top, left, anim, delay, blur = 90 }: {
+/* ── Orb — no CSS blur (expensive); soft gradient only ───────── */
+function Orb({ color, size, top, left, anim, delay }: {
   color: string; size: number; top: string; left: string;
-  anim: string; delay: string; blur?: number;
+  anim: string; delay: string;
 }) {
   return (
-    <div style={{
+    <div className="ambient-orb" style={{
       position: "absolute", borderRadius: "50%",
       width: size, height: size, top, left,
-      background: `radial-gradient(circle at 40% 40%, ${color} 0%, transparent 68%)`,
-      filter: `blur(${blur}px)`,
+      background: `radial-gradient(circle at 40% 40%, ${color} 0%, transparent 70%)`,
       animation: anim, animationDelay: delay,
-      pointerEvents: "none", willChange: "transform",
+      pointerEvents: "none",
     }} />
   );
 }
@@ -53,7 +52,6 @@ function Typewriter({
     return () => { clearTimeout(startTimer); clearInterval(typeTimer); };
   }, [text, startDelay, speed, active]);
 
-  /* Render with explicit <br> at every \n */
   const lines = displayed.split("\n");
 
   return (
@@ -85,47 +83,35 @@ function Typewriter({
 
 /* ── Hero ────────────────────────────────────────────────────── */
 export default function HeroSection() {
-  const ready      = useReady();
-  const PAD        = "clamp(24px, 6vw, 80px)";
-  const sectionRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const heroY  = useTransform(scrollYProgress, [0, 1], [0, 140]);
-  const heroOp = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const ready = useReady();
+  const PAD   = "clamp(24px, 6vw, 80px)";
 
   return (
     <section
-      ref={sectionRef}
       style={{
         position: "relative", minHeight: "100vh",
         display: "flex", flexDirection: "column",
         background: "var(--bg)", overflow: "hidden",
       }}
     >
-      <div className="absolute inset-0 grid-overlay pointer-events-none" style={{ opacity: 0.6 }} />
+      <div className="absolute inset-0 grid-overlay pointer-events-none" style={{ opacity: 0.45 }} />
 
-      {/* Orbs */}
+      {/* Orbs — two soft gradients, no blur filter */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <Orb color="rgba(74,144,226,0.18)"  size={700} top="5%"  left="55%" anim="orb-a 14s ease-in-out infinite" delay="0s"  blur={100} />
-        <Orb color="rgba(155,111,232,0.15)" size={600} top="30%" left="5%"  anim="orb-b 18s ease-in-out infinite" delay="-5s" blur={90}  />
-        <Orb color="rgba(62,207,142,0.10)"  size={450} top="55%" left="65%" anim="orb-c 12s ease-in-out infinite" delay="-3s" blur={80}  />
-        <Orb color="rgba(240,165,0,0.08)"   size={380} top="70%" left="15%" anim="orb-d 20s ease-in-out infinite" delay="-8s" blur={100} />
+        <Orb color="rgba(74,144,226,0.14)"  size={520} top="8%"  left="58%" anim="orb-a 18s ease-in-out infinite" delay="0s"  />
+        <Orb color="rgba(155,111,232,0.11)" size={440} top="42%" left="8%"  anim="orb-b 22s ease-in-out infinite" delay="-6s" />
         <div style={{
           position: "absolute", inset: 0,
-          background: "radial-gradient(ellipse at 50% 50%, transparent 40%, var(--bg) 80%)",
+          background: "radial-gradient(ellipse at 50% 50%, transparent 45%, var(--bg) 85%)",
         }} />
       </div>
 
       {/* Content */}
-      <motion.div style={{ y: heroY, opacity: heroOp }}>
+      <div>
         <div style={{
           flex: 1, display: "flex", flexDirection: "column", justifyContent: "center",
           padding: `120px ${PAD} 0`, position: "relative", zIndex: 1,
         }}>
-          {/* Eyebrow */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
@@ -140,11 +126,7 @@ export default function HeroSection() {
             <span className="label">Apex Ventures — Independent Product Studio · Pune</span>
           </motion.div>
 
-          {/* Typewriter headline — 3 explicit lines */}
-          <div
-            className="hero-headline"
-            style={{ display: "block" }}
-          >
+          <div className="hero-headline" style={{ display: "block" }}>
             <Typewriter
               text={"We build tools\nthat actually\nmatter."}
               startDelay={320}
@@ -153,7 +135,6 @@ export default function HeroSection() {
             />
           </div>
 
-          {/* Sub-row */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={ready ? { opacity: 1, y: 0 } : {}}
@@ -179,7 +160,6 @@ export default function HeroSection() {
                 display: "inline-flex", alignItems: "center", gap: 10,
                 fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 600,
                 letterSpacing: "-0.01em",
-                /* Uses bg/fg swap so it reads in both light + dark mode */
                 color: "var(--bg)",
                 background: "var(--text-primary)",
                 padding: "12px 24px", borderRadius: 8,
@@ -198,9 +178,8 @@ export default function HeroSection() {
             </a>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Scroll hint */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={ready ? { opacity: 1 } : {}}
@@ -222,7 +201,6 @@ export default function HeroSection() {
         }}>Scroll</span>
       </motion.div>
 
-      {/* Corner stat */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={ready ? { opacity: 1, y: 0 } : {}}

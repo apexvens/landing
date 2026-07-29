@@ -1,5 +1,4 @@
 import SmoothScroll     from "@/components/SmoothScroll";
-import CustomCursor     from "@/components/CustomCursor";
 import ScrollProgress   from "@/components/ScrollProgress";
 import Nav              from "@/components/Nav";
 import PageWrapper      from "@/components/PageWrapper";
@@ -17,7 +16,6 @@ import FooterSection    from "@/components/FooterSection";
 export default function Home() {
   return (
     <SmoothScroll>
-      <CustomCursor />
       <ScrollProgress />
       <PageWrapper>
         <Nav />

@@ -82,8 +82,6 @@ export default function Nav() {
         style={{
           paddingLeft: PAD,
           paddingRight: PAD,
-          backdropFilter: scrolled ? "blur(24px) saturate(1.6)" : "none",
-          WebkitBackdropFilter: scrolled ? "blur(24px) saturate(1.6)" : "none",
           borderBottom: scrolled ? "1px solid var(--nav-border)" : "1px solid transparent",
           background: scrolled ? "var(--nav-bg-scrolled)" : "transparent",
           position: "fixed",

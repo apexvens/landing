@@ -2,7 +2,6 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import SplitText from "./SplitText";
 
 function AnimatedNumber({ to, suffix = "", delay = 0 }: { to: number; suffix?: string; delay?: number }) {
   const [val, setVal] = useState(0);
@@ -49,13 +48,13 @@ export default function StatsSection() {
         overflow: "hidden",
       }}
     >
-      {/* Ambient */}
+      {/* Ambient — no blur filter */}
       <div style={{
         position: "absolute", left: "50%", top: "50%",
         transform: "translate(-50%,-50%)",
         width: 800, height: 400,
-        background: "radial-gradient(ellipse, rgba(155,111,232,0.05) 0%, transparent 70%)",
-        filter: "blur(60px)", pointerEvents: "none",
+        background: "radial-gradient(ellipse, rgba(155,111,232,0.04) 0%, transparent 70%)",
+        pointerEvents: "none",
       }} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
@@ -72,25 +71,22 @@ export default function StatsSection() {
           >
             By the numbers
           </motion.p>
-          <div style={{ lineHeight: 1 }}>
-            <SplitText
-              text="Numbers don't lie."
-              by="chars"
-              scrubStart="start 0.88"
-              scrubEnd="start 0.5"
-              y={60}
-              rotate={3}
-              stagger={0.022}
-              style={{
-                fontFamily: "var(--font-hero)",
-                fontSize: "clamp(36px, 6vw, 80px)",
-                fontWeight: 700,
-                letterSpacing: "-0.04em",
-                color: "var(--text-primary)",
-              }}
-              tag="h2"
-            />
-          </div>
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              fontFamily: "var(--font-hero)",
+              fontSize: "clamp(36px, 6vw, 80px)",
+              fontWeight: 700,
+              letterSpacing: "-0.04em",
+              color: "var(--text-primary)",
+              margin: 0,
+            }}
+          >
+            Numbers don't lie.
+          </motion.h2>
         </div>
 
         {/* Stats grid */}

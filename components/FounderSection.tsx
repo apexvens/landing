@@ -1,8 +1,7 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import SplitText from "./SplitText";
 
 const BIO = [
   "Apex Ventures is where ideas become products. Every tool starts with a real problem — something I've experienced, something people around me have experienced, something that should already have a good solution but doesn't.",
@@ -18,8 +17,6 @@ const LINKS = [
 
 export default function FounderSection() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ["-4%", "4%"]);
 
   return (
     <section
@@ -33,23 +30,18 @@ export default function FounderSection() {
         overflow: "hidden",
       }}
     >
-      {/* Ambient glow */}
-      <motion.div
-        style={{
-          position: "absolute", left: "20%", bottom: "-10%",
-          width: 400, height: 400, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(62,207,142,0.05) 0%, transparent 70%)",
-          filter: "blur(60px)", pointerEvents: "none",
-          y: useTransform(scrollYProgress, [0, 1], ["0%", "20%"]),
-        }}
-      />
+      <div style={{
+        position: "absolute", left: "20%", bottom: "-10%",
+        width: 400, height: 400, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(62,207,142,0.04) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
         <div
           style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 80, alignItems: "start" }}
           className="founder-grid"
         >
-          {/* Left: photo + name */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -63,8 +55,7 @@ export default function FounderSection() {
               Founder
             </p>
 
-            {/* Photo with parallax */}
-            <motion.div
+            <div
               style={{
                 width: "100%", maxWidth: 220,
                 aspectRatio: "3/4",
@@ -73,12 +64,13 @@ export default function FounderSection() {
                 border: "1px solid var(--border)",
                 marginBottom: 24,
                 position: "relative",
-                y: imgY,
               }}
             >
               <img
                 src="/founder/photo.png"
                 alt="Neil Surjiani"
+                loading="lazy"
+                decoding="async"
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
@@ -87,29 +79,26 @@ export default function FounderSection() {
                     `<span style="display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-display);font-size:64px;font-weight:700;color:var(--text-ghost)">N</span>`;
                 }}
               />
-              {/* Gradient overlay */}
               <div style={{
                 position: "absolute", inset: 0,
                 background: "linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 100%)",
                 pointerEvents: "none",
               }} />
-            </motion.div>
+            </div>
 
-            <h3 style={{ margin: "0 0 6px", lineHeight: 1 }}>
-              <SplitText
-                text="Neil Surjiani"
-                by="chars"
-                scrubStart="start 0.92"
-                scrubEnd="start 0.55"
-                y={40}
-                rotate={2}
-                stagger={0.03}
-                style={{
-                  fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700,
-                  letterSpacing: "-0.03em", color: "var(--text-primary)",
-                }}
-              />
-            </h3>
+            <motion.h3
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                margin: "0 0 6px", lineHeight: 1,
+                fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 700,
+                letterSpacing: "-0.03em", color: "var(--text-primary)",
+              }}
+            >
+              Neil Surjiani
+            </motion.h3>
             <p style={{
               fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.15em",
               textTransform: "uppercase", color: "var(--text-tertiary)",
@@ -117,7 +106,6 @@ export default function FounderSection() {
               Founder — Apex Ventures
             </p>
 
-            {/* Pulsing "live" indicator */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 20 }}>
               <span style={{
                 width: 6, height: 6, borderRadius: "50%", background: "#3ECF8E",
@@ -133,7 +121,6 @@ export default function FounderSection() {
             </div>
           </motion.div>
 
-          {/* Right: bio */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -159,7 +146,6 @@ export default function FounderSection() {
               ))}
             </div>
 
-            {/* Divider */}
             <motion.div
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
@@ -171,7 +157,6 @@ export default function FounderSection() {
               }}
             />
 
-            {/* Links */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
               {LINKS.map((link, i) => (
                 <motion.a

@@ -1,17 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-
-const ITEMS = [
-  "No Niche", "·", "No Trends", "·", "No Fluff", "·", "No Ceiling", "·",
-  "Ship Fast", "·", "Think Deep", "·", "Build Real", "·", "Stay Lean", "·",
-  "AI-Native", "·", "Problem First", "·", "Zero Funding", "·", "100% Independent", "·",
-  "No Niche", "·", "No Trends", "·", "No Fluff", "·", "No Ceiling", "·",
-  "Ship Fast", "·", "Think Deep", "·", "Build Real", "·", "Stay Lean", "·",
-  "AI-Native", "·", "Problem First", "·", "Zero Funding", "·", "100% Independent", "·",
-];
-
 export default function MarqueeTicker() {
+  const ITEMS = [
+    "No Niche", "·", "No Trends", "·", "No Fluff", "·", "No Ceiling", "·",
+    "Ship Fast", "·", "Think Deep", "·", "Build Real", "·", "Stay Lean", "·",
+    "AI-Native", "·", "Problem First", "·", "Zero Funding", "·", "100% Independent", "·",
+    "No Niche", "·", "No Trends", "·", "No Fluff", "·", "No Ceiling", "·",
+    "Ship Fast", "·", "Think Deep", "·", "Build Real", "·", "Stay Lean", "·",
+    "AI-Native", "·", "Problem First", "·", "Zero Funding", "·", "100% Independent", "·",
+  ];
+
   return (
     <div style={{
       borderTop: "1px solid var(--border)",
@@ -23,7 +21,6 @@ export default function MarqueeTicker() {
       display: "flex",
       alignItems: "center",
     }}>
-      {/* Edge fades */}
       <div style={{
         position: "absolute", left: 0, top: 0, bottom: 0, width: 80,
         background: "linear-gradient(to right, var(--bg-raised), transparent)",

@@ -46,8 +46,8 @@ export default function VisionSection() {
           position: "absolute", left: "50%", top: "50%",
           x: "-50%", y: "-50%",
           width: 800, height: 400,
-          background: "radial-gradient(ellipse, rgba(74,144,226,0.075) 0%, transparent 68%)",
-          filter: "blur(90px)", pointerEvents: "none",
+          background: "radial-gradient(ellipse, rgba(74,144,226,0.06) 0%, transparent 68%)",
+          pointerEvents: "none",
         }}
       />
 

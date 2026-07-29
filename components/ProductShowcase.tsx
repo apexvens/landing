@@ -232,9 +232,7 @@ function ExpandedModal({
         position: "fixed",
         inset: 0,
         zIndex: 9000,
-        background: "rgba(0,0,0,0.82)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "rgba(0,0,0,0.88)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -348,6 +346,8 @@ function ExpandedModal({
                 <img
                   src={p.imagePath}
                   alt={p.name}
+                  loading="lazy"
+                  decoding="async"
                   onError={() => setImgFailed(true)}
                   style={{
                     width: "100%", height: "100%",
@@ -595,9 +595,7 @@ function ProductCard({
       className="product-card-box"
       style={{
         borderRadius: 18,
-        background: "var(--bg-card)",
-        backdropFilter: "blur(20px) saturate(1.3)",
-        WebkitBackdropFilter: "blur(20px) saturate(1.3)",
+        background: "var(--bg-raised)",
         border: `1px solid ${hov ? `${p.color}50` : "var(--border)"}`,
         overflow: "hidden",
         display: "flex",
@@ -658,6 +656,8 @@ function ProductCard({
             <img
               src={p.imagePath}
               alt={p.name}
+              loading="lazy"
+              decoding="async"
               onError={() => setImgFailed(true)}
               style={{
                 width: "100%", height: "100%",
@@ -688,8 +688,7 @@ function ProductCard({
             zIndex: 4,
             padding: "5px 10px",
             borderRadius: 6,
-            background: "rgba(0,0,0,0.62)",
-            backdropFilter: "blur(8px)",
+            background: "rgba(0,0,0,0.72)",
             border: "1px solid rgba(255,255,255,0.12)",
             display: "flex", alignItems: "center", gap: 5,
           }}

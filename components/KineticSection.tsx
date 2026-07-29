@@ -44,8 +44,8 @@ export default function KineticSection() {
         position: "absolute", left: "50%", top: "50%",
         transform: "translate(-50%,-50%)",
         width: 900, height: 500,
-        background: "radial-gradient(ellipse, rgba(155,111,232,0.055) 0%, transparent 68%)",
-        filter: "blur(100px)", pointerEvents: "none",
+        background: "radial-gradient(ellipse, rgba(155,111,232,0.045) 0%, transparent 68%)",
+        pointerEvents: "none",
       }} />
 
       <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
