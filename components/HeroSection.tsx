@@ -57,7 +57,7 @@ function Typewriter({
   return (
     <>
       {lines.map((line, idx) => (
-        <span key={idx}>
+        <span key={idx} className={idx === lines.length - 1 ? "hero-headline-accent" : undefined}>
           {idx > 0 && <br />}
           {line}
         </span>
@@ -98,8 +98,9 @@ export default function HeroSection() {
 
       {/* Orbs — two soft gradients, no blur filter */}
       <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <Orb color="rgba(74,144,226,0.14)"  size={520} top="8%"  left="58%" anim="orb-a 18s ease-in-out infinite" delay="0s"  />
-        <Orb color="rgba(155,111,232,0.11)" size={440} top="42%" left="8%"  anim="orb-b 22s ease-in-out infinite" delay="-6s" />
+        <Orb color="rgba(74,144,226,0.16)"  size={560} top="6%"  left="56%" anim="orb-a 18s ease-in-out infinite" delay="0s"  />
+        <Orb color="rgba(155,111,232,0.13)" size={480} top="38%" left="6%"  anim="orb-b 22s ease-in-out infinite" delay="-6s" />
+        <Orb color="rgba(62,207,142,0.08)"  size={360} top="62%" left="68%" anim="orb-c 16s ease-in-out infinite" delay="-3s" />
         <div style={{
           position: "absolute", inset: 0,
           background: "radial-gradient(ellipse at 50% 50%, transparent 45%, var(--bg) 85%)",
@@ -211,8 +212,8 @@ export default function HeroSection() {
           fontFamily: "var(--font-display)", fontSize: "clamp(36px,5vw,56px)",
           fontWeight: 700, letterSpacing: "-0.04em",
           color: "var(--text-ghost)", lineHeight: 1,
-        }}>6</div>
-        <div className="label" style={{ marginTop: 4 }}>Products live / soon</div>
+        }}>11</div>
+        <div className="label" style={{ marginTop: 4 }}>Products built & explored</div>
       </motion.div>
     </section>
   );

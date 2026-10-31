@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 /* ═══════════════════════════════════════════════════════════════
    PRODUCTS DATA
 ═══════════════════════════════════════════════════════════════ */
-interface Product {
+export interface Product {
   id:              string;
   index:           string;
   name:            string;
@@ -17,28 +18,34 @@ interface Product {
   href:            string;
   color:           string;
   tag:             string;
+  category:        "shipped" | "building" | "discontinued";
   stat:            { value: string; label: string };
   imagePath:       string;
-  comingSoon:      boolean;
+  comingSoon?:     boolean;
+  discontinued?:   boolean;
+  statusBadge?:    string;
   emoji:           string;
   features:        string[];
 }
 
 const products: Product[] = [
   {
-    id:    "tripwise",
-    index: "01",
-    name:  "TripWise AI",
-    tagline: "Travel planning, reimagined.",
+    id:          "tripwise",
+    index:       "01",
+    name:        "TripWise AI",
+    tagline:     "Travel planning, reimagined.",
     description: "From 'I want to go somewhere' to a complete day-by-day itinerary in under two minutes — flights, hotels, visa info, and budget all in one place.",
     longDescription: "TripWise AI turns the overwhelming process of trip planning into a two-minute conversation. Tell it where you want to go, your travel dates, budget, and preferences — and it generates a complete day-by-day itinerary covering flights, hotels, local attractions, restaurant picks, visa requirements, and detailed cost breakdowns. Built for solo travellers, couples, and groups who want the expertise of a personal travel agent without the cost or waiting.",
-    href:  "https://tripwiseai.vercel.app/",
-    color: "#4A90E2",
-    tag:   "Travel · AI",
-    stat:  { value: "< 2 min", label: "Full itinerary" },
-    imagePath:  "/tripwise/hero.png",
-    comingSoon: false,
-    emoji:      "✈️",
+    href:        "https://tripwiseai.vercel.app/",
+    color:       "#4A90E2",
+    tag:         "Travel · AI",
+    category:    "shipped",
+    stat:        { value: "< 2 min", label: "Full itinerary" },
+    imagePath:   "/tripwise/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Live",
+    emoji:       "✈️",
     features: [
       "AI day-by-day itineraries",
       "Flight & hotel recommendations",
@@ -49,19 +56,22 @@ const products: Product[] = [
     ],
   },
   {
-    id:    "nutrisense",
-    index: "02",
-    name:  "NutriSense",
-    tagline: "Point. Scan. Know what you eat.",
+    id:          "nutrisense",
+    index:       "02",
+    name:        "NutriSense",
+    tagline:     "Point. Scan. Know what you eat.",
     description: "No logging, no guesswork. Point your camera at any meal — get instant calories, macros, and personalised coaching that actually changes behaviour.",
     longDescription: "NutriSense eliminates every barrier between eating and understanding what you eat. Point your camera at any meal and get an instant breakdown of calories, macros, vitamins, and nutritional quality — no logging, no barcode scanning, no manual entry. The AI layers personalised coaching on top of the data, identifying patterns in your eating habits and suggesting incremental improvements that fit your lifestyle and goals, not a rigid diet plan.",
-    href:  "https://mynutrisense.vercel.app/#/home",
-    color: "#5DBB6A",
-    tag:   "Health · AI",
-    stat:  { value: "0", label: "Manual logging required" },
-    imagePath:  "/nutrisense/hero.png",
-    comingSoon: false,
-    emoji:      "🥗",
+    href:        "https://mynutrisense.vercel.app/#/home",
+    color:       "#5DBB6A",
+    tag:         "Health · AI",
+    category:    "shipped",
+    stat:        { value: "0", label: "Manual logging required" },
+    imagePath:   "/nutrisense/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Live",
+    emoji:       "🥗",
     features: [
       "Instant camera food scanning",
       "Calories & macro breakdown",
@@ -72,19 +82,22 @@ const products: Product[] = [
     ],
   },
   {
-    id:    "folioai",
-    index: "03",
-    name:  "FolioAI",
-    tagline: "Your portfolio in 60 seconds.",
+    id:          "folioai",
+    index:       "03",
+    name:        "FolioAI",
+    tagline:     "Your portfolio in 60 seconds.",
     description: "Paste a resume. Get a live, beautiful portfolio site instantly — for developers and creators who want to look great online without the design work.",
     longDescription: "FolioAI lets developers and creatives skip the portfolio-building grind entirely. Upload your resume or paste your GitHub profile — FolioAI extracts your projects, skills, and experience, then instantly generates a live, beautifully designed portfolio website in your choice of five professional templates. The result deploys immediately to a shareable link. No coding, no design tools, no configuration, no waiting.",
-    href:  "https://tryfolioai.vercel.app/",
-    color: "#9B6FE8",
-    tag:   "Dev Tools · AI",
-    stat:  { value: "60 s", label: "Resume → live site" },
-    imagePath:  "/folioai/hero.png",
-    comingSoon: false,
-    emoji:      "💼",
+    href:        "https://tryfolioai.vercel.app/",
+    color:       "#9B6FE8",
+    tag:         "Dev Tools · AI",
+    category:    "shipped",
+    stat:        { value: "60 s", label: "Resume → live site" },
+    imagePath:   "/folioai/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Live",
+    emoji:       "💼",
     features: [
       "Resume-to-portfolio in one step",
       "Five professional templates",
@@ -95,66 +108,22 @@ const products: Product[] = [
     ],
   },
   {
-    id:    "evmate",
-    index: "04",
-    name:  "EVMate",
-    tagline: "EV ownership, simplified.",
-    description: "Real-time charger maps, range-aware routing, and long-distance trip planning — so owning an EV feels as simple as any other car.",
-    longDescription: "EVMate makes range anxiety a thing of the past. Open the map and see every nearby charger in real time — filtered by speed, availability, and compatibility with your specific EV model. Plan multi-stop trips with intelligent routing that accounts for your current battery level, charging times at each stop, and your arrival targets. Whether it's a daily commute or a cross-country drive, EVMate plots the most efficient path automatically.",
-    href:  "https://evmate-8ce3d.web.app/",
-    color: "#3ECF8E",
-    tag:   "Mobility · EV",
-    stat:  { value: "0", label: "Range anxiety" },
-    imagePath:  "/evmate/hero.png",
-    comingSoon: false,
-    emoji:      "⚡",
-    features: [
-      "Real-time charger availability",
-      "Model-specific compatibility",
-      "Range-aware route planning",
-      "Multi-stop trip builder",
-      "Battery & charge alerts",
-      "Long-distance optimisation",
-    ],
-  },
-  {
-    id:    "unipilot",
-    index: "05",
-    name:  "UniPilot",
-    tagline: "Your AI admissions strategist.",
-    description: "Reads your full profile, extracurriculars, and timeline — then builds a realistic, time-aware roadmap instead of a generic dream school list.",
-    longDescription: "UniPilot is the college admissions strategist most students can't afford. It reads your full academic profile — GPA, extracurriculars, test scores, essays in progress, and application timeline — then builds a personalised college list with realistic probability scores for each school. Rather than a static spreadsheet, UniPilot creates a time-aware action plan: what to strengthen, when to apply, and how — updating dynamically as your profile evolves throughout the year.",
-    href:  "",
-    color: "#F5A623",
-    tag:   "EdTech · AI",
-    stat:  { value: "Soon", label: "In development" },
-    imagePath:  "/unipilot/hero.png",
-    comingSoon: true,
-    emoji:      "🎓",
-    features: [
-      "Realistic admission odds scoring",
-      "Reach / Target / Safety tiers",
-      "Time-aware action roadmap",
-      "Essay strategy & review",
-      "Profile gap analysis",
-      "AI admissions chat",
-    ],
-  },
-
-  {
-    id:    "inboxos",
-    index: "06",
-    name:  "InboxOS",
-    tagline: "Your inbox, finally intelligent.",
+    id:          "inboxos",
+    index:       "04",
+    name:        "InboxOS",
+    tagline:     "Your inbox, finally intelligent.",
     description: "InboxOS takes over any email inbox and surfaces what actually matters — deadlines, opportunities, follow-ups — so you never miss what's important.",
     longDescription: "InboxOS connects to any email inbox and uses AI to read, categorise, and prioritise every message automatically. It surfaces emails containing deadlines, meeting requests, partnership opportunities, follow-ups, and critical alerts — presenting them in a clean priority feed instead of a chronological flood. InboxOS learns your patterns over time, getting smarter about what deserves your attention right now and what can safely wait.",
-    href:  "https://inboxosai.vercel.app",
-    color: "#6366F1",
-    tag:   "Productivity · AI",
-    stat:  { value: "∞→0", label: "Inbox overload" },
-    imagePath:  "/inboxos/hero.png",
-    comingSoon: false,
-    emoji:      "📬",
+    href:        "https://inboxosai.vercel.app",
+    color:       "#6366F1",
+    tag:         "Productivity · AI",
+    category:    "shipped",
+    stat:        { value: "∞→0", label: "Inbox overload" },
+    imagePath:   "/inboxos/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Live",
+    emoji:       "📬",
     features: [
       "Multi-inbox support",
       "Deadline detection",
@@ -164,21 +133,23 @@ const products: Product[] = [
       "Pattern learning AI",
     ],
   },
-
   {
-    id:    "airfitness",
-    index: "07",
-    name:  "AirFitness",
-    tagline: "Train smarter with AI.",
+    id:          "airfitness",
+    index:       "05",
+    name:        "AirFitness",
+    tagline:     "Train smarter with AI.",
     description: "A browser-based AI fitness trainer. Your webcam plus on-device pose estimation counts reps, scores form, and coaches you in real time — nothing ever leaves your device.",
     longDescription: "AirFitness turns any webcam into a personal trainer. On-device pose estimation tracks 33 body landmarks at up to 60 frames per second, computing joint angles to automatically count reps, score form, and deliver live coaching cues like \"Go Lower\" or \"Straighten Back\" the instant your form drifts. The entire pipeline — detection, angle math, rep counting — runs locally in the browser, with nine tracked exercises spanning strength, core, and cardio, and zero data ever recorded, uploaded, or stored.",
-    href:  "https://airfittness.vercel.app/",
-    color: "#EF4444",
-    tag:   "Fitness · AI",
-    stat:  { value: "9", label: "Tracked exercises" },
-    imagePath:  "/airfitness/hero.png",
-    comingSoon: false,
-    emoji:      "🏋️",
+    href:        "https://airfittness.vercel.app/",
+    color:       "#EF4444",
+    tag:         "Fitness · AI",
+    category:    "shipped",
+    stat:        { value: "9", label: "Tracked exercises" },
+    imagePath:   "/airfitness/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Live",
+    emoji:       "🏋️",
     features: [
       "Real-time 33-point pose tracking",
       "Automatic rep counting",
@@ -186,6 +157,162 @@ const products: Product[] = [
       "Runs 100% on-device",
       "Nine tracked exercises",
       "Zero data collection",
+    ],
+  },
+  {
+    id:          "airwheel",
+    index:       "06",
+    name:        "AirWheel",
+    tagline:     "Turn your webcam into a sim racing wheel.",
+    description: "Play Assetto Corsa and PC racing sims without expensive hardware. 100% webcam-based hand tracking maps wrist angles and gestures into a virtual Xbox 360 controller.",
+    longDescription: "AirWheel brings sim racing to everyone without requiring a $300+ force-feedback steering wheel. Using OpenCV and Google MediaPipe hand tracking, it tracks 21 skeletal landmarks on each hand in 3D space, computing steering angles between your wrists and measuring forward depth for throttle control. A closed fist initiates gear shifts or braking. The output maps directly to a virtual Xbox 360 controller via ViGEmBus, letting you drive in Assetto Corsa and other racing sims using zero extra hardware.",
+    href:        "https://github.com/neil-surjiani/AirWheel",
+    color:       "#FF6B4A",
+    tag:         "Gaming · Computer Vision",
+    category:    "shipped",
+    stat:        { value: "60 FPS", label: "Webcam sim racing" },
+    imagePath:   "/airwheel/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Open Source",
+    emoji:       "🏎️",
+    features: [
+      "3D optical hand landmark tracking",
+      "Virtual steering wheel angle calculation",
+      "Gesture-based upshift, downshift & brake",
+      "ViGEmBus virtual Xbox 360 controller emulation",
+      "Guided onboarding & calibration wizard",
+      "Assetto Corsa & PC sim racing ready",
+    ],
+  },
+  {
+    id:          "zeroscroll",
+    index:       "07",
+    name:        "ZeroScroll",
+    tagline:     "DMs without the doomscroll.",
+    description: "An intentional Android app and website showing ONLY your Instagram Direct Messages and notifications — zero feeds, zero reels tab, zero search explore, zero stories.",
+    longDescription: "ZeroScroll is built for people who rely on Instagram to stay connected with friends and clients, but refuse to lose hours to algorithmic addiction. Built with Flutter, Drift (SQLite), and Next.js, it provides a clean, guarded container that displays only your DMs and notifications. Algorithmic discovery, search explore, reels feed, and stories are completely blocked. Single reels sent in DMs play once with zero infinite swipe-up continuous scrolling, supported by a daily reel budget and local SQLite storage.",
+    href:        "https://github.com/neil-surjiani/zeroscroll",
+    color:       "#0D9488",
+    tag:         "Digital Wellbeing · Mobile",
+    category:    "shipped",
+    stat:        { value: "0", label: "Algorithmic feeds" },
+    imagePath:   "/zeroscroll/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Available",
+    emoji:       "📵",
+    features: [
+      "DMs & notifications only",
+      "Blocks feed, reels tab & explore",
+      "Single-play DM reels (no continuous swipe)",
+      "Daily intentional reel budget",
+      "Local-only encrypted SQLite storage",
+      "Zero tracking, analytics, or external servers",
+    ],
+  },
+  {
+    id:          "drape",
+    index:       "08",
+    name:        "Drape",
+    tagline:     "Virtual avatar try-on & digital wardrobe.",
+    description: "Try clothes on your personal 3D avatar before you buy them online. Store your wardrobe inside the app and choose the perfect fit within the app itself.",
+    longDescription: "Drape solves the biggest problem in online apparel shopping: not knowing how clothes will actually look or fit on your body. Upload your measurements to generate a high-fidelity personal 3D avatar that matches your exact proportions. Drape simulates fabric drape, tension, and fit in real time so you can preview garments before purchasing. Your entire physical wardrobe is stored inside the app, letting you test how new items coordinate with your existing clothes before spending a single dollar.",
+    href:        "",
+    color:       "#EC4899",
+    tag:         "FashionTech · 3D AI",
+    category:    "building",
+    stat:        { value: "Soon", label: "In active development" },
+    imagePath:   "/drape/hero.png",
+    comingSoon:  true,
+    discontinued: false,
+    statusBadge: "Building",
+    emoji:       "👗",
+    features: [
+      "Personalized 3D body avatar generation",
+      "Physics-based virtual fabric try-on",
+      "Digital wardrobe catalog & outfit builder",
+      "Precision fit & tension prediction",
+      "Pre-purchase wardrobe pairing simulation",
+      "Direct online checkout integration",
+    ],
+  },
+  {
+    id:          "evmate",
+    index:       "09",
+    name:        "EVMate",
+    tagline:     "EV ownership, simplified.",
+    description: "Real-time charger maps, range-aware routing, and charging station finder. Discontinued because the standalone app idea was not commercially viable against native OS maps.",
+    longDescription: "EVMate aimed to eliminate range anxiety by aggregating real-time charger availability, model-specific compatibility, and battery-aware route planning for electric vehicle drivers. After developing the core routing engine and charger map, we discontinued the product: standalone navigation apps face massive platform lock-in against built-in automotive OS and Google Maps, and the fundamental idea did not represent a viable independent product.",
+    href:        "https://evmate-8ce3d.web.app/",
+    color:       "#71717A",
+    tag:         "Mobility · Discontinued",
+    category:    "discontinued",
+    stat:        { value: "Archived", label: "Idea discontinued" },
+    imagePath:   "/evmate/hero.png",
+    comingSoon:  false,
+    discontinued: true,
+    statusBadge: "Discontinued",
+    emoji:       "⚡",
+    features: [
+      "Real-time charger availability map",
+      "Model-specific connector compatibility",
+      "Range-aware multi-stop route planner",
+      "Battery arrival percentage calculation",
+      "Discontinued: Idea lacked standalone defensibility",
+      "Lessons applied directly to subsequent builds",
+    ],
+  },
+  {
+    id:          "crescendo",
+    index:       "10",
+    name:        "Crescendo",
+    tagline:     "AI vocal and music practice.",
+    description: "Interactive pitch tracking, voice lessons, and real-time audio feedback. Discontinued as user retention and self-directed practice friction made the standalone model unviable.",
+    longDescription: "Crescendo was built as an intelligent vocal and music tutor combining Flutter, FastAPI, and Gemini AI for live audio pitch curve analysis and personalized lesson pacing. While the technical feedback loop worked smoothly, user retention and self-directed music practice posed fundamental friction that made the standalone consumer model unsuitable. We made the disciplined decision to discontinue development and carry the real-time audio pipeline learnings forward.",
+    href:        "https://github.com/crescendo01",
+    color:       "#8E8E93",
+    tag:         "MusicTech · Discontinued",
+    category:    "discontinued",
+    stat:        { value: "Archived", label: "Idea discontinued" },
+    imagePath:   "/crescendo/hero.png",
+    comingSoon:  false,
+    discontinued: true,
+    statusBadge: "Discontinued",
+    emoji:       "🎵",
+    features: [
+      "Real-time pitch curve visualization",
+      "AI-powered vocal coaching & feedback",
+      "FastAPI audio processing backend",
+      "Structured lesson progressions",
+      "Discontinued: Consumer retention model not viable",
+      "Fast pivot to high-frequency utility products",
+    ],
+  },
+  {
+    id:          "unipilot",
+    index:       "11",
+    name:        "UniPilot",
+    tagline:     "Your AI admissions strategist.",
+    description: "Profile gap analysis and time-aware admissions roadmap. Discontinued due to extreme seasonal demand cycles and high advisory expectations that clashed with software scale.",
+    longDescription: "UniPilot was designed to provide high school students with honest admissions odds and an evolving profile roadmap instead of generic dream-school lists. Despite strong initial interest, college admissions software suffers from extreme annual seasonality, rapid institutional policy shifts, and a strong user demand for human handholding that conflicted with an automated, scalable product model. We discontinued the project to focus entirely on high-frequency, year-round utility tools.",
+    href:        "",
+    color:       "#78716C",
+    tag:         "EdTech · Discontinued",
+    category:    "discontinued",
+    stat:        { value: "Archived", label: "Idea discontinued" },
+    imagePath:   "/unipilot/hero.png",
+    comingSoon:  false,
+    discontinued: true,
+    statusBadge: "Discontinued",
+    emoji:       "🎓",
+    features: [
+      "Realistic admission probability scoring",
+      "Reach / Target / Safety school tiers",
+      "Extracurricular profile gap analysis",
+      "Dynamic multi-year timeline planner",
+      "Discontinued: Extreme seasonality & advisory conflict",
+      "Sharpened studio focus on daily-use tools",
     ],
   },
 ];
@@ -201,15 +328,22 @@ function ExpandedModal({
   onClose: () => void;
 }) {
   const [imgFailed, setImgFailed] = useState(false);
+  const [mounted, setMounted]     = useState(false);
 
-  /* Lock body scroll while open */
+  useEffect(() => { setMounted(true); }, []);
+
+  /* Lock body scroll cleanly without resetting scroll position */
   useEffect(() => {
-    const prev = document.body.style.overflow;
+    const prevOverflow = document.body.style.overflow;
+    document.body.classList.add("modal-open");
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.classList.remove("modal-open");
+      document.body.style.overflow = prevOverflow;
+    };
   }, []);
 
-  /* Escape key */
+  /* Escape key to close */
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -218,126 +352,73 @@ function ExpandedModal({
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  const showPlaceholder = p.comingSoon || imgFailed;
+  const showPlaceholder = imgFailed;
 
-  return (
-    /* Backdrop */
+  if (!mounted || typeof document === "undefined") return null;
+
+  return createPortal(
     <motion.div
+      className="product-modal-backdrop"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.22 }}
+      transition={{ duration: 0.2 }}
       onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9000,
-        background: "rgba(0,0,0,0.88)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "clamp(16px, 4vw, 48px)",
-      }}
     >
-      {/* Modal panel */}
       <motion.div
-        initial={{ scale: 0.93, opacity: 0, y: 28 }}
-        animate={{ scale: 1,    opacity: 1, y: 0  }}
-        exit={{   scale: 0.95,  opacity: 0, y: 16 }}
-        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        className="product-modal-panel"
+        initial={{ scale: 0.94, opacity: 0, y: 16 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.96, opacity: 0, y: 10 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         onClick={e => e.stopPropagation()}
         style={{
-          width: "100%",
-          maxWidth: 960,
-          maxHeight: "min(88vh, 700px)",
-          borderRadius: 22,
-          background: "var(--bg-raised)",
-          border: `1px solid ${p.color}35`,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          position: "relative",
-          boxShadow: `0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04)`,
+          borderColor: p.discontinued ? "rgba(255,255,255,0.12)" : `${p.color}45`,
+          boxShadow: `0 32px 80px rgba(0,0,0,0.65), 0 0 48px ${p.color}15`,
         }}
       >
-        {/* Top accent line */}
-        <div style={{
-          height: 2, flexShrink: 0,
-          background: `linear-gradient(90deg, transparent 0%, ${p.color} 50%, transparent 100%)`,
-        }} />
+        {/* Accent top line */}
+        <div
+          className="product-modal-accent"
+          style={{
+            background: p.discontinued
+              ? "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)"
+              : `linear-gradient(90deg, transparent 0%, ${p.color} 50%, transparent 100%)`,
+          }}
+        />
 
         {/* Close button */}
         <button
+          type="button"
           onClick={onClose}
-          aria-label="Close"
-          style={{
-            position: "absolute",
-            top: 18, right: 18,
-            zIndex: 10,
-            width: 34, height: 34,
-            borderRadius: "50%",
-            border: "1px solid var(--border)",
-            background: "var(--bg-card)",
-            color: "var(--text-tertiary)",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 16, lineHeight: 1,
-            transition: "background 0.2s, color 0.2s",
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)";
-            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.background = "var(--bg-card)";
-            (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
-          }}
+          aria-label="Close dialog"
+          className="product-modal-close"
         >
           ×
         </button>
 
-        {/* Body — horizontal on desktop, vertical on mobile */}
-        <div style={{
-          display: "flex",
-          flex: 1,
-          overflow: "hidden",
-          minHeight: 0,
-        }}>
-
-          {/* ── Left: screenshot ── */}
-          <div style={{
-            width: "42%",
-            flexShrink: 0,
-            position: "relative",
-            background: "var(--bg)",
-            borderRight: "1px solid var(--border-faint)",
-          }}>
+        <div className="product-modal-body">
+          {/* Image */}
+          <div className="product-modal-image">
             {showPlaceholder ? (
-              <div style={{
-                width: "100%", height: "100%",
-                display: "flex", flexDirection: "column",
-                alignItems: "center", justifyContent: "center",
-                gap: 18,
-                background: `linear-gradient(145deg, ${p.color}12 0%, ${p.color}04 100%)`,
-              }}>
-                <div style={{
-                  width: 80, height: 80, borderRadius: 22,
-                  background: `${p.color}1C`,
-                  border: `1px solid ${p.color}30`,
-                  display: "flex", alignItems: "center",
-                  justifyContent: "center", fontSize: 36,
-                }}>
+              <div
+                className="product-modal-placeholder"
+                style={{ background: `linear-gradient(145deg, ${p.color}18 0%, ${p.color}05 100%)` }}
+              >
+                <div
+                  className="product-modal-placeholder-icon"
+                  style={{ background: `${p.color}20`, borderColor: `${p.color}35` }}
+                >
                   {p.emoji}
                 </div>
                 {p.comingSoon && (
-                  <span style={{
-                    fontFamily: "var(--font-mono)", fontSize: 9,
-                    letterSpacing: "0.2em", textTransform: "uppercase",
-                    color: p.color, opacity: 0.7,
-                  }}>
-                    Coming Soon
+                  <span className="product-modal-soon" style={{ color: p.color }}>
+                    In Development
+                  </span>
+                )}
+                {p.discontinued && (
+                  <span className="product-modal-soon" style={{ color: "var(--text-tertiary)" }}>
+                    Discontinued
                   </span>
                 )}
               </div>
@@ -346,205 +427,206 @@ function ExpandedModal({
                 <img
                   src={p.imagePath}
                   alt={p.name}
-                  loading="lazy"
                   decoding="async"
                   onError={() => setImgFailed(true)}
+                />
+                <div
+                  className="product-modal-image-tint"
                   style={{
-                    width: "100%", height: "100%",
-                    objectFit: "cover", display: "block",
+                    background: p.discontinued
+                      ? "linear-gradient(140deg, rgba(0,0,0,0.5) 0%, transparent 60%)"
+                      : `linear-gradient(140deg, ${p.color}18 0%, transparent 55%)`,
                   }}
                 />
-                {/* Accent tint */}
-                <div style={{
-                  position: "absolute", inset: 0,
-                  background: `linear-gradient(140deg, ${p.color}12 0%, transparent 55%)`,
-                  pointerEvents: "none",
-                }} />
-                {/* Bottom vignette */}
                 <div className="product-img-vignette" />
               </>
             )}
           </div>
 
-          {/* ── Right: details ── */}
-          <div style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "32px 36px 36px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 24,
-            minHeight: 0,
-          }}>
-            {/* Tag + index */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}>
-              <span style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9, letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: p.color, opacity: 0.9,
-              }}>
+          {/* Details column (scrollable) */}
+          <div className="product-modal-details product-modal-scroll">
+            <div className="product-modal-meta">
+              <span
+                className="product-modal-tag"
+                style={{ color: p.discontinued ? "var(--text-tertiary)" : p.color }}
+              >
                 {p.tag}
               </span>
-              <span style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9, letterSpacing: "0.12em",
-                color: "var(--text-ghost)",
-              }}>
-                {p.index} / 05
-              </span>
+              <span className="product-modal-index">{p.index} / 11</span>
             </div>
 
-            {/* Name + tagline */}
             <div>
-              <h2 style={{
-                fontFamily: "var(--font-hero)",
-                fontSize: "clamp(26px, 3vw, 36px)",
-                fontWeight: 700, letterSpacing: "-0.04em",
-                color: "var(--text-primary)", lineHeight: 1.1,
-                margin: "0 0 8px",
-              }}>
-                {p.name}
-              </h2>
-              <p style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 15, fontWeight: 400,
-                color: "var(--text-tertiary)",
-                letterSpacing: "-0.01em", margin: 0,
-              }}>
-                {p.tagline}
-              </p>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                <h2 className="product-modal-title">{p.name}</h2>
+                {p.discontinued && (
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 9,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      padding: "3px 8px",
+                      borderRadius: 6,
+                      background: "rgba(255,255,255,0.06)",
+                      color: "rgba(255,255,255,0.6)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                    }}
+                  >
+                    Discontinued
+                  </span>
+                )}
+                {p.comingSoon && (
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: 9,
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase",
+                      padding: "3px 8px",
+                      borderRadius: 6,
+                      background: `${p.color}15`,
+                      color: p.color,
+                      border: `1px solid ${p.color}35`,
+                    }}
+                  >
+                    In Development
+                  </span>
+                )}
+              </div>
+              <p className="product-modal-tagline">{p.tagline}</p>
             </div>
 
-            {/* Divider */}
-            <div style={{ height: 1, background: "var(--border-faint)" }} />
+            {p.discontinued && (
+              <div
+                style={{
+                  padding: "12px 14px",
+                  borderRadius: 10,
+                  background: "rgba(255,255,255,0.03)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                }}
+              >
+                <span style={{ fontSize: 13, lineHeight: 1.2 }}>ℹ️</span>
+                <p
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 12.5,
+                    lineHeight: 1.55,
+                    color: "var(--text-secondary)",
+                    margin: 0,
+                  }}
+                >
+                  <strong style={{ color: "var(--text-primary)" }}>Status: Discontinued.</strong> This product was discontinued because the underlying idea itself was not viable as a sustainable venture. We believe in shipping honestly, cutting non-viable paths quickly, and documenting the learnings.
+                </p>
+              </div>
+            )}
 
-            {/* Long description */}
-            <p style={{
-              fontFamily: "var(--font-body)",
-              fontSize: 14, lineHeight: 1.80,
-              color: "var(--text-secondary)",
-              fontWeight: 300, margin: 0,
-            }}>
-              {p.longDescription}
-            </p>
+            <div className="product-modal-divider" />
 
-            {/* Features */}
+            <p className="product-modal-desc">{p.longDescription}</p>
+
             <div>
-              <p style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 9, letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "var(--text-ghost)",
-                margin: "0 0 12px",
-              }}>
-                Key Features
-              </p>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "10px 20px",
-              }}>
+              <p className="product-modal-features-label">Key Highlights & Architecture</p>
+              <div className="product-modal-features">
                 {p.features.map(f => (
-                  <div key={f} style={{
-                    display: "flex", alignItems: "flex-start", gap: 8,
-                  }}>
-                    <span style={{
-                      width: 5, height: 5, borderRadius: "50%",
-                      background: p.color,
-                      flexShrink: 0,
-                      marginTop: 6,
-                      opacity: 0.85,
-                    }} />
-                    <span style={{
-                      fontFamily: "var(--font-body)",
-                      fontSize: 13, lineHeight: 1.5,
-                      color: "var(--text-secondary)",
-                      fontWeight: 400,
-                    }}>
-                      {f}
-                    </span>
+                  <div key={f} className="product-modal-feature">
+                    <span
+                      className="product-modal-feature-dot"
+                      style={{ background: p.discontinued ? "var(--text-tertiary)" : p.color }}
+                    />
+                    <span>{f}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Divider */}
-            <div style={{ height: 1, background: "var(--border-faint)" }} />
+            <div className="product-modal-divider" />
 
-            {/* Stat + CTA */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 16,
-              flexWrap: "wrap",
-            }}>
-              <div style={{ borderLeft: `2px solid ${p.color}`, paddingLeft: 14 }}>
-                <div style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "clamp(22px, 2.5vw, 28px)",
-                  fontWeight: 700, letterSpacing: "-0.04em",
-                  color: p.color, lineHeight: 1,
-                }}>
+            <div className="product-modal-footer">
+              <div
+                className="product-modal-stat"
+                style={{ borderLeftColor: p.discontinued ? "var(--text-ghost)" : p.color }}
+              >
+                <div
+                  className="product-modal-stat-value"
+                  style={{ color: p.discontinued ? "var(--text-secondary)" : p.color }}
+                >
                   {p.stat.value}
                 </div>
-                <div style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 8, letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "var(--text-ghost)", marginTop: 4,
-                }}>
-                  {p.stat.label}
-                </div>
+                <div className="product-modal-stat-label">{p.stat.label}</div>
               </div>
 
-              {p.comingSoon ? (
-                <span style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 10, letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: p.color,
-                  padding: "11px 20px",
-                  border: `1px solid ${p.color}35`,
-                  borderRadius: 10,
-                  background: `${p.color}0C`,
-                }}>
-                  In Development
-                </span>
+              {p.discontinued ? (
+                p.href ? (
+                  <Link
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="product-modal-cta"
+                    style={{
+                      background: "rgba(255,255,255,0.08)",
+                      color: "var(--text-primary)",
+                      border: "1px solid rgba(255,255,255,0.14)",
+                    }}
+                  >
+                    View Archive / Code
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                      stroke="currentColor" strokeWidth="1.8"
+                      strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 11 L11 1 M4.5 1 H11 V7.5"/>
+                    </svg>
+                  </Link>
+                ) : (
+                  <span
+                    className="product-modal-badge"
+                    style={{
+                      color: "var(--text-tertiary)",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      background: "rgba(255,255,255,0.03)",
+                    }}
+                  >
+                    Project Discontinued
+                  </span>
+                )
+              ) : p.comingSoon ? (
+                p.href ? (
+                  <Link
+                    href={p.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="product-modal-cta"
+                    style={{ background: p.color, color: "#000" }}
+                  >
+                    Preview App
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                      stroke="currentColor" strokeWidth="1.8"
+                      strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 11 L11 1 M4.5 1 H11 V7.5"/>
+                    </svg>
+                  </Link>
+                ) : (
+                  <span
+                    className="product-modal-badge"
+                    style={{
+                      color: p.color,
+                      borderColor: `${p.color}35`,
+                      background: `${p.color}0E`,
+                    }}
+                  >
+                    In Active Development
+                  </span>
+                )
               ) : (
                 <Link
                   href={p.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    fontFamily: "var(--font-display)",
-                    fontSize: 14, fontWeight: 600,
-                    letterSpacing: "-0.01em",
-                    color: "#000",
-                    background: p.color,
-                    padding: "11px 22px",
-                    borderRadius: 10,
-                    textDecoration: "none",
-                    transition: "opacity 0.2s ease, transform 0.2s ease",
-                  }}
-                  onMouseEnter={e => {
-                    (e.currentTarget as HTMLElement).style.opacity = "0.85";
-                    (e.currentTarget as HTMLElement).style.transform = "scale(0.97)";
-                  }}
-                  onMouseLeave={e => {
-                    (e.currentTarget as HTMLElement).style.opacity = "1";
-                    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
-                  }}
+                  className="product-modal-cta"
+                  style={{ background: p.color, color: "#000" }}
                 >
-                  Open App
+                  Open App / Project
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
                     stroke="currentColor" strokeWidth="1.8"
                     strokeLinecap="round" strokeLinejoin="round">
@@ -555,21 +637,14 @@ function ExpandedModal({
             </div>
           </div>
         </div>
-
-        {/* Mobile responsive */}
-        <style>{`
-          @media (max-width: 640px) {
-            .modal-body { flex-direction: column !important; }
-            .modal-image { width: 100% !important; height: 200px !important; border-right: none !important; border-bottom: 1px solid var(--border-faint) !important; }
-          }
-        `}</style>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PRODUCT CARD  (click to expand — no tilt)
+   PRODUCT CARD  (click to expand)
 ═══════════════════════════════════════════════════════════════ */
 function ProductCard({
   p, i, onSelect,
@@ -578,17 +653,17 @@ function ProductCard({
   i: number;
   onSelect: (p: Product) => void;
 }) {
-  const [hov, setHov]           = useState(false);
+  const [hov, setHov]             = useState(false);
   const [imgFailed, setImgFailed] = useState(false);
 
-  const showPlaceholder = p.comingSoon || imgFailed;
+  const showPlaceholder = imgFailed;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 36 }}
+      initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.65, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => onSelect(p)}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
@@ -596,30 +671,33 @@ function ProductCard({
       style={{
         borderRadius: 18,
         background: "var(--bg-raised)",
-        border: `1px solid ${hov ? `${p.color}50` : "var(--border)"}`,
+        border: `1px solid ${hov ? (p.discontinued ? "rgba(255,255,255,0.2)" : `${p.color}55`) : "var(--border)"}`,
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         cursor: "pointer",
+        position: "relative",
         transition: "border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease",
         transform: hov ? "translateY(-4px) scale(1.01)" : "translateY(0) scale(1)",
         boxShadow: hov
-          ? `0 16px 40px rgba(0,0,0,0.18), 0 0 0 1px ${p.color}20`
-          : "none",
+          ? `var(--shadow-card-hover), 0 0 0 1px ${p.discontinued ? "rgba(255,255,255,0.1)" : `${p.color}25`}`
+          : "var(--shadow-card)",
       }}
     >
       {/* Top accent line */}
       <div style={{
         height: 2, flexShrink: 0,
-        background: `linear-gradient(90deg, transparent, ${p.color}, transparent)`,
-        opacity: hov ? 1 : 0.45,
+        background: p.discontinued
+          ? "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)"
+          : `linear-gradient(90deg, transparent, ${p.color}, transparent)`,
+        opacity: hov ? 1 : (p.discontinued ? 0.3 : 0.5),
         transition: "opacity 0.25s ease",
       }} />
 
-      {/* Screenshot */}
+      {/* Screenshot / Media */}
       <div style={{
         position: "relative",
-        height: 225,
+        height: 220,
         overflow: "hidden",
         background: "var(--bg-raised)",
         flexShrink: 0,
@@ -629,15 +707,15 @@ function ProductCard({
             width: "100%", height: "100%",
             display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            gap: 14,
+            gap: 12,
             background: `linear-gradient(145deg, ${p.color}14 0%, ${p.color}05 100%)`,
           }}>
             <div style={{
-              width: 60, height: 60, borderRadius: 16,
+              width: 56, height: 56, borderRadius: 16,
               background: `${p.color}1C`,
               border: `1px solid ${p.color}2E`,
               display: "flex", alignItems: "center",
-              justifyContent: "center", fontSize: 26,
+              justifyContent: "center", fontSize: 24,
             }}>
               {p.emoji}
             </div>
@@ -645,9 +723,18 @@ function ProductCard({
               <span style={{
                 fontFamily: "var(--font-mono)", fontSize: 9,
                 letterSpacing: "0.2em", textTransform: "uppercase",
-                color: p.color, opacity: 0.7,
+                color: p.color, opacity: 0.8,
               }}>
-                Coming Soon
+                In Development
+              </span>
+            )}
+            {p.discontinued && (
+              <span style={{
+                fontFamily: "var(--font-mono)", fontSize: 9,
+                letterSpacing: "0.2em", textTransform: "uppercase",
+                color: "var(--text-tertiary)",
+              }}>
+                Discontinued
               </span>
             )}
           </div>
@@ -662,20 +749,53 @@ function ProductCard({
               style={{
                 width: "100%", height: "100%",
                 objectFit: "cover", display: "block",
+                filter: p.discontinued ? "grayscale(40%) opacity(0.85)" : "none",
                 transform: hov ? "scale(1.04)" : "scale(1)",
-                transition: "transform 0.55s cubic-bezier(0.22,1,0.36,1)",
+                transition: "transform 0.55s cubic-bezier(0.22,1,0.36,1), filter 0.3s ease",
                 willChange: "transform",
               }}
             />
             <div style={{
               position: "absolute", inset: 0,
-              background: `linear-gradient(135deg, ${p.color}10 0%, transparent 50%)`,
+              background: p.discontinued
+                ? "linear-gradient(135deg, rgba(0,0,0,0.4) 0%, transparent 60%)"
+                : `linear-gradient(135deg, ${p.color}12 0%, transparent 50%)`,
               pointerEvents: "none", zIndex: 1,
             }} />
           </>
         )}
 
         <div className="product-img-vignette" />
+
+        {/* Status Pill Badge */}
+        <div style={{
+          position: "absolute",
+          top: 12, left: 12,
+          zIndex: 4,
+          padding: "4px 8px",
+          borderRadius: 6,
+          background: p.discontinued
+            ? "rgba(18, 18, 20, 0.85)"
+            : p.comingSoon
+            ? `${p.color}20`
+            : "rgba(0,0,0,0.7)",
+          border: `1px solid ${p.discontinued ? "rgba(255,255,255,0.15)" : p.comingSoon ? `${p.color}45` : "rgba(255,255,255,0.12)"}`,
+          display: "flex", alignItems: "center", gap: 5,
+          backdropFilter: "blur(6px)",
+        }}>
+          <span style={{
+            width: 5, height: 5, borderRadius: "50%",
+            background: p.discontinued ? "#A1A1AA" : p.comingSoon ? p.color : "#10B981",
+          }} />
+          <span style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 8.5, letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: p.discontinued ? "rgba(255,255,255,0.7)" : p.comingSoon ? p.color : "rgba(255,255,255,0.9)",
+          }}>
+            {p.statusBadge ?? (p.discontinued ? "Discontinued" : p.comingSoon ? "In Dev" : "Live")}
+          </span>
+        </div>
 
         {/* Expand hint on hover */}
         <motion.div
@@ -688,21 +808,22 @@ function ProductCard({
             zIndex: 4,
             padding: "5px 10px",
             borderRadius: 6,
-            background: "rgba(0,0,0,0.72)",
-            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(0,0,0,0.75)",
+            border: "1px solid rgba(255,255,255,0.14)",
             display: "flex", alignItems: "center", gap: 5,
+            backdropFilter: "blur(6px)",
           }}
         >
           <span style={{
             fontFamily: "var(--font-mono)",
             fontSize: 8, letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.85)",
+            color: "rgba(255,255,255,0.9)",
           }}>
-            View details
+            Details
           </span>
           <svg width="9" height="9" viewBox="0 0 9 9" fill="none"
-            stroke="rgba(255,255,255,0.7)" strokeWidth="1.6"
+            stroke="rgba(255,255,255,0.8)" strokeWidth="1.6"
             strokeLinecap="round" strokeLinejoin="round">
             <path d="M1 8 L8 1 M3.5 1 H8 V5.5"/>
           </svg>
@@ -721,7 +842,8 @@ function ProductCard({
             fontFamily: "var(--font-mono)",
             fontSize: 9, letterSpacing: "0.18em",
             textTransform: "uppercase",
-            color: p.color, opacity: 0.9,
+            color: p.discontinued ? "var(--text-tertiary)" : p.color,
+            opacity: 0.9,
           }}>
             {p.tag}
           </span>
@@ -773,12 +895,16 @@ function ProductCard({
           display: "flex", alignItems: "center",
           justifyContent: "space-between", gap: 12,
         }}>
-          <div style={{ borderLeft: `2px solid ${p.color}`, paddingLeft: 10 }}>
+          <div style={{
+            borderLeft: `2px solid ${p.discontinued ? "var(--text-ghost)" : p.color}`,
+            paddingLeft: 10,
+          }}>
             <div style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(17px, 1.9vw, 21px)",
+              fontSize: "clamp(16px, 1.8vw, 20px)",
               fontWeight: 700, letterSpacing: "-0.04em",
-              color: p.color, lineHeight: 1,
+              color: p.discontinued ? "var(--text-secondary)" : p.color,
+              lineHeight: 1,
             }}>
               {p.stat.value}
             </div>
@@ -796,11 +922,11 @@ function ProductCard({
             fontFamily: "var(--font-mono)",
             fontSize: 9, letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: hov ? p.color : "var(--text-ghost)",
+            color: hov ? (p.discontinued ? "var(--text-primary)" : p.color) : "var(--text-ghost)",
             transition: "color 0.2s ease",
             display: "flex", alignItems: "center", gap: 5,
           }}>
-            Details
+            Explore
             <svg width="9" height="9" viewBox="0 0 9 9" fill="none"
               stroke="currentColor" strokeWidth="1.6"
               strokeLinecap="round" strokeLinejoin="round">
@@ -814,13 +940,19 @@ function ProductCard({
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SECTION
+   PRODUCT SHOWCASE SECTION
 ═══════════════════════════════════════════════════════════════ */
 export default function ProductShowcase() {
   const [selected, setSelected] = useState<Product | null>(null);
+  const [activeTab, setActiveTab] = useState<"all" | "shipped" | "building" | "discontinued">("all");
 
   const handleSelect = useCallback((p: Product) => setSelected(p), []);
   const handleClose  = useCallback(() => setSelected(null), []);
+
+  const filteredProducts = useMemo(() => {
+    if (activeTab === "all") return products;
+    return products.filter(p => p.category === activeTab);
+  }, [activeTab]);
 
   return (
     <section
@@ -839,7 +971,7 @@ export default function ProductShowcase() {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            marginBottom: 64,
+            marginBottom: 44,
             display: "flex",
             alignItems: "flex-end",
             justifyContent: "space-between",
@@ -855,7 +987,7 @@ export default function ProductShowcase() {
               color: "var(--text-tertiary)",
               margin: "0 0 16px",
             }}>
-              What we've built
+              What we've built · Studio Portfolio
             </p>
             <h2 style={{
               fontFamily: "var(--font-hero)",
@@ -864,20 +996,74 @@ export default function ProductShowcase() {
               lineHeight: 1.05, margin: 0,
               color: "var(--text-primary)",
             }}>
-              Six products.{" "}
+              11 products.{" "}
               <span style={{ color: "var(--text-tertiary)" }}>
-                Six real problems solved.
+                Built, shipped, and iterated.
               </span>
             </h2>
           </div>
+
           <p style={{
             fontFamily: "var(--font-body)",
             fontSize: 14, color: "var(--text-tertiary)",
-            maxWidth: 240, lineHeight: 1.65, fontWeight: 300,
+            maxWidth: 280, lineHeight: 1.65, fontWeight: 300,
           }}>
-            Click any product to explore it in detail.
+            Every product starts with real friction. Click any card to inspect the full architecture, code, and learnings.
           </p>
         </motion.div>
+
+        {/* Filter Pills */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          flexWrap: "wrap",
+          marginBottom: 40,
+        }}>
+          {[
+            { id: "all",          label: `All (${products.length})` },
+            { id: "shipped",      label: `Shipped (${products.filter(p => p.category === "shipped").length})` },
+            { id: "building",     label: `In Development (${products.filter(p => p.category === "building").length})` },
+            { id: "discontinued", label: `Discontinued (${products.filter(p => p.category === "discontinued").length})` },
+          ].map(tab => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id as any)}
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 10,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  padding: "8px 16px",
+                  borderRadius: 100,
+                  border: `1px solid ${isActive ? "var(--text-primary)" : "var(--border)"}`,
+                  background: isActive ? "var(--text-primary)" : "var(--bg-raised)",
+                  color: isActive ? "var(--bg)" : "var(--text-tertiary)",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  fontWeight: isActive ? 600 : 400,
+                }}
+                onMouseEnter={e => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border-hi)";
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isActive) {
+                    (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+                  }
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
 
         {/* Grid */}
         <div
@@ -888,7 +1074,7 @@ export default function ProductShowcase() {
             gap: 20,
           }}
         >
-          {products.map((p, i) => (
+          {filteredProducts.map((p, i) => (
             <ProductCard key={p.id} p={p} i={i} onSelect={handleSelect} />
           ))}
         </div>
@@ -903,7 +1089,7 @@ export default function ProductShowcase() {
 
       <style>{`
         @media (max-width: 1080px) { .product-grid { grid-template-columns: 1fr 1fr !important; } }
-        @media (max-width: 600px)  { .product-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px)  { .product-grid { grid-template-columns: 1fr !important; } }
       `}</style>
     </section>
   );

@@ -27,11 +27,12 @@ function AnimatedNumber({ to, suffix = "", delay = 0 }: { to: number; suffix?: s
   return <span ref={ref}>{val}{suffix}</span>;
 }
 
-/* Updated to reflect real numbers: 4 shipped, 2 in progress, ∞ ideas */
+/* Updated to reflect real numbers: 7 shipped, 1 in development, 3 discontinued, ∞ ideas */
 const STATS = [
-  { value: 4,   suffix: "",  label: "Products Shipped",   accent: "#4A90E2", symbol: null },
-  { value: 2,   suffix: "",  label: "In Development",     accent: "#9B6FE8", symbol: null },
-  { value: 0,   suffix: "",  label: "Ideas Ahead",         accent: "#3ECF8E", symbol: "∞"  },
+  { value: 7,   suffix: "",  label: "Products Shipped",       accent: "#4A90E2", symbol: null },
+  { value: 1,   suffix: "",  label: "In Development",         accent: "#EC4899", symbol: null },
+  { value: 3,   suffix: "",  label: "Discontinued (Pivoted)", accent: "#F0A500", symbol: null },
+  { value: 0,   suffix: "",  label: "Ideas Ahead",            accent: "#3ECF8E", symbol: "∞"  },
 ];
 
 export default function StatsSection() {
@@ -92,7 +93,7 @@ export default function StatsSection() {
         {/* Stats grid */}
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: "1px",
           background: "var(--border)",
           borderRadius: 16,
@@ -148,7 +149,8 @@ export default function StatsSection() {
       </div>
 
       <style>{`
-        @media (max-width: 640px) { .stats-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 540px) { .stats-grid { grid-template-columns: 1fr !important; } }
       `}</style>
     </section>
   );

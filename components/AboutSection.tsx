@@ -29,8 +29,8 @@ const BELIEFS = [
 ];
 
 const TECH = [
-  "Next.js", "Flutter", "FastAPI", "TypeScript", "Firebase",
-  "Supabase", "OpenAI", "Framer Motion", "Vercel",
+  "Next.js", "Flutter", "FastAPI", "TypeScript", "Python", "MediaPipe",
+  "OpenCV", "Firebase", "Supabase", "OpenAI", "Framer Motion", "Vercel",
 ];
 
 export default function AboutSection() {
@@ -101,7 +101,7 @@ export default function AboutSection() {
               letterSpacing: "-0.05em",
               color: "var(--text-primary)", lineHeight: 1,
             }}>
-              <CountUp to={5} />
+              <CountUp to={11} />
             </div>
             <div style={{
               fontFamily: "var(--font-mono)", fontSize: 8, letterSpacing: "0.18em",

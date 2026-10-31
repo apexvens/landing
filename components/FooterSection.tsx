@@ -4,12 +4,17 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 const products = [
-  { name:"TripWise AI", href:"https://tripwiseai.vercel.app/" },
-  { name:"NutriSense",  href:"https://mynutrisense.vercel.app/#/home" },
-  { name:"FolioAI",     href:"https://tryfolioai.vercel.app/" },
-  { name:"EVMate",      href:"https://evmate-8ce3d.web.app/" },
-  { name:"UniPilot",    href:"" },
-  { name:"InboxOS",     href:"https://inboxosai.vercel.app" },
+  { name: "TripWise AI", href: "https://tripwiseai.vercel.app/" },
+  { name: "NutriSense",  href: "https://mynutrisense.vercel.app/#/home" },
+  { name: "FolioAI",     href: "https://tryfolioai.vercel.app/" },
+  { name: "InboxOS",     href: "https://inboxosai.vercel.app" },
+  { name: "AirFitness",  href: "https://airfittness.vercel.app/" },
+  { name: "AirWheel",    href: "https://github.com/neil-surjiani/AirWheel" },
+  { name: "ZeroScroll",  href: "https://github.com/neil-surjiani/zeroscroll" },
+  { name: "Drape",       href: "#products" },
+  { name: "EVMate",      href: "https://evmate-8ce3d.web.app/" },
+  { name: "Crescendo",   href: "https://github.com/crescendo01" },
+  { name: "UniPilot",    href: "#products" },
 ];
 const social = [
   { name:"GitHub",   href:"https://github.com/neil-surjiani" },
@@ -58,16 +63,16 @@ export default function FooterSection() {
           {/* Products */}
           <div>
             <p className="label" style={{ marginBottom:20 }}>Products</p>
-            <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(130px, 1fr))", gap:"10px 18px" }}>
               {products.map((p,i) => (
                 <motion.div
                   key={p.name}
                   initial={{ opacity:0, x:-8 }}
                   whileInView={{ opacity:1, x:0 }}
                   viewport={{ once:true }}
-                  transition={{ duration:0.5, delay:i*0.07 }}
+                  transition={{ duration:0.4, delay:i*0.03 }}
                 >
-                  <Link href={p.href} target="_blank" rel="noopener noreferrer"
+                  <Link href={p.href} target={p.href.startsWith("http") ? "_blank" : undefined} rel={p.href.startsWith("http") ? "noopener noreferrer" : undefined}
                     style={{
                       fontFamily:"var(--font-body)", fontSize:13,
                       color:"var(--text-tertiary)", textDecoration:"none", fontWeight:300,
