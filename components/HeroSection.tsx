@@ -212,7 +212,7 @@ export default function HeroSection() {
           fontFamily: "var(--font-display)", fontSize: "clamp(36px,5vw,56px)",
           fontWeight: 700, letterSpacing: "-0.04em",
           color: "var(--text-ghost)", lineHeight: 1,
-        }}>11</div>
+        }}>12</div>
         <div className="label" style={{ marginTop: 4 }}>Products built & explored</div>
       </motion.div>
     </section>

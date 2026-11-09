@@ -27,9 +27,9 @@ function AnimatedNumber({ to, suffix = "", delay = 0 }: { to: number; suffix?: s
   return <span ref={ref}>{val}{suffix}</span>;
 }
 
-/* Updated to reflect real numbers: 7 shipped, 1 in development, 3 discontinued, ∞ ideas */
+/* Updated to reflect real numbers: 8 shipped, 1 in development, 3 discontinued, ∞ ideas */
 const STATS = [
-  { value: 7,   suffix: "",  label: "Products Shipped",       accent: "#4A90E2", symbol: null },
+  { value: 8,   suffix: "",  label: "Products Shipped",       accent: "#4A90E2", symbol: null },
   { value: 1,   suffix: "",  label: "In Development",         accent: "#EC4899", symbol: null },
   { value: 3,   suffix: "",  label: "Discontinued (Pivoted)", accent: "#F0A500", symbol: null },
   { value: 0,   suffix: "",  label: "Ideas Ahead",            accent: "#3ECF8E", symbol: "∞"  },

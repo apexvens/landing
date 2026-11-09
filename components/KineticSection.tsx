@@ -120,7 +120,7 @@ export default function KineticSection() {
             fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.18em",
             textTransform: "uppercase", color: "var(--text-tertiary)",
           }}>
-            11 products built on this thesis
+            12 products built on this thesis
           </span>
         </motion.div>
       </div>

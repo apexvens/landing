@@ -212,8 +212,34 @@ const products: Product[] = [
     ],
   },
   {
-    id:          "drape",
+    id:          "fathomai",
     index:       "08",
+    name:        "Fathom AI",
+    tagline:     "Learn anything. Properly.",
+    description: "A personal AI learning strategist and curriculum designer. Tell it what you want to learn — it builds the path, curates verified resources, and adapts as you learn.",
+    longDescription: "Fathom AI eliminates the friction, rabbit holes, and tutorial fatigue of self-directed learning. Tell Fathom what you want to learn, your available timeframe, and your current level — it builds a sequenced modular roadmap, curates and scores verified learning resources, breaks concepts into daily practice sessions, and pairs you with a context-aware AI tutor to test your retention and accelerate true mastery.",
+    href:        "https://fathomai.lovable.app/",
+    color:       "#575ECF",
+    tag:         "Learning · AI",
+    category:    "shipped",
+    stat:        { value: "10x", label: "Faster to mastery" },
+    imagePath:   "/fathomai/hero.png",
+    comingSoon:  false,
+    discontinued: false,
+    statusBadge: "Live",
+    emoji:       "🧠",
+    features: [
+      "AI curriculum & modular roadmap architect",
+      "Curated, verified & ranked learning resources",
+      "Focused daily bite-sized learning sessions",
+      "Context-aware AI tutor with retention checks",
+      "Sequenced milestones from basics to mastery",
+      "Real knowledge retention & progress tracking",
+    ],
+  },
+  {
+    id:          "drape",
+    index:       "09",
     name:        "Drape",
     tagline:     "Virtual avatar try-on & digital wardrobe.",
     description: "Try clothes on your personal 3D avatar before you buy them online. Store your wardrobe inside the app and choose the perfect fit within the app itself.",
@@ -239,7 +265,7 @@ const products: Product[] = [
   },
   {
     id:          "evmate",
-    index:       "09",
+    index:       "10",
     name:        "EVMate",
     tagline:     "EV ownership, simplified.",
     description: "Real-time charger maps, range-aware routing, and charging station finder. Discontinued because the standalone app idea was not commercially viable against native OS maps.",
@@ -265,7 +291,7 @@ const products: Product[] = [
   },
   {
     id:          "crescendo",
-    index:       "10",
+    index:       "11",
     name:        "Crescendo",
     tagline:     "AI vocal and music practice.",
     description: "Interactive pitch tracking, voice lessons, and real-time audio feedback. Discontinued as user retention and self-directed practice friction made the standalone model unviable.",
@@ -291,7 +317,7 @@ const products: Product[] = [
   },
   {
     id:          "unipilot",
-    index:       "11",
+    index:       "12",
     name:        "UniPilot",
     tagline:     "Your AI admissions strategist.",
     description: "Profile gap analysis and time-aware admissions roadmap. Discontinued due to extreme seasonal demand cycles and high advisory expectations that clashed with software scale.",
@@ -452,7 +478,7 @@ function ExpandedModal({
               >
                 {p.tag}
               </span>
-              <span className="product-modal-index">{p.index} / 11</span>
+              <span className="product-modal-index">{p.index} / {products.length}</span>
             </div>
 
             <div>
@@ -996,7 +1022,7 @@ export default function ProductShowcase() {
               lineHeight: 1.05, margin: 0,
               color: "var(--text-primary)",
             }}>
-              11 products.{" "}
+              12 products.{" "}
               <span style={{ color: "var(--text-tertiary)" }}>
                 Built, shipped, and iterated.
               </span>

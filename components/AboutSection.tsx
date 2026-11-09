@@ -101,7 +101,7 @@ export default function AboutSection() {
               letterSpacing: "-0.05em",
               color: "var(--text-primary)", lineHeight: 1,
             }}>
-              <CountUp to={11} />
+              <CountUp to={12} />
             </div>
             <div style={{
               fontFamily: "var(--font-mono)", fontSize: 8, letterSpacing: "0.18em",

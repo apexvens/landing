@@ -14,7 +14,7 @@ const PRINCIPLES = [
   { index: "01", bold: "No niche.",   body: "We go where the problem is — not where the market report says to go.",          accent: "#4A90E2" },
   { index: "02", bold: "No trends.",  body: "We build what should exist, not what everyone else is already building.",        accent: "#9B6FE8" },
   { index: "03", bold: "No fluff.",   body: "Ship, measure, improve. Repeat until it's obvious. Then do it again.",           accent: "#3ECF8E" },
-  { index: "04", bold: "No ceiling.", body: "Seven products shipped, 11 built & iterated. Thousands of ideas queued. We're just getting started.",  accent: "#F0A500" },
+  { index: "04", bold: "No ceiling.", body: "Eight products shipped, 12 built & iterated. Thousands of ideas queued. We're just getting started.",  accent: "#F0A500" },
 ];
 
 function PrincipleRow({ p, i }: { p: typeof PRINCIPLES[0]; i: number }) {

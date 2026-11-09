@@ -11,6 +11,7 @@ const products = [
   { name: "AirFitness",  href: "https://airfittness.vercel.app/" },
   { name: "AirWheel",    href: "https://github.com/neil-surjiani/AirWheel" },
   { name: "ZeroScroll",  href: "https://github.com/neil-surjiani/zeroscroll" },
+  { name: "Fathom AI",   href: "https://fathomai.lovable.app/" },
   { name: "Drape",       href: "#products" },
   { name: "EVMate",      href: "https://evmate-8ce3d.web.app/" },
   { name: "Crescendo",   href: "https://github.com/crescendo01" },

@@ -6,7 +6,7 @@ import { useRef } from "react";
 const BIO = [
   "Apex Ventures is where ideas become products. Every tool starts with a real problem — something I've experienced, something people around me have experienced, something that should already have a good solution but doesn't.",
   "I'm not interested in perfect planning. I'm interested in shipping, learning, and improving. The fastest way to know if something works is to put it in front of people who actually need it.",
-  "These 11 products represent the first chapter — from live consumer web tools and on-device computer vision to intentional mobile utilities and honest pivots. The pipeline is full, and every new product will be built the same way: start with the problem, build the simplest thing that solves it, then make it exceptional.",
+  "These 12 products represent the first chapter — from live consumer web tools and on-device computer vision to intentional mobile utilities and honest pivots. The pipeline is full, and every new product will be built the same way: start with the problem, build the simplest thing that solves it, then make it exceptional.",
 ];
 
 const LINKS = [
